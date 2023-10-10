@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model User {
+  id    Int     @default(autoincrement()) @id
+  email String  @unique
+  name  String?
+  posts Post[]
+}
+
+model Post {
+  id        Int      @default(autoincrement()) @id
+  title     String
+  content   String?
+  published Boolean? @default(false)
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
+}
+
+model Member {
+	id Int	@default(autoincrement()) @id
+	firstName String
+	lastName String
+	email String @unique
+
+  Invitation Invitation[]
+	Attendee Attendee[]
+	Gathering Gathering[]
+}
+
+model Gathering {
+	id Int	@default(autoincrement()) @id
+	CreatorId Int
+	Type Int
+	ScheduledAt DateTime
+	Name String
+	Location String
+
+	Attendee Attendee[]
+  Invitation Invitation[]
+	Creator   Member   @relation(fields: [CreatorId], references: [id])
+	GatheringType   GatheringType   @relation(fields: [Type], references: [id])
+}
+
+model GatheringType {
+  id       Int     @id @default(autoincrement())
+  label    String  @db.VarChar(50)
+
+  Gathering Gathering[]
+}
+
+model Attendee {
+	id     Int    @id @default(autoincrement())
+  memberId Int    
+  gatheringId Int    
+
+	member   Member   @relation(fields: [memberId], references: [id])
+	gathering   Gathering   @relation(fields: [gatheringId], references: [id])
+
+}
+
+model Invitation {
+	id     Int    @id @default(autoincrement())
+  memberId Int  
+	status Int
+  gatheringId Int    
+
+	invitationStatus   InvitationStatus   @relation(fields: [status], references: [id])
+	member   Member   @relation(fields: [memberId], references: [id])
+	gathering   Gathering   @relation(fields: [gatheringId], references: [id])
+}
+
+model InvitationStatus {
+  id       Int     @id @default(autoincrement())
+  label    String  @db.VarChar(50)
+
+  Invitation Invitation[]
+}
+
