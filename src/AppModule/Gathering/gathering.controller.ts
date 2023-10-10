@@ -1,11 +1,18 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { IGatheringCreationDTO } from './Core/types';
+import { Controller, Post, Body, Inject, Get } from '@nestjs/common';
+import {
+  IGatheringController,
+  IGatheringCreationDTO,
+  IGatheringService,
+} from './Core/types';
 import { GatheringMapper } from './Core/mapper';
-import { GatheringService } from './gathering.service';
+import { IGatheringServiceSymbol } from './Core/symbols';
 
 @Controller('Gathering')
-export class GatheringController {
-  constructor(private readonly gatheringService: GatheringService) {}
+export class GatheringController implements IGatheringController {
+  constructor(
+    @Inject(IGatheringServiceSymbol)
+    private readonly gatheringService: IGatheringService,
+  ) {}
 
   @Post()
   async create(
@@ -16,5 +23,10 @@ export class GatheringController {
     return await this.gatheringService.create(
       GatheringMapper.toDomain(gatheringCreationDTO),
     );
+  }
+
+  @Get()
+  async get(): Promise<any> {
+    return 'heja';
   }
 }

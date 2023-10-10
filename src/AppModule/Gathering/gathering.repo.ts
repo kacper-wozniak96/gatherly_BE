@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { IGathering } from './Core/types';
+import { IGathering, IGatheringRepo } from './Core/types';
 
 @Injectable()
-export class GatheringRepo {
+export class GatheringRepo implements IGatheringRepo {
   constructor(private prisma: PrismaService) {}
 
   async create(gathering: IGathering): Promise<any> {

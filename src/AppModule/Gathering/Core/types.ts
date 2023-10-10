@@ -17,3 +17,15 @@ export interface IGathering extends ICommon {
   Name: string;
   Location: string;
 }
+
+export interface IGatheringService {
+  create(gathering: IGathering): Promise<any>;
+}
+
+export interface IGatheringController {
+  create(gatheringCreationDTO: IGatheringCreationDTO): Promise<any>;
+}
+
+export interface IGatheringRepo {
+  create(gathering: IGathering): Promise<any>;
+}
