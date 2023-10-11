@@ -6,11 +6,13 @@ export interface IGatheringCreationDTO {
   ScheduledAt: Date;
   Name: string;
   Location: string;
+  maxiumNumberOfAttendess?: number;
+  invitationsValidBeforeInHours?: number;
 }
 
 export type IGatheringUpdateDTO = Partial<IGatheringCreationDTO> & ICommon;
 
-export interface IGathering extends ICommon {
+export interface IGathering extends Partial<ICommon> {
   CreatorId: number;
   Type: number;
   ScheduledAt: Date;
@@ -18,14 +20,19 @@ export interface IGathering extends ICommon {
   Location: string;
 }
 
-export interface IGatheringService {
-  create(gathering: IGathering): Promise<any>;
-}
-
 export interface IGatheringController {
   create(gatheringCreationDTO: IGatheringCreationDTO): Promise<any>;
 }
 
+export interface IGatheringService {
+  create(gathering: IGathering): Promise<any>;
+}
+
 export interface IGatheringRepo {
   create(gathering: IGathering): Promise<any>;
+}
+
+export enum EGatheringType {
+  WithFixedNumberofAttendees,
+  WithExpirationForInvitations,
 }
