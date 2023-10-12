@@ -3,14 +3,14 @@ import {
   IGatheringController,
   IGatheringCreationDTO,
   IGatheringService,
-} from './Core/types';
-import { GatheringMapper } from './Core/mapper';
-import { IGatheringServiceSymbol } from './Core/symbols';
+} from './utils/types';
+import { GatheringMapper } from './utils/mapper';
+import { GatheringServiceSymbol } from './utils/symbols';
 
 @Controller('Gathering')
 export class GatheringController implements IGatheringController {
   constructor(
-    @Inject(IGatheringServiceSymbol)
+    @Inject(GatheringServiceSymbol)
     private readonly gatheringService: IGatheringService,
   ) {}
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { IGathering, IGatheringRepo } from './Core/types';
+import { IGathering, IGatheringRepo } from './utils/types';
 
 @Injectable()
 export class GatheringRepo implements IGatheringRepo {
@@ -14,6 +14,8 @@ export class GatheringRepo implements IGatheringRepo {
         GatheringType: { connect: { id: gathering.Type } },
         Creator: { connect: { id: gathering.CreatorId } },
         ScheduledAt: new Date(gathering.ScheduledAt),
+        InvitationsExpireAtUtc: gathering?.InvitationsExpireAtUtc,
+        MaxiumNumberOfAttendess: gathering?.MaxiumNumberOfAttendess,
       },
     });
   }

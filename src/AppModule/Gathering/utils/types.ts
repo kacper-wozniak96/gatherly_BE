@@ -18,6 +18,8 @@ export interface IGathering extends Partial<ICommon> {
   ScheduledAt: Date;
   Name: string;
   Location: string;
+  MaxiumNumberOfAttendess?: number;
+  InvitationsExpireAtUtc?: Date;
 }
 
 export interface IGatheringController {

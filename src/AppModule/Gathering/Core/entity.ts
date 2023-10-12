@@ -1,5 +1,5 @@
 import { ForbiddenException } from '@nestjs/common/exceptions/';
-import { EGatheringType, IGathering } from './types';
+import { EGatheringType, IGathering } from '../utils/types';
 import { addHours } from 'date-fns';
 
 export class Gathering implements IGathering {

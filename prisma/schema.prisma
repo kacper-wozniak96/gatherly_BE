@@ -45,6 +45,8 @@ model Gathering {
 	ScheduledAt DateTime
 	Name String
 	Location String
+	MaxiumNumberOfAttendess Int?
+  InvitationsExpireAtUtc DateTime?
 
 	Attendee Attendee[]
   Invitation Invitation[]

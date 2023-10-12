@@ -1,20 +1,37 @@
-import { Inject } from '@nestjs/common';
+import { ForbiddenException, Inject } from '@nestjs/common';
 
 import { Injectable } from '@nestjs/common';
-import { IGathering, IGatheringService } from './Core/types';
-import { GatheringRepo } from './gathering.repo';
-import { IGatheringRepoSymbol } from './Core/symbols';
+import { IGathering, IGatheringRepo, IGatheringService } from './utils/types';
+import { GatheringRepoSymbol } from './utils/symbols';
 import { Gathering } from './Core/entity';
+import { MemberServiceSymbol } from '../Member/utils/symbols';
+import { IMemberService } from '../Member/utils/types';
 
 @Injectable()
 export class GatheringService implements IGatheringService {
   constructor(
-    @Inject(IGatheringRepoSymbol) private readonly gatheringRepo: GatheringRepo,
+    @Inject(GatheringRepoSymbol)
+    private readonly gatheringRepo: IGatheringRepo,
+
+    @Inject(MemberServiceSymbol)
+    private readonly memeberSerive: IMemberService,
   ) {}
 
-  async create(data: IGathering): Promise<any> {
-    const gathering = Gathering.create(data);
+  async create(
+    gatheringData: IGathering,
+    maxiumNumberOfAttendess?: number,
+    invitationsValidBeforeInHours?: number,
+  ): Promise<any> {
+    const creator = await this.memeberSerive.getById(gatheringData?.CreatorId);
 
-    return this.gatheringRepo.create(gathering);
+    if (!creator) throw new ForbiddenException('Creator not found');
+
+    const gathering = Gathering.create(
+      gatheringData,
+      maxiumNumberOfAttendess,
+      invitationsValidBeforeInHours,
+    );
+
+    return await this.gatheringRepo.create(gathering);
   }
 }
