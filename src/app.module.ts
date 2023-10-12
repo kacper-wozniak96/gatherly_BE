@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Type } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { GatheringController } from './AppModule/Gathering/gathering.controller';
 import { GatheringService } from './AppModule/Gathering/gathering.service';
@@ -15,46 +15,26 @@ import {
 } from './AppModule/Member/utils/symbols';
 import { MemberRepo } from './AppModule/Member/member.repo';
 
-// class Provider {
-//   provide: any;
-//   useClass: Type;
+class Provider {
+  provide: any;
+  useClass: Type;
 
-//   constructor(provide: any, useClass: Type) {
-//     this.provide = provide;
-//     this.useClass = useClass;
-//   }
-// }
-// new Provider(GatheringServiceSymbol, GatheringService),
-// new Provider(GatheringRepoSymbol, GatheringRepo),
-// new Provider(GatheringControllerSymbol, GatheringController),
-// new Provider(MemberServiceSymbol, MemberService),
-// new Provider(MemberRepoSymbol, MemberRepo),
+  constructor(provide: any, useClass: Type) {
+    this.provide = provide;
+    this.useClass = useClass;
+  }
+}
 
 @Module({
   imports: [],
   controllers: [GatheringController],
   providers: [
     PrismaService,
-    {
-      provide: GatheringServiceSymbol,
-      useClass: GatheringService,
-    },
-    {
-      provide: GatheringRepoSymbol,
-      useClass: GatheringRepo,
-    },
-    {
-      provide: GatheringControllerSymbol,
-      useClass: GatheringController,
-    },
-    {
-      provide: MemberServiceSymbol,
-      useClass: MemberService,
-    },
-    {
-      provide: MemberRepoSymbol,
-      useClass: MemberRepo,
-    },
+    new Provider(GatheringServiceSymbol, GatheringService),
+    new Provider(GatheringRepoSymbol, GatheringRepo),
+    new Provider(GatheringControllerSymbol, GatheringController),
+    new Provider(MemberServiceSymbol, MemberService),
+    new Provider(MemberRepoSymbol, MemberRepo),
   ],
 })
 export class AppModule {}
