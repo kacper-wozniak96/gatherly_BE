@@ -8,7 +8,7 @@ export class MemberService implements IMemberService {
     @Inject(MemberRepoSymbol) private readonly memberRepo: IMemberRepo,
   ) {}
 
-  async getById(memberId: number): Promise<any> {
-    return await this.memberRepo.getById(memberId);
+  async getMemberById(memberId: number): Promise<any> {
+    return await this.memberRepo.getMemberById(memberId);
   }
 }

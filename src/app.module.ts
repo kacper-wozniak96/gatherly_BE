@@ -14,6 +14,7 @@ import {
   MemberServiceSymbol,
 } from './AppModule/Member/utils/symbols';
 import { MemberRepo } from './AppModule/Member/member.repo';
+import { InvitationController } from './AppModule/Invitation/invitation.controller';
 
 class Provider {
   provide: any;
@@ -27,7 +28,7 @@ class Provider {
 
 @Module({
   imports: [],
-  controllers: [GatheringController],
+  controllers: [GatheringController, InvitationController],
   providers: [
     PrismaService,
     new Provider(GatheringServiceSymbol, GatheringService),

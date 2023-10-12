@@ -22,7 +22,9 @@ export class GatheringService implements IGatheringService {
     maxiumNumberOfAttendess?: number,
     invitationsValidBeforeInHours?: number,
   ): Promise<any> {
-    const creator = await this.memeberSerive.getById(gatheringData?.CreatorId);
+    const creator = await this.memeberSerive.getMemberById(
+      gatheringData?.CreatorId,
+    );
 
     if (!creator) throw new ForbiddenException('Creator not found');
 
@@ -33,5 +35,35 @@ export class GatheringService implements IGatheringService {
     );
 
     return await this.gatheringRepo.create(gathering);
+  }
+
+  async inviteToGathering(
+    gatheringId: number,
+    memberIdToInvite: number,
+  ): Promise<any> {
+    const [gathering, member] = await Promise.all([
+      this.getGatheringById(gatheringId),
+      this.memeberSerive.getMemberById(memberIdToInvite),
+    ]);
+
+    if (!member || !gathering) {
+      throw new ForbiddenException('Member or gathering does not exist');
+    }
+
+    if (gathering.CreatorId === memberIdToInvite) {
+      throw new ForbiddenException(
+        'Cant send invitation to the gathering creator',
+      );
+    }
+
+    if (new Date(gathering.ScheduledAt) < new Date()) {
+      throw new ForbiddenException(
+        'Cant send invitation for gathering in the past',
+      );
+    }
+  }
+
+  async getGatheringById(gatheringId: number): Promise<IGathering> {
+    return await this.gatheringRepo.getGatheringById(gatheringId);
   }
 }

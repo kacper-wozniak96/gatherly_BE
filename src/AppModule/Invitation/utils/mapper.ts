@@ -1,12 +1,12 @@
-import { IMember } from './types';
+import { IInvitation } from './types';
 
-export class MemberMapper {
-  public static toDomain(raw: any): IMember {
+export class InvitationMapper {
+  public static toDomain(raw: any): IInvitation {
     return {
       id: raw?.id,
-      email: raw?.email,
-      firstName: raw?.firstName,
-      lastName: raw?.lastName,
+      gatheringId: raw?.gatheringId,
+      invitationStatusId: raw?.invitationStatusId,
+      memberId: raw?.memberId,
     };
   }
 }

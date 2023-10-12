@@ -7,7 +7,7 @@ import { MemberMapper } from './utils/mapper';
 export class MemberRepo implements IMemberRepo {
   constructor(private prisma: PrismaService) {}
 
-  async getById(memberId: any): Promise<any> {
+  async getMemberById(memberId: any): Promise<any> {
     const member = await this.prisma.member.findUnique({
       where: {
         id: memberId,

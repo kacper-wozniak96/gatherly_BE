@@ -1,9 +1,9 @@
 export interface IMemberService {
-  getById(memberId: number): Promise<any>;
+  getMemberById(memberId: number): Promise<any>;
 }
 
 export interface IMemberRepo {
-  getById(memberId: number): Promise<any>;
+  getMemberById(memberId: number): Promise<any>;
 }
 
 export interface IMember {

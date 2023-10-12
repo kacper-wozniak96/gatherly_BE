@@ -1,14 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IMemberRepo, IMemberService } from './utils/types';
-import { MemberRepoSymbol } from './utils/symbols';
+import {
+  IInvitation,
+  IInvitationRepo,
+  IInvitationService,
+} from './utils/types';
+import { InvitationRepoSymbol } from './utils/symbols';
 
 @Injectable()
-export class MemberService implements IMemberService {
+export class InvitationService implements IInvitationService {
   constructor(
-    @Inject(MemberRepoSymbol) private readonly memberRepo: IMemberRepo,
+    @Inject(InvitationRepoSymbol)
+    private readonly invitationRepo: IInvitationRepo,
   ) {}
 
-  async getById(memberId: number): Promise<any> {
-    return await this.memberRepo.getById(memberId);
+  async create(data: IInvitation): Promise<any> {
+    await this.invitationRepo.create(data);
   }
 }

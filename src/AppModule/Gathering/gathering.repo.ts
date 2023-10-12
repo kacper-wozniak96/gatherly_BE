@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { IGathering, IGatheringRepo } from './utils/types';
+import { GatheringMapper } from './utils/mapper';
 
 @Injectable()
 export class GatheringRepo implements IGatheringRepo {
@@ -18,5 +19,13 @@ export class GatheringRepo implements IGatheringRepo {
         MaxiumNumberOfAttendess: gathering?.MaxiumNumberOfAttendess,
       },
     });
+  }
+
+  async getGatheringById(gatheringId: number): Promise<IGathering> {
+    const gathering = await this.prisma.gathering.findUnique({
+      where: { id: gatheringId },
+    });
+
+    return GatheringMapper.toDomain(gathering);
   }
 }

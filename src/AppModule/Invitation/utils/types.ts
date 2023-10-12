@@ -1,14 +1,15 @@
+import { ICommon } from 'src/utils/types';
+
 export interface IInvitationService {
-  create(memberId: number): Promise<any>;
+  create(data: IInvitation): Promise<any>;
 }
 
 export interface IInvitationRepo {
-  create(memberId: number): Promise<any>;
+  create(data: IInvitation): Promise<any>;
 }
 
-export interface IMember {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
+export interface IInvitation extends ICommon {
+  memberId: number;
+  invitationStatusId: number;
+  gatheringId: number;
 }

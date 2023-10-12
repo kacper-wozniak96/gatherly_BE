@@ -74,10 +74,10 @@ model Attendee {
 model Invitation {
 	id     Int    @id @default(autoincrement())
   memberId Int  
-	status Int
+	invitationStatusId Int
   gatheringId Int    
 
-	invitationStatus   InvitationStatus   @relation(fields: [status], references: [id])
+	invitationStatus   InvitationStatus   @relation(fields: [invitationStatusId], references: [id])
 	member   Member   @relation(fields: [memberId], references: [id])
 	gathering   Gathering   @relation(fields: [gatheringId], references: [id])
 }

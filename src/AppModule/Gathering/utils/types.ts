@@ -27,11 +27,17 @@ export interface IGatheringController {
 }
 
 export interface IGatheringService {
+  getGatheringById(gatheringId: number): Promise<IGathering>;
   create(gathering: IGathering): Promise<any>;
+  inviteToGathering(
+    gatheringId: number,
+    memberIdToInvite: number,
+  ): Promise<any>;
 }
 
 export interface IGatheringRepo {
   create(gathering: IGathering): Promise<any>;
+  getGatheringById(gatheringId: number): Promise<IGathering>;
 }
 
 export enum EGatheringType {
