@@ -8,8 +8,13 @@ export interface IInvitationRepo {
   create(data: IInvitation): Promise<any>;
 }
 
-export interface IInvitation extends ICommon {
+export interface IInvitation extends Partial<ICommon> {
   memberId: number;
   invitationStatusId: number;
   gatheringId: number;
+  createdOnUtc: Date;
+}
+
+export enum EInvitationStatus {
+  Pending,
 }

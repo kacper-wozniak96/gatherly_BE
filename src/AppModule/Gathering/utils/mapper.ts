@@ -1,3 +1,4 @@
+import { Gathering } from '../Core/entity';
 import {
   IGathering,
   // IGatheringCreationDTO,
@@ -9,6 +10,11 @@ export class GatheringMapper {
     // gatheringDTO: IGatheringCreationDTO | IGatheringUpdateDTO,
     raw: any,
   ): IGathering {
+
+
+return Gathering.create();
+
+
     return {
       id: raw?.id,
       CreatorId: raw?.CreatorId,

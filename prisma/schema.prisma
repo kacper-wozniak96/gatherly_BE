@@ -75,7 +75,8 @@ model Invitation {
 	id     Int    @id @default(autoincrement())
   memberId Int  
 	invitationStatusId Int
-  gatheringId Int    
+  gatheringId Int
+	createdOnUtc DateTime @default(now())   
 
 	invitationStatus   InvitationStatus   @relation(fields: [invitationStatusId], references: [id])
 	member   Member   @relation(fields: [memberId], references: [id])
