@@ -5,13 +5,13 @@ const isEntity = (v: any): v is Entity<any> => {
 };
 
 export abstract class Entity<T> {
-  protected readonly _id: number;
+  protected readonly _Id: number;
   protected props: T;
 
   // Take note of this particular nuance here:
   // Why is "id" optional?
   constructor(props: T, id?: number) {
-    this._id = id ? id : Number(_.uniqueId());
+    this._Id = id ? id : Number(_.uniqueId());
     this.props = props;
   }
 
@@ -30,6 +30,6 @@ export abstract class Entity<T> {
       return false;
     }
 
-    return this._id === object._id;
+    return this._Id === object._Id;
   }
 }

@@ -1,3 +1,3 @@
 export interface ICommon {
-  id: number;
+  Id: number;
 }

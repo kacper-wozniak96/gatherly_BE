@@ -1,4 +1,5 @@
 import { ICommon } from 'src/utils/types';
+import { Gathering } from '../Core/entity';
 
 export interface IGatheringCreationDTO {
   CreatorId: number;
@@ -6,8 +7,8 @@ export interface IGatheringCreationDTO {
   ScheduledAt: Date;
   Name: string;
   Location: string;
-  maxiumNumberOfAttendess?: number;
-  invitationsValidBeforeInHours?: number;
+  MaxiumNumberOfAttendess?: number;
+  InvitationsValidBeforeInHours?: number;
 }
 
 export type IGatheringUpdateDTO = Partial<IGatheringCreationDTO> & ICommon;
@@ -36,7 +37,7 @@ export interface IGatheringService {
 }
 
 export interface IGatheringRepo {
-  create(gathering: IGathering): Promise<any>;
+  create(gathering: Gathering): Promise<Gathering>;
   getGatheringById(gatheringId: number): Promise<IGathering>;
 }
 

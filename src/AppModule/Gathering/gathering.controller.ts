@@ -4,7 +4,6 @@ import {
   IGatheringCreationDTO,
   IGatheringService,
 } from './utils/types';
-import { GatheringMapper } from './utils/mapper';
 import { GatheringServiceSymbol } from './utils/symbols';
 
 @Controller('Gathering')
@@ -18,11 +17,7 @@ export class GatheringController implements IGatheringController {
   async create(
     @Body() gatheringCreationDTO: IGatheringCreationDTO,
   ): Promise<any> {
-    console.log({ gatheringCreationDTO });
-
-    return await this.gatheringService.create(
-      GatheringMapper.toDomain(gatheringCreationDTO),
-    );
+    return await this.gatheringService.create(gatheringCreationDTO);
   }
 
   @Get()

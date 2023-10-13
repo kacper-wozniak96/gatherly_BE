@@ -10,9 +10,9 @@ export class InvitationRepo implements IInvitationRepo {
   async create(data: IInvitation): Promise<IInvitation> {
     const invitation = await this.prisma.invitation.create({
       data: {
-        gathering: { connect: { id: data.gatheringId } },
-        member: { connect: { id: data.memberId } },
-        invitationStatus: { connect: { id: data.invitationStatusId } },
+        Gathering: { connect: { Id: data.gatheringId } },
+        Member: { connect: { Id: data.memberId } },
+        InvitationStatus: { connect: { Id: data.invitationStatusId } },
       },
     });
 

@@ -8,7 +8,7 @@ export class Invitation implements IInvitation {
   createdOnUtc: Date;
 
   constructor(invitation: IInvitation) {
-    this.id = invitation?.id;
+    this.id = invitation?.Id;
     this.gatheringId = invitation?.gatheringId;
     this.memberId = invitation?.memberId;
     this.invitationStatusId = EInvitationStatus.Pending;

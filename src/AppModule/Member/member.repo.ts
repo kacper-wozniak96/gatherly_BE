@@ -10,7 +10,7 @@ export class MemberRepo implements IMemberRepo {
   async getMemberById(memberId: any): Promise<any> {
     const member = await this.prisma.member.findUnique({
       where: {
-        id: memberId,
+        Id: memberId,
       },
     });
 

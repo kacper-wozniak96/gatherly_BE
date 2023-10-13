@@ -1,7 +1,12 @@
 import { ForbiddenException, Inject } from '@nestjs/common';
 
 import { Injectable } from '@nestjs/common';
-import { IGathering, IGatheringRepo, IGatheringService } from './utils/types';
+import {
+  IGathering,
+  IGatheringCreationDTO,
+  IGatheringRepo,
+  IGatheringService,
+} from './utils/types';
 import { GatheringRepoSymbol } from './utils/symbols';
 import { Gathering } from './Core/entity';
 import { MemberServiceSymbol } from '../Member/utils/symbols';
@@ -18,10 +23,10 @@ export class GatheringService implements IGatheringService {
   ) {}
 
   async create(
-    gatheringData: IGathering,
+    gatheringData: IGatheringCreationDTO,
     maxiumNumberOfAttendess?: number,
     invitationsValidBeforeInHours?: number,
-  ): Promise<any> {
+  ): Promise<Gathering> {
     const creator = await this.memeberSerive.getMemberById(
       gatheringData?.CreatorId,
     );
@@ -30,6 +35,7 @@ export class GatheringService implements IGatheringService {
 
     const gathering = Gathering.create(
       gatheringData,
+      undefined,
       maxiumNumberOfAttendess,
       invitationsValidBeforeInHours,
     );
@@ -47,7 +53,7 @@ export class GatheringService implements IGatheringService {
     ]);
 
     if (!member || !gathering) {
-      throw new ForbiddenException('Member or gathering does not exist');
+      throw new ForbiddenException('Member and/or gathering does not exist');
     }
 
     if (gathering.CreatorId === memberIdToInvite) {

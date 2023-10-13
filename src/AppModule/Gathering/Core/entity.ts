@@ -1,48 +1,48 @@
 import { ForbiddenException } from '@nestjs/common/exceptions/';
 import { EGatheringType, IGathering } from '../utils/types';
 import { addHours } from 'date-fns';
+import { Entity } from 'src/utils/baseEntity';
 
-export class Gathering implements IGathering {
-  CreatorId: number;
-  Type: number;
-  ScheduledAt: Date;
-  Name: string;
-  Location: string;
-  id?: number;
-  MaxiumNumberOfAttendess?: number;
-  InvitationsExpireAtUtc?: Date;
-
-  private constructor(gathering: IGathering) {
-    this.id = gathering?.id;
-    this.CreatorId = gathering.CreatorId;
-    this.Location = gathering.Location;
-    this.Name = gathering.Name;
-    this.ScheduledAt = gathering.ScheduledAt;
-    this.Type = gathering.Type;
+export class Gathering extends Entity<IGathering> {
+  private constructor(props: IGathering, id?: number) {
+    super(props, id);
   }
 
   public static create(
-    data: IGathering,
+    props: IGathering,
+    id?: number,
     maxiumNumberOfAttendess?: number,
     invitationsValidBeforeInHours?: number,
-  ): IGathering {
-    const gathering = new Gathering(data);
+  ): Gathering {
+    const gathering = new Gathering(props, id);
 
-    switch (gathering.Type) {
+    gathering.addTypeSpecificField(
+      maxiumNumberOfAttendess,
+      invitationsValidBeforeInHours,
+    );
+
+    return gathering;
+  }
+
+  private addTypeSpecificField(
+    maxiumNumberOfAttendess?: number,
+    invitationsValidBeforeInHours?: number,
+  ) {
+    switch (this.props.Type) {
       case EGatheringType.WithFixedNumberofAttendees:
         if (!maxiumNumberOfAttendess)
           throw new ForbiddenException(
             'maxiumNumberOfAttendess can not be null when gathering type is set to WithFixedNumberofAttendees',
           );
-        gathering.MaxiumNumberOfAttendess = maxiumNumberOfAttendess;
+        this.props.MaxiumNumberOfAttendess = maxiumNumberOfAttendess;
         break;
       case EGatheringType.WithExpirationForInvitations:
         if (!invitationsValidBeforeInHours)
           throw new ForbiddenException(
             'invitationsValidBeforeInHours can not be null when gathering type is set to WithExpirationForInvitations',
           );
-        gathering.InvitationsExpireAtUtc = addHours(
-          gathering.ScheduledAt,
+        this.props.InvitationsExpireAtUtc = addHours(
+          this.props.ScheduledAt,
           invitationsValidBeforeInHours,
         );
         break;
@@ -51,7 +51,32 @@ export class Gathering implements IGathering {
           'Cant create gathering. Missing maxiumNumberOfAttendes and maxiumNumberOfAttendess',
         );
     }
+  }
 
-    return gathering;
+  get Name() {
+    return this.props.Name;
+  }
+
+  get CreatorId() {
+    return this.props.CreatorId;
+  }
+
+  get Location() {
+    return this.props.Location;
+  }
+
+  get MaxiumNumberOfAttendess() {
+    return this.props.MaxiumNumberOfAttendess;
+  }
+
+  get InvitationsExpireAtUtc() {
+    return this.props.InvitationsExpireAtUtc;
+  }
+
+  get ScheduledAt() {
+    return this.props.ScheduledAt;
+  }
+  get Type() {
+    return this.props.Type;
   }
 }

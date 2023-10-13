@@ -10,28 +10,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
-model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String?
-  posts Post[]
-}
-
-model Post {
-  id        Int      @default(autoincrement()) @id
-  title     String
-  content   String?
-  published Boolean? @default(false)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
-}
-
 model Member {
-	id Int	@default(autoincrement()) @id
-	firstName String
-	lastName String
-	email String @unique
+	Id Int	@default(autoincrement()) @id
+	FirstName String
+	LastName String
+	Email String @unique
 
   Invitation Invitation[]
 	Attendee Attendee[]
@@ -39,7 +22,7 @@ model Member {
 }
 
 model Gathering {
-	id Int	@default(autoincrement()) @id
+	Id Int	@default(autoincrement()) @id
 	CreatorId Int
 	Type Int
 	ScheduledAt DateTime
@@ -50,42 +33,42 @@ model Gathering {
 
 	Attendee Attendee[]
   Invitation Invitation[]
-	Creator   Member   @relation(fields: [CreatorId], references: [id])
-	GatheringType   GatheringType   @relation(fields: [Type], references: [id])
+	Creator   Member   @relation(fields: [CreatorId], references: [Id])
+	GatheringType   GatheringType   @relation(fields: [Type], references: [Id])
 }
 
 model GatheringType {
-  id       Int     @id @default(autoincrement())
-  label    String  @db.VarChar(50)
+  Id       Int     @id @default(autoincrement())
+  Label    String  @db.VarChar(50)
 
   Gathering Gathering[]
 }
 
 model Attendee {
-	id     Int    @id @default(autoincrement())
-  memberId Int    
-  gatheringId Int    
+	Id     Int    @id @default(autoincrement())
+  MemberId Int    
+  GatheringId Int    
 
-	member   Member   @relation(fields: [memberId], references: [id])
-	gathering   Gathering   @relation(fields: [gatheringId], references: [id])
+	Member   Member   @relation(fields: [MemberId], references: [Id])
+	Gathering   Gathering   @relation(fields: [GatheringId], references: [Id])
 
 }
 
 model Invitation {
-	id     Int    @id @default(autoincrement())
-  memberId Int  
-	invitationStatusId Int
-  gatheringId Int
-	createdOnUtc DateTime @default(now())   
+	Id     Int    @id @default(autoincrement())
+  MemberId Int  
+	InvitationStatusId Int
+  GatheringId Int
+	CreatedOnUtc DateTime @default(now())   
 
-	invitationStatus   InvitationStatus   @relation(fields: [invitationStatusId], references: [id])
-	member   Member   @relation(fields: [memberId], references: [id])
-	gathering   Gathering   @relation(fields: [gatheringId], references: [id])
+	InvitationStatus   InvitationStatus   @relation(fields: [InvitationStatusId], references: [Id])
+	Member   Member   @relation(fields: [MemberId], references: [Id])
+	Gathering   Gathering   @relation(fields: [GatheringId], references: [Id])
 }
 
 model InvitationStatus {
-  id       Int     @id @default(autoincrement())
-  label    String  @db.VarChar(50)
+  Id       Int     @id @default(autoincrement())
+  Label    String  @db.VarChar(50)
 
   Invitation Invitation[]
 }
