@@ -1,6 +1,6 @@
 import { EInvitationStatus, IInvitation } from '../utils/types';
 
-export class Invitation implements IInvitation {
+export class Invitation extends IInvitation {
   id?: number;
   gatheringId: number;
   memberId: number;

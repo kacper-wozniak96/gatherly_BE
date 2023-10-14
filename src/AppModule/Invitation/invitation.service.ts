@@ -13,7 +13,7 @@ export class InvitationService implements IInvitationService {
     private readonly invitationRepo: IInvitationRepo,
   ) {}
 
-  async create(data: IInvitation): Promise<any> {
+  async createGatheringInvitation(data: IInvitation): Promise<any> {
     await this.invitationRepo.create(data);
   }
 }

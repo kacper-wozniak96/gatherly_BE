@@ -1,7 +1,7 @@
 import { ICommon } from 'src/utils/types';
 
 export interface IInvitationService {
-  create(data: IInvitation): Promise<any>;
+  createGatheringInvitation(data: IInvitation): Promise<any>;
 }
 
 export interface IInvitationRepo {

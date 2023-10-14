@@ -1,5 +1,9 @@
 import { ForbiddenException } from '@nestjs/common/exceptions/';
-import { EGatheringType, IGathering } from '../utils/types';
+import {
+  EGatheringType,
+  IGathering,
+  // IGatheringCreationDTO,
+} from '../utils/types';
 import { addHours } from 'date-fns';
 import { Entity } from 'src/utils/baseEntity';
 

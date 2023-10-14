@@ -38,7 +38,7 @@ export interface IGatheringService {
 
 export interface IGatheringRepo {
   create(gathering: Gathering): Promise<Gathering>;
-  getGatheringById(gatheringId: number): Promise<IGathering>;
+  getGatheringById(gatheringId: number): Promise<Gathering>;
 }
 
 export enum EGatheringType {
