@@ -6,6 +6,8 @@ import {
 } from '../utils/types';
 import { addHours } from 'date-fns';
 import { Entity } from 'src/utils/baseEntity';
+import { Invitation } from 'src/AppModule/Invitation/Core/entity';
+import { Member } from 'src/AppModule/Member/core/entity';
 
 export class Gathering extends Entity<IGathering> {
   private constructor(props: IGathering, id?: number) {
@@ -55,6 +57,17 @@ export class Gathering extends Entity<IGathering> {
           'Cant create gathering. Missing maxiumNumberOfAttendes and maxiumNumberOfAttendess',
         );
     }
+  }
+
+  addInviation(gathering: Gathering, member: Member) {
+    this.props.Invitations = [
+      ...(this.props.Invitations ?? []),
+      Invitation.create(gathering.Id, member.Id),
+    ];
+  }
+
+  get Id() {
+    return this.props.Id;
   }
 
   get Name() {

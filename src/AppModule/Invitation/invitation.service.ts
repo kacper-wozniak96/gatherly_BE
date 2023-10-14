@@ -1,10 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import {
-  IInvitation,
-  IInvitationRepo,
-  IInvitationService,
-} from './utils/types';
+import { IInvitationRepo, IInvitationService } from './utils/types';
 import { InvitationRepoSymbol } from './utils/symbols';
+import { Invitation } from './Core/entity';
 
 @Injectable()
 export class InvitationService implements IInvitationService {
@@ -13,7 +10,7 @@ export class InvitationService implements IInvitationService {
     private readonly invitationRepo: IInvitationRepo,
   ) {}
 
-  async createGatheringInvitation(data: IInvitation): Promise<any> {
-    await this.invitationRepo.create(data);
+  async createGatheringInvitation(invitation: Invitation): Promise<any> {
+    await this.invitationRepo.create(invitation);
   }
 }

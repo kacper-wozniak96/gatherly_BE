@@ -2,7 +2,6 @@ import { ForbiddenException, Inject } from '@nestjs/common';
 
 import { Injectable } from '@nestjs/common';
 import {
-  IGathering,
   IGatheringCreationDTO,
   IGatheringRepo,
   IGatheringService,
@@ -11,6 +10,9 @@ import { GatheringRepoSymbol } from './utils/symbols';
 import { Gathering } from './Core/entity';
 import { MemberServiceSymbol } from '../Member/utils/symbols';
 import { IMemberService } from '../Member/utils/types';
+import { IInvitationService } from '../Invitation/utils/types';
+import { InvitationServiceSymbol } from '../Invitation/utils/symbols';
+import { Invitation } from '../Invitation/Core/entity';
 
 @Injectable()
 export class GatheringService implements IGatheringService {
@@ -20,6 +22,9 @@ export class GatheringService implements IGatheringService {
 
     @Inject(MemberServiceSymbol)
     private readonly memeberSerive: IMemberService,
+
+    @Inject(InvitationServiceSymbol)
+    private readonly invitationService: IInvitationService,
   ) {}
 
   async create(
@@ -67,9 +72,13 @@ export class GatheringService implements IGatheringService {
         'Cant send invitation for gathering in the past',
       );
     }
+
+    return this.invitationService.createGatheringInvitation(
+      Invitation.create(gathering.Id, member.Id),
+    );
   }
 
-  async getGatheringById(gatheringId: number): Promise<IGathering> {
+  async getGatheringById(gatheringId: number): Promise<Gathering> {
     return await this.gatheringRepo.getGatheringById(gatheringId);
   }
 }

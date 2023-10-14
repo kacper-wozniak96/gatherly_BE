@@ -1,17 +1,29 @@
+import { Entity } from 'src/utils/baseEntity';
 import { EInvitationStatus, IInvitation } from '../utils/types';
 
-export class Invitation extends IInvitation {
-  id?: number;
-  gatheringId: number;
-  memberId: number;
-  invitationStatusId: number;
-  createdOnUtc: Date;
+export class Invitation extends Entity<IInvitation> {
+  private constructor(props: IInvitation, id?: number) {
+    super(props, id);
+  }
 
-  constructor(invitation: IInvitation) {
-    this.id = invitation?.Id;
-    this.gatheringId = invitation?.gatheringId;
-    this.memberId = invitation?.memberId;
-    this.invitationStatusId = EInvitationStatus.Pending;
-    this.createdOnUtc = new Date();
+  public static create(gatheringId: number, memberId: number): Invitation {
+    return new Invitation({
+      gatheringId: gatheringId,
+      memberId: memberId,
+      invitationStatusId: EInvitationStatus.Pending,
+      createdOnUtc: new Date(),
+    });
+  }
+
+  get gatheringId() {
+    return this.props.gatheringId;
+  }
+
+  get memberId() {
+    return this.props.memberId;
+  }
+
+  get invitationStatusId() {
+    return this.props.invitationStatusId;
   }
 }

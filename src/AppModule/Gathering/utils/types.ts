@@ -1,5 +1,6 @@
 import { ICommon } from 'src/utils/types';
 import { Gathering } from '../Core/entity';
+import { Invitation } from 'src/AppModule/Invitation/Core/entity';
 
 export interface IGatheringCreationDTO {
   CreatorId: number;
@@ -21,6 +22,8 @@ export interface IGathering extends Partial<ICommon> {
   Location: string;
   MaxiumNumberOfAttendess?: number;
   InvitationsExpireAtUtc?: Date;
+
+  Invitations?: Invitation[];
 }
 
 export interface IGatheringController {

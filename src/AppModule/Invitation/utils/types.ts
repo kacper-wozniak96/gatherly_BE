@@ -1,11 +1,12 @@
 import { ICommon } from 'src/utils/types';
+import { Invitation } from '../Core/entity';
 
 export interface IInvitationService {
-  createGatheringInvitation(data: IInvitation): Promise<any>;
+  createGatheringInvitation(invitation: Invitation): Promise<Invitation>;
 }
 
 export interface IInvitationRepo {
-  create(data: IInvitation): Promise<any>;
+  create(invitation: Invitation): Promise<any>;
 }
 
 export interface IInvitation extends Partial<ICommon> {

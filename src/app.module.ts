@@ -15,6 +15,12 @@ import {
 } from './AppModule/Member/utils/symbols';
 import { MemberRepo } from './AppModule/Member/member.repo';
 import { InvitationController } from './AppModule/Invitation/invitation.controller';
+import {
+  InvitationRepoSymbol,
+  InvitationServiceSymbol,
+} from './AppModule/Invitation/utils/symbols';
+import { InvitationService } from './AppModule/Invitation/invitation.service';
+import { InvitationRepo } from './AppModule/Invitation/invitation.repo';
 
 class Provider {
   provide: any;
@@ -36,6 +42,8 @@ class Provider {
     new Provider(GatheringControllerSymbol, GatheringController),
     new Provider(MemberServiceSymbol, MemberService),
     new Provider(MemberRepoSymbol, MemberRepo),
+    new Provider(InvitationServiceSymbol, InvitationService),
+    new Provider(InvitationRepoSymbol, InvitationRepo),
   ],
 })
 export class AppModule {}
