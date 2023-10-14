@@ -6,8 +6,8 @@ import {
 } from '../utils/types';
 import { addHours } from 'date-fns';
 import { Entity } from 'src/utils/baseEntity';
-import { Invitation } from 'src/AppModule/Invitation/Core/entity';
 import { Member } from 'src/AppModule/Member/core/entity';
+import { Invitation } from 'src/AppModule/Invitation/Core/entity';
 
 export class Gathering extends Entity<IGathering> {
   private constructor(props: IGathering, id?: number) {
@@ -60,10 +60,27 @@ export class Gathering extends Entity<IGathering> {
   }
 
   addInviation(gathering: Gathering, member: Member) {
-    this.props.Invitations = [
-      ...(this.props.Invitations ?? []),
-      Invitation.create(gathering.Id, member.Id),
-    ];
+    if (!member || !gathering) {
+      throw new ForbiddenException('Member and/or gathering does not exist');
+    }
+
+    if (gathering.CreatorId === member.Id) {
+      throw new ForbiddenException(
+        'Cant send invitation to the gathering creator',
+      );
+    }
+
+    if (new Date(gathering.ScheduledAt) < new Date()) {
+      throw new ForbiddenException(
+        'Cant send invitation for gathering in the past',
+      );
+    }
+
+    const invitation = Invitation.create(gathering.Id, member.Id);
+
+    this.props.Invitations = [...(this.props.Invitations ?? []), invitation];
+
+    return invitation;
   }
 
   get Id() {

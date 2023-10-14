@@ -12,7 +12,6 @@ import { MemberServiceSymbol } from '../Member/utils/symbols';
 import { IMemberService } from '../Member/utils/types';
 import { IInvitationService } from '../Invitation/utils/types';
 import { InvitationServiceSymbol } from '../Invitation/utils/symbols';
-import { Invitation } from '../Invitation/Core/entity';
 
 @Injectable()
 export class GatheringService implements IGatheringService {
@@ -57,25 +56,9 @@ export class GatheringService implements IGatheringService {
       this.memeberSerive.getMemberById(memberIdToInvite),
     ]);
 
-    if (!member || !gathering) {
-      throw new ForbiddenException('Member and/or gathering does not exist');
-    }
+    const invitation = gathering.addInviation(gathering, member);
 
-    if (gathering.CreatorId === memberIdToInvite) {
-      throw new ForbiddenException(
-        'Cant send invitation to the gathering creator',
-      );
-    }
-
-    if (new Date(gathering.ScheduledAt) < new Date()) {
-      throw new ForbiddenException(
-        'Cant send invitation for gathering in the past',
-      );
-    }
-
-    return this.invitationService.createGatheringInvitation(
-      Invitation.create(gathering.Id, member.Id),
-    );
+    return this.invitationService.createGatheringInvitation(invitation);
   }
 
   async getGatheringById(gatheringId: number): Promise<Gathering> {
