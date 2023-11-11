@@ -47,7 +47,8 @@ model GatheringType {
 model Attendee {
 	Id     Int    @id @default(autoincrement())
   MemberId Int    
-  GatheringId Int    
+  GatheringId Int 
+	CreatedOnUtc DateTime   
 
 	Member   Member   @relation(fields: [MemberId], references: [Id])
 	Gathering   Gathering   @relation(fields: [GatheringId], references: [Id])
