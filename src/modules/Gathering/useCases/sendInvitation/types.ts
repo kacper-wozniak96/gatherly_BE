@@ -1,3 +1,6 @@
+import { MemberId } from 'src/modules/Member/domain/memberId';
+import { GatheringId } from '../../domain/gatheringId';
+
 export interface ISendInvitationUseCase {
-  execute(gatheringId: number, memberId: number): Promise<void>;
+  execute(gatheringId: GatheringId, memberId: MemberId): Promise<void>;
 }

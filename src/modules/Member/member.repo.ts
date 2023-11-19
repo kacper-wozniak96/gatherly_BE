@@ -1,17 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { IMemberRepo } from './utils/types';
 import { MemberMapper } from './utils/mapper';
 import { Member } from './domain/member';
+import { MemberId } from './domain/memberId';
+
+export interface IMemberRepo {
+  getMemberById(memberId: MemberId): Promise<Member | null>;
+  getMemberByEmail(email: string): Promise<Member | null>;
+  save: (member: Member) => Promise<void>;
+}
 
 @Injectable()
 export class MemberRepo implements IMemberRepo {
   constructor(private prisma: PrismaService) {}
 
-  async getMemberById(memberId: number): Promise<Member | null> {
+  async getMemberById(memberId: MemberId): Promise<Member | null> {
     const member = await this.prisma.member.findUnique({
       where: {
-        Id: memberId,
+        Id: memberId.getValue().toValue() as number,
       },
     });
 

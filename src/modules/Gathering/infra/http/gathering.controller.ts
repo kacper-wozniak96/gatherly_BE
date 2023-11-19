@@ -1,10 +1,7 @@
 import { Controller, Post, Body, Inject } from '@nestjs/common';
 import { IGatheringController } from '../../utils/types/Gathering';
-import {
-  ICreateGatheringUseCase,
-  IGatheringCreationDTO,
-} from './use-cases/createGathering/types';
 import { CreateGatheringUseCaseSymbol } from '../../utils/Symbols/Gathering';
+import { ICreateGatheringUseCase, IGatheringCreationDTO } from '../../useCases/createGathering/types';
 
 @Controller('Gathering')
 export class GatheringController implements IGatheringController {
@@ -14,9 +11,7 @@ export class GatheringController implements IGatheringController {
   ) {}
 
   @Post()
-  async create(
-    @Body() gatheringCreationDTO: IGatheringCreationDTO,
-  ): Promise<any> {
+  async create(@Body() gatheringCreationDTO: IGatheringCreationDTO): Promise<any> {
     return await this.createGatheringUseCase.execute(gatheringCreationDTO);
   }
 }

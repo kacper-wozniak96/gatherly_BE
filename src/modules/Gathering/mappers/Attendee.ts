@@ -1,15 +1,15 @@
-import { Attendee } from '../domain/entities/Attendee';
-import { IAttendee } from '../utils/types/Attendee';
+import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
+import { Attendee } from '../domain/Attendee';
 
 export class AttendeeMapper {
-  public static toDomain(raw: IAttendee): Attendee {
+  public static toDomain(raw: any): Attendee {
     return Attendee.create(
       {
         GatheringId: raw.GatheringId,
         MemberId: raw.MemberId,
         CreatedOnUtc: raw.CreatedOnUtc,
       },
-      raw?.Id,
+      new UniqueEntityID(raw?.Id),
     );
   }
 

@@ -2,17 +2,19 @@ import { Inject } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 
 import { InvitationRepoSymbol } from '../../utils/Symbols/Invitation';
-import { IInvitationRepo } from '../../utils/types/Invitation';
+import { InvitationPropsRepo } from '../../utils/types/Invitation';
 import { ISendInvitationUseCase } from './types';
-import { IGetGatheringByIdUseCase } from 'src/AppModule/Gathering/use-cases/getGatheringById/types';
-import { MemberRepoSymbol } from 'src/AppModule/Member/utils/symbols';
-import { IGetMemberByIdUseCase } from 'src/AppModule/Member/use-cases/getMemberById/types';
+import { IGetGatheringByIdUseCase } from '../getGatheringById/types';
+import { MemberRepoSymbol } from 'src/modules/Member/utils/symbols';
+import { IGetMemberByIdUseCase } from 'src/modules/Member/use-cases/getMemberById/types';
+import { GatheringId } from '../../domain/gatheringId';
+import { MemberId } from 'src/modules/Member/domain/memberId';
 
 @Injectable()
 export class SendInvitationUseCase implements ISendInvitationUseCase {
   constructor(
     @Inject(InvitationRepoSymbol)
-    private readonly invitationRepo: IInvitationRepo,
+    private readonly invitationRepo: InvitationPropsRepo,
 
     @Inject(InvitationRepoSymbol)
     private readonly getGatheringByIdUseCase: IGetGatheringByIdUseCase,
@@ -21,7 +23,7 @@ export class SendInvitationUseCase implements ISendInvitationUseCase {
     private readonly getMemberByIdUseCase: IGetMemberByIdUseCase,
   ) {}
 
-  async execute(gatheringId: number, memberId: number): Promise<void> {
+  async execute(gatheringId: GatheringId, memberId: MemberId): Promise<void> {
     const [gathering, member] = await Promise.all([
       this.getGatheringByIdUseCase.execute(gatheringId),
       this.getMemberByIdUseCase.execute(memberId),

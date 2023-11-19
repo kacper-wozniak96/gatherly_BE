@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { IAddAttendeeUseCase } from './types';
 import { IAttendeeRepo } from '../../utils/types/Attendee';
 import { AttendeeRepoSymbol } from '../../utils/Symbols/Attendee';
-import { Attendee } from '../../domain/entities/Attendee';
+import { Attendee } from '../../domain/Attendee';
 
 @Injectable()
 export class AddAttendeeUseCase implements IAddAttendeeUseCase {

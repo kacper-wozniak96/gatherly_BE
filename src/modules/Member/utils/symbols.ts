@@ -5,6 +5,7 @@
 export const MemberRepoSymbol = Symbol('MemberRepoSymbol');
 
 export const GetMemberByIdUseCaseSymbol = Symbol('GetMemberByIdUseCase');
+export const CreateMemberUseCaseSymbol = Symbol('CreateMemberUseCaseSymbol');
 
 // export const MemberProviders = [
 //   new Provider(GetMemberByIdUseCaseSymbol, GetMemberByIdUseCase),

@@ -1,19 +1,21 @@
 import { ICommon } from 'src/utils/types';
-import { Invitation } from '../../domain/entities/Invitation';
+import { Invitation } from '../../domain/Invitation';
+import { MemberId } from 'src/modules/Member/domain/memberId';
+import { GatheringId } from '../../domain/gatheringId';
 
-export interface IInvitationService {
+export interface InvitationPropsService {
   createGatheringInvitation(invitation: Invitation): Promise<Invitation>;
 }
 
-export interface IInvitationRepo {
+export interface InvitationPropsRepo {
   create(invitation: Invitation): Promise<Invitation>;
   getById(invitationId: number): Promise<Invitation>;
 }
 
-export interface IInvitation extends Partial<ICommon> {
-  MemberId: number;
+export interface InvitationProps extends Partial<ICommon> {
+  MemberId: MemberId;
   InvitationStatusId: number;
-  GatheringId: number;
+  GatheringId: GatheringId;
   CreatedOnUtc: Date;
   ModifiedOnUtc?: Date;
 }

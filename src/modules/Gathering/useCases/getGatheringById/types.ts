@@ -1,5 +1,6 @@
-import { Gathering } from '../../domain/entities/Gathering';
+import { Gathering } from '../../domain/Gathering';
+import { GatheringId } from '../../domain/gatheringId';
 
 export interface IGetGatheringByIdUseCase {
-  execute(gatheringId: number): Promise<Gathering>;
+  execute(gatheringId: GatheringId): Promise<Gathering>;
 }

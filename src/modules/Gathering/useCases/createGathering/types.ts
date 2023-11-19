@@ -1,4 +1,4 @@
-import { Gathering } from '../../domain/entities/Gathering';
+import { Gathering } from '../../domain/Gathering';
 
 export interface ICreateGatheringUseCase {
   execute(gatheringData: IGatheringCreationDTO): Promise<Gathering>;

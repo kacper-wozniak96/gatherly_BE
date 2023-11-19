@@ -1,8 +1,8 @@
-import { Gathering } from '../domain/entities/Gathering';
-import { IGathering } from '../utils/types/Gathering';
+import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
+import { Gathering } from '../domain/Gathering';
 
 export class GatheringMapper {
-  public static toDomain(raw: IGathering): Gathering {
+  public static toDomain(raw: any): Gathering {
     return Gathering.create(
       {
         Name: raw.Name,
@@ -13,7 +13,7 @@ export class GatheringMapper {
         MaxiumNumberOfAttendess: raw?.MaxiumNumberOfAttendess,
         InvitationsExpireAtUtc: raw?.InvitationsExpireAtUtc,
       },
-      raw?.Id,
+      new UniqueEntityID(raw?.Id),
     );
   }
 

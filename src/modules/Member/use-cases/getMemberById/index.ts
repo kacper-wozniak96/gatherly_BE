@@ -2,9 +2,10 @@ import { Inject } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 
 import { IGetMemberByIdUseCase } from './types';
-import { IMemberRepo } from '../../utils/types';
 import { MemberRepoSymbol } from '../../utils/symbols';
 import { Member } from '../../domain/member';
+import { IMemberRepo } from '../../member.repo';
+import { MemberId } from '../../domain/memberId';
 
 @Injectable()
 export class GetMemberByIdUseCase implements IGetMemberByIdUseCase {
@@ -13,7 +14,7 @@ export class GetMemberByIdUseCase implements IGetMemberByIdUseCase {
     private readonly memberRepo: IMemberRepo,
   ) {}
 
-  async execute(memberId: number): Promise<Member> {
+  async execute(memberId: MemberId): Promise<Member> {
     return await this.memberRepo.getMemberById(memberId);
   }
 }

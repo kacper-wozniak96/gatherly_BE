@@ -1,13 +1,24 @@
-import { Entity } from 'src/utils/baseEntity';
-import { EInvitationStatus, IInvitation } from '../../utils/types/Invitation';
+import { Entity } from 'src/shared/core/Entity';
+import { EInvitationStatus } from '../utils/types/Invitation';
 import { Attendee } from './Attendee';
+import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
+import { MemberId } from 'src/modules/Member/domain/memberId';
+import { GatheringId } from './gatheringId';
 
-export class Invitation extends Entity<IInvitation> {
-  private constructor(props: IInvitation, id?: number) {
+export interface InvitationProps {
+  MemberId: MemberId;
+  InvitationStatusId: number;
+  GatheringId: GatheringId;
+  CreatedOnUtc: Date;
+  ModifiedOnUtc?: Date;
+}
+
+export class Invitation extends Entity<InvitationProps> {
+  private constructor(props: InvitationProps, id?: UniqueEntityID) {
     super(props, id);
   }
 
-  public static create(props: IInvitation, id?: number): Invitation {
+  public static create(props: InvitationProps, id?: UniqueEntityID): Invitation {
     return new Invitation(
       {
         GatheringId: props.GatheringId,

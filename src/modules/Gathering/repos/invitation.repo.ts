@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { IInvitationRepo } from '../utils/types/Invitation';
+import { InvitationPropsRepo } from '../utils/types/Invitation';
 import { InvitationMapper } from '../mappers/Invitation';
-import { Invitation } from '../domain/entities/Invitation';
+import { Invitation } from '../domain/Invitation';
 
 @Injectable()
-export class InvitationRepo implements IInvitationRepo {
+export class InvitationRepo implements InvitationPropsRepo {
   constructor(private prisma: PrismaService) {}
 
   async create(invitation: Invitation): Promise<Invitation> {
     const createdInvitation = await this.prisma.invitation.create({
       data: {
-        Gathering: { connect: { Id: invitation.GatheringId } },
-        Member: { connect: { Id: invitation.MemberId } },
+        Gathering: { connect: { Id: invitation.GatheringId.getValue().toValue() as number } },
+        Member: { connect: { Id: invitation.MemberId.getValue().toValue() as number } },
         InvitationStatus: { connect: { Id: invitation.InvitationStatusId } },
       },
     });

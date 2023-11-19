@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { IGatheringRepo } from '../utils/types/Gathering';
 import { GatheringMapper } from '../mappers/Gathering';
-import { Gathering } from '../domain/entities/Gathering';
+import { Gathering } from '../domain/Gathering';
+import { GatheringId } from '../domain/gatheringId';
 
 @Injectable()
 export class GatheringRepo implements IGatheringRepo {
@@ -24,9 +25,9 @@ export class GatheringRepo implements IGatheringRepo {
     return GatheringMapper.toDomain(createdGathering);
   }
 
-  async getGatheringById(gatheringId: number): Promise<Gathering> {
+  async getGatheringById(gatheringId: GatheringId): Promise<Gathering> {
     const gathering = await this.prisma.gathering.findUnique({
-      where: { Id: gatheringId },
+      where: { Id: gatheringId.getValue().toValue() as number },
     });
 
     return GatheringMapper.toDomain(gathering);

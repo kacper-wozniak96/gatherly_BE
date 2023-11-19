@@ -1,20 +1,36 @@
 import { ForbiddenException } from '@nestjs/common/exceptions/';
-import { EGatheringType, IGathering } from '../../utils/types/Gathering';
+import { EGatheringType } from '../utils/types/Gathering';
 import { addHours } from 'date-fns';
-import { Entity } from 'src/utils/baseEntity';
 import { Member } from 'src/modules/Member/domain/member';
 import { Invitation } from './Invitation';
-import { EInvitationStatus } from '../../utils/types/Invitation';
+import { EInvitationStatus } from '../utils/types/Invitation';
 import { Attendee } from './Attendee';
+import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
+import { AggregateRoot } from 'src/shared/core/AggregateRoot';
+import { GatheringId } from './gatheringId';
 
-export class Gathering extends Entity<IGathering> {
-  private constructor(props: IGathering, id?: number) {
+export interface GatheringProps {
+  CreatorId: number;
+  Type: number;
+  ScheduledAt: Date;
+  Name: string;
+  Location: string;
+  NumberOfAttendees?: number;
+  MaxiumNumberOfAttendess?: number;
+  InvitationsExpireAtUtc?: Date;
+
+  Attendees?: Attendee[];
+  Invitations?: Invitation[];
+}
+
+export class Gathering extends AggregateRoot<GatheringProps> {
+  private constructor(props: GatheringProps, id?: UniqueEntityID) {
     super(props, id);
   }
 
   public static create(
-    props: IGathering,
-    id?: number,
+    props: GatheringProps,
+    id?: UniqueEntityID,
     maxiumNumberOfAttendess?: number,
     invitationsValidBeforeInHours?: number,
   ): Gathering {
@@ -49,7 +65,7 @@ export class Gathering extends Entity<IGathering> {
       throw new ForbiddenException('Member and/or gathering does not exist');
     }
 
-    if (gathering.CreatorId === member.Id) {
+    if (gathering.CreatorId === member.memberId.getValue().toValue()) {
       throw new ForbiddenException('Cant send invitation to the gathering creator');
     }
 
@@ -58,8 +74,8 @@ export class Gathering extends Entity<IGathering> {
     }
 
     const invitation = Invitation.create({
-      GatheringId: gathering.Id,
-      MemberId: member.Id,
+      GatheringId: GatheringId.create(gathering.gatheringId.getValue()).getValue(),
+      MemberId: member?.memberId,
       CreatedOnUtc: new Date(),
       InvitationStatusId: EInvitationStatus.Pending,
     });
@@ -89,8 +105,8 @@ export class Gathering extends Entity<IGathering> {
     return attendee;
   }
 
-  get Id() {
-    return this.props.Id;
+  get gatheringId() {
+    return GatheringId.create(this._id).getValue();
   }
 
   get Name() {

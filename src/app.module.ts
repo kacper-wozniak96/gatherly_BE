@@ -1,27 +1,22 @@
 import { Module, Type } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { GatheringController } from './AppModule/Gathering/gathering.controller';
+import { CreateMemberUseCaseSymbol, GetMemberByIdUseCaseSymbol, MemberRepoSymbol } from './modules/Member/utils/symbols';
+import { CreateMemberUseCase } from './modules/Member/use-cases/createMember/CreateMemberUseCase';
 import {
   CreateGatheringUseCaseSymbol,
   GatheringRepoSymbol,
   GetGatheringByIdUseCaseSymbol,
-} from './AppModule/Gathering/utils/symbols';
-import { InvitationController } from './AppModule/Invitation/invitation.controller';
-import { GatheringRepo } from './AppModule/Gathering/gathering.repo';
-import { CreateGatheringUseCase } from './AppModule/Gathering/use-cases/createGathering';
-import { GetGatheringByIdUseCase } from './AppModule/Gathering/use-cases/getGatheringById';
-import {
-  InvitationRepoSymbol,
-  SendInvitationUseCaseSymbol,
-} from './AppModule/Invitation/utils/symbols';
-import { SendInvitationUseCase } from './AppModule/Invitation/use-cases/sendInvitation';
-import { InvitationRepo } from './AppModule/Invitation/invitation.repo';
-import {
-  GetMemberByIdUseCaseSymbol,
-  MemberRepoSymbol,
-} from './AppModule/Member/utils/symbols';
-import { GetMemberByIdUseCase } from './AppModule/Member/use-cases/getMemberById';
-import { MemberRepo } from './AppModule/Member/member.repo';
+} from './modules/Gathering/utils/Symbols/Gathering';
+import { GatheringRepo } from './modules/Gathering/repos/gathering.repo';
+import { CreateGatheringUseCase } from './modules/Gathering/useCases/createGathering';
+import { GetGatheringByIdUseCase } from './modules/Gathering/useCases/getGatheringById';
+import { InvitationRepoSymbol, SendInvitationUseCaseSymbol } from './modules/Gathering/utils/Symbols/Invitation';
+import { SendInvitationUseCase } from './modules/Gathering/useCases/sendInvitation';
+import { InvitationRepo } from './modules/Gathering/repos/invitation.repo';
+import { MemberRepo } from './modules/Member/member.repo';
+import { GatheringController } from './modules/Gathering/infra/http/gathering.controller';
+import { InvitationController } from './modules/Gathering/infra/http/invitation.controller';
+import { GetMemberByIdUseCase } from './modules/Member/use-cases/getMemberById';
 
 export class Provider {
   provide: any;
@@ -57,6 +52,7 @@ export class Provider {
     new Provider(SendInvitationUseCaseSymbol, SendInvitationUseCase),
     new Provider(InvitationRepoSymbol, InvitationRepo),
 
+    new Provider(CreateMemberUseCaseSymbol, CreateMemberUseCase),
     new Provider(GetMemberByIdUseCaseSymbol, GetMemberByIdUseCase),
     new Provider(MemberRepoSymbol, MemberRepo),
   ],

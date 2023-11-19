@@ -1,5 +1,6 @@
 import { Member } from '../../domain/member';
+import { MemberId } from '../../domain/memberId';
 
 export interface IGetMemberByIdUseCase {
-  execute(memberId: number): Promise<Member>;
+  execute(memberId: MemberId): Promise<Member>;
 }

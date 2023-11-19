@@ -1,8 +1,8 @@
-import { Invitation } from '../domain/entities/Invitation';
-import { IInvitation } from '../utils/types/Invitation';
+import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
+import { Invitation } from '../domain/Invitation';
 
 export class InvitationMapper {
-  public static toDomain(props: IInvitation): Invitation {
-    return Invitation.create(props, props.Id);
+  public static toDomain(props: any): Invitation {
+    return Invitation.create(props, new UniqueEntityID(props?.Id));
   }
 }

@@ -1,17 +1,16 @@
 import { Inject, ForbiddenException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 
-import { IMemberRepo } from '../../utils/types';
 import { MemberRepoSymbol } from '../../utils/symbols';
 import { UseCase } from 'src/shared/core/UseCase';
 import { CreateMemberDTO } from './CreateUserDTO';
 import { MemberFirstName } from '../../domain/memberFirstName';
 import { MemberLastName } from '../../domain/memberLastName';
 import { MemberEmail } from '../../domain/memberEmail';
-import { Result, left } from 'src/shared/core/Result';
+import { Result } from 'src/shared/core/Result';
 import { Member } from '../../domain/member';
-import { CreateMemberResponse } from './CreateUserResponse';
-import { CreateMemberErrors, EmailAlreadyExistsError } from './CreateUserErrors';
+import { CreateMemberErrors } from './CreateUserErrors';
+import { IMemberRepo } from '../../member.repo';
 
 @Injectable()
 export class CreateMemberUseCase implements UseCase<CreateMemberDTO, Promise<void>> {

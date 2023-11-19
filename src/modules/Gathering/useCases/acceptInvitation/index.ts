@@ -2,10 +2,7 @@ import { ForbiddenException, Inject } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 
 import { InvitationRepoSymbol } from '../../utils/Symbols/Invitation';
-import {
-  EInvitationStatus,
-  IInvitationRepo,
-} from '../../utils/types/Invitation';
+import { EInvitationStatus, InvitationPropsRepo } from '../../utils/types/Invitation';
 import { IAcceptInvitationUseCase } from './types';
 import { GetGatheringByIdUseCaseSymbol } from '../../utils/Symbols/Gathering';
 import { IGetGatheringByIdUseCase } from '../getGatheringById/types';
@@ -18,7 +15,7 @@ import { IAddAttendeeUseCase } from '../addAttendee/types';
 export class AcceptInvitationUseCase implements IAcceptInvitationUseCase {
   constructor(
     @Inject(InvitationRepoSymbol)
-    private readonly invitationRepo: IInvitationRepo,
+    private readonly invitationRepo: InvitationPropsRepo,
 
     @Inject(GetGatheringByIdUseCaseSymbol)
     private readonly getGatheringByIdUseCase: IGetGatheringByIdUseCase,
@@ -34,9 +31,7 @@ export class AcceptInvitationUseCase implements IAcceptInvitationUseCase {
     const invitation = await this.invitationRepo.getById(invitationId);
     if (!invitation) throw new ForbiddenException('Invitation does not exist');
     if (invitation.InvitationStatusId !== EInvitationStatus.Pending) {
-      throw new ForbiddenException(
-        'Cant accept. Invitation is not in pending state',
-      );
+      throw new ForbiddenException('Cant accept. Invitation is not in pending state');
     }
 
     // if (
@@ -59,11 +54,7 @@ export class AcceptInvitationUseCase implements IAcceptInvitationUseCase {
 
     if (attendee) await this.addAttendeeUseCase.execute(attendee);
 
-    if (
-      (invitation.InvitationStatusId as
-        | EInvitationStatus.Accepted
-        | EInvitationStatus.Expired) === EInvitationStatus.Accepted
-    ) {
+    if ((invitation.InvitationStatusId as EInvitationStatus.Accepted | EInvitationStatus.Expired) === EInvitationStatus.Accepted) {
       console.log('wyslij email');
     }
   }
