@@ -34,7 +34,7 @@
     "@nestjs/mapped-types": "^2.0.2",
     "@nestjs/mongoose": "^10.0.1",
     "@nestjs/platform-express": "^10.0.0",
-    "@prisma/client": "^5.4.1",
+    "@prisma/client": "^5.4.2",
     "class-validator": "^0.14.0",
     "date-fns": "^2.30.0",
     "lodash": "^4.17.21",

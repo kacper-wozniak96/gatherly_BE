@@ -74,7 +74,7 @@ export class Gathering extends AggregateRoot<GatheringProps> {
     }
 
     const invitation = Invitation.create({
-      GatheringId: GatheringId.create(gathering.gatheringId.getValue()).getValue(),
+      GatheringId: GatheringId.create(gathering.gatheringId.getValue()).getSuccessValue(),
       MemberId: member?.memberId,
       CreatedOnUtc: new Date(),
       InvitationStatusId: EInvitationStatus.Pending,
@@ -106,7 +106,7 @@ export class Gathering extends AggregateRoot<GatheringProps> {
   }
 
   get gatheringId() {
-    return GatheringId.create(this._id).getValue();
+    return GatheringId.create(this._id).getSuccessValue();
   }
 
   get Name() {

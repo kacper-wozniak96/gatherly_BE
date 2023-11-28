@@ -22,14 +22,14 @@ export class MemberMapper {
 
     const memberOrError = Member.create(
       {
-        email: emailOrError?.getValue(),
-        firstName: firstNameOrError.getValue(),
-        lastName: lastNameOrError?.getValue(),
+        email: emailOrError?.getSuccessValue(),
+        firstName: firstNameOrError.getSuccessValue(),
+        lastName: lastNameOrError?.getSuccessValue(),
       },
       new UniqueEntityID(prismaMember?.Id),
     );
 
-    return memberOrError.getValue();
+    return memberOrError.getSuccessValue();
   }
 
   public static toPersistence(member: Member): Prisma.MemberCreateInput {

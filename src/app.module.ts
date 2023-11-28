@@ -17,6 +17,15 @@ import { MemberRepo } from './modules/Member/member.repo';
 import { GatheringController } from './modules/Gathering/infra/http/gathering.controller';
 import { InvitationController } from './modules/Gathering/infra/http/invitation.controller';
 import { GetMemberByIdUseCase } from './modules/Member/use-cases/getMemberById';
+import { PostRepoSymbol, UserRepoSymbol } from './modules/Forum/repos/utils/symbols';
+import { PostRepo } from './modules/Forum/repos/implementations/postRepo';
+import { CreatePostUseCaseSymbol } from './modules/Forum/useCases/post/utils/symbols';
+import { CreatePostUseCase } from './modules/Forum/useCases/post/createPost/CreatePost';
+import { CreatePostController } from './modules/Forum/useCases/post/createPost/CreatePostController';
+import { UserCreateController } from './modules/User/useCases/CreateUserController';
+import { UserRepo } from './modules/User/repos/implementations/userRepo';
+import { CreateUserUseCaseSymbol } from './modules/User/utils/symbols';
+import { CreateUserUseCase } from './modules/User/useCases/CreateUser';
 
 export class Provider {
   provide: any;
@@ -30,7 +39,7 @@ export class Provider {
 
 @Module({
   imports: [],
-  controllers: [GatheringController, InvitationController],
+  controllers: [GatheringController, InvitationController, CreatePostController, UserCreateController],
   providers: [
     PrismaService,
     // new Provider(GatheringServiceSymbol, GatheringService),
@@ -55,6 +64,12 @@ export class Provider {
     new Provider(CreateMemberUseCaseSymbol, CreateMemberUseCase),
     new Provider(GetMemberByIdUseCaseSymbol, GetMemberByIdUseCase),
     new Provider(MemberRepoSymbol, MemberRepo),
+
+    new Provider(PostRepoSymbol, PostRepo),
+    new Provider(UserRepoSymbol, UserRepo),
+    new Provider(CreatePostUseCaseSymbol, CreatePostUseCase),
+
+    new Provider(CreateUserUseCaseSymbol, CreateUserUseCase),
   ],
 })
 export class AppModule {}

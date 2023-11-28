@@ -29,9 +29,9 @@ export class CreateMemberUseCase implements UseCase<CreateMemberDTO, Promise<voi
       throw new ForbiddenException(new CreateMemberErrors.ValueObjectValidationError(Result.returnErrorValuesFromResults(failedResults)));
     }
 
-    const firstName: MemberFirstName = firstNameOrError.getValue();
-    const lastName: MemberLastName = lastNameOrError.getValue();
-    const email: MemberEmail = emailOrError.getValue();
+    const firstName: MemberFirstName = firstNameOrError.getSuccessValue();
+    const lastName: MemberLastName = lastNameOrError.getSuccessValue();
+    const email: MemberEmail = emailOrError.getSuccessValue();
 
     const alreadyCreatedMemberWithThatEmail = await this.memberRepo.getMemberByEmail(email.value);
 
@@ -48,7 +48,7 @@ export class CreateMemberUseCase implements UseCase<CreateMemberDTO, Promise<voi
       email,
     });
 
-    const member: Member = memberOrError.getValue();
+    const member: Member = memberOrError.getSuccessValue();
 
     await this.memberRepo.save(member);
 

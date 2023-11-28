@@ -30,7 +30,7 @@ export class Member extends AggregateRoot<MemberProps> {
   }
 
   get memberId() {
-    return MemberId.create(this._id).getValue();
+    return MemberId.create(this._id).getSuccessValue();
   }
 
   get FirstName() {

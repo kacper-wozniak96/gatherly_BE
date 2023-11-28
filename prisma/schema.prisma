@@ -74,3 +74,23 @@ model InvitationStatus {
   Invitation Invitation[]
 }
 
+
+
+model User {
+  id       Int      @id @default(autoincrement())
+  username String
+  password String
+  posts    Post[]
+}
+
+
+model Post {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  title  String
+  text   String
+
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([userId], name: "userId")
+}

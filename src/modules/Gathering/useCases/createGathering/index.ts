@@ -23,7 +23,7 @@ export class CreateGatheringUseCase implements ICreateGatheringUseCase {
   async execute(gatheringCreationDTO: IGatheringCreationDTO): Promise<Gathering> {
     const creatorIdOrError = CreatorId.create(new UniqueEntityID(gatheringCreationDTO?.CreatorId));
 
-    const creatorId = creatorIdOrError.getValue();
+    const creatorId = creatorIdOrError.getSuccessValue();
 
     const creator = await this.getMemberByIdUseCase.execute(creatorId);
 
