@@ -1,5 +1,6 @@
 import { Module, Type } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { CreateMemberUseCaseSymbol, GetMemberByIdUseCaseSymbol, MemberRepoSymbol } from './modules/Member/utils/symbols';
 import { CreateMemberUseCase } from './modules/Member/use-cases/createMember/CreateMemberUseCase';
 import {
@@ -17,15 +18,21 @@ import { MemberRepo } from './modules/Member/member.repo';
 import { GatheringController } from './modules/Gathering/infra/http/gathering.controller';
 import { InvitationController } from './modules/Gathering/infra/http/invitation.controller';
 import { GetMemberByIdUseCase } from './modules/Member/use-cases/getMemberById';
-import { PostRepoSymbol, UserRepoSymbol } from './modules/Forum/repos/utils/symbols';
+import { PostRepoSymbol } from './modules/Forum/repos/utils/symbols';
 import { PostRepo } from './modules/Forum/repos/implementations/postRepo';
 import { CreatePostUseCaseSymbol } from './modules/Forum/useCases/post/utils/symbols';
 import { CreatePostUseCase } from './modules/Forum/useCases/post/createPost/CreatePost';
 import { CreatePostController } from './modules/Forum/useCases/post/createPost/CreatePostController';
-import { UserCreateController } from './modules/User/useCases/CreateUserController';
+import { UserCreateController } from './modules/User/useCases/CreateUser/CreateUserController';
 import { UserRepo } from './modules/User/repos/implementations/userRepo';
-import { CreateUserUseCaseSymbol } from './modules/User/utils/symbols';
-import { CreateUserUseCase } from './modules/User/useCases/CreateUser';
+import { CreateUserUseCaseSymbol, LoginUserUseCaseSymbol } from './modules/User/utils/symbols';
+import { CreateUserUseCase } from './modules/User/useCases/CreateUser/CreateUserUseCase';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './modules/AuthModule/Auth.guard';
+import { LoginUserController } from './modules/User/useCases/Login/LoginUserController';
+import { LoginUserUseCase } from './modules/User/useCases/Login/LoginUserUseCase';
+import { UserRepoSymbol } from './modules/User/repos/utils/symbols';
+import { AuthService } from './modules/AuthModule/Auth.service';
 
 export class Provider {
   provide: any;
@@ -38,10 +45,23 @@ export class Provider {
 }
 
 @Module({
-  imports: [],
-  controllers: [GatheringController, InvitationController, CreatePostController, UserCreateController],
+  imports: [
+    JwtModule.register({
+      global: true,
+      secret: 'adasdasdad',
+      signOptions: { expiresIn: '30 days' },
+    }),
+  ],
+  controllers: [GatheringController, InvitationController, CreatePostController, UserCreateController, LoginUserController],
   providers: [
     PrismaService,
+    JwtService,
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+
     // new Provider(GatheringServiceSymbol, GatheringService),
     // new Provider(CreateGatheringUseCaseSymbol, CreateGatheringUseCase),
     // new Provider(GatheringRepoSymbol, GatheringRepo),
@@ -70,6 +90,7 @@ export class Provider {
     new Provider(CreatePostUseCaseSymbol, CreatePostUseCase),
 
     new Provider(CreateUserUseCaseSymbol, CreateUserUseCase),
+    new Provider(LoginUserUseCaseSymbol, LoginUserUseCase),
   ],
 })
 export class AppModule {}

@@ -11,10 +11,12 @@ export class UserRepo implements IUserRepo {
   constructor(private prisma: PrismaService) {}
 
   async save(user: User): Promise<void> {
+    const hashedPassword = await user.props.password.hashPassword();
+
     await this.prisma.user.create({
       data: {
         username: user.props.username.value,
-        password: user.props.password.value,
+        password: hashedPassword,
       },
     });
   }
@@ -35,14 +37,20 @@ export class UserRepo implements IUserRepo {
     return UserMapper.toDomain(user);
   }
 
-  async getUserByUsername(username: UserUsername): Promise<User | null> {
+  async getUserByUsername(username: UserUsername, withPassword = false): Promise<User | null> {
+    console.log({ username });
+
     const user = await this.prisma.user.findFirst({
+      // where: { username: username.value },
       where: { username: username.value },
       select: {
         id: true,
         username: true,
+        password: withPassword,
       },
     });
+
+    console.log({ user });
 
     if (!user) return null;
 

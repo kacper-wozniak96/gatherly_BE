@@ -25,4 +25,10 @@ export namespace CreateUserErrors {
       super([{ field: 'user', message: 'Error while creating user.' }]);
     }
   }
+
+  export class PasswordHashingError extends UseCaseError {
+    constructor() {
+      super([{ field: 'password', message: 'Error while hashing password.' }]);
+    }
+  }
 }

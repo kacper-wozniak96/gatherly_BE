@@ -7,11 +7,12 @@ import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
 import { PostTitle } from 'src/modules/Forum/domain/postTitle';
 import { PostText } from 'src/modules/Forum/domain/postText';
 import { Post } from 'src/modules/Forum/domain/post';
-import { PostRepoSymbol, UserRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
+import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
 import { Result } from 'src/shared/core/Result';
 import { CreatePostErrors } from './CreatePostErrors';
 import { IUserRepo } from 'src/modules/User/repos/userRepo';
 import { UserId } from 'src/modules/User/domain/userId';
+import { UserRepoSymbol } from 'src/modules/User/repos/utils/symbols';
 
 @Injectable()
 export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Result<void>>> {

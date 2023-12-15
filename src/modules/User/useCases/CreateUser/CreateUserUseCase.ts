@@ -1,15 +1,15 @@
 import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 
-import { UserRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
 import { Result } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';
 import { CreateUserDTO } from './CreateUserDTO';
-import { UserUsername } from '../domain/userUsername';
-import { UserPassword } from '../domain/userPassword';
-import { UserConfirmPassword } from '../domain/userConfirmPassword';
+import { UserUsername } from '../../domain/userUsername';
+import { UserPassword } from '../../domain/userPassword';
+import { UserConfirmPassword } from '../../domain/userConfirmPassword';
 import { CreateUserErrors } from './CreateUserErrors';
-import { IUserRepo } from '../repos/userRepo';
-import { User } from '../domain/user';
+import { IUserRepo } from '../../repos/userRepo';
+import { User } from '../../domain/user';
+import { UserRepoSymbol } from '../../repos/utils/symbols';
 
 @Injectable()
 export class CreateUserUseCase implements UseCase<CreateUserDTO, Promise<Result<void>>> {
@@ -39,6 +39,8 @@ export class CreateUserUseCase implements UseCase<CreateUserDTO, Promise<Result<
     if (userWithTheSameUsername) {
       throw new ForbiddenException(new CreateUserErrors.UsernameTakenError());
     }
+
+    // const hashedPassword = userPassword.hashPassword();
 
     const userOrError = User.create({
       username: userUsername,
