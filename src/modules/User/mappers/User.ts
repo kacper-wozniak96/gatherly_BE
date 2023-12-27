@@ -12,7 +12,7 @@ export class UserMapper {
         username: UserUsername.create(raw.username).getSuccessValue(),
         password: raw?.password ? UserPassword.create({ value: raw.password }).getSuccessValue() : undefined,
       },
-      new UniqueEntityID(raw?.Id),
+      new UniqueEntityID(raw?.id),
     );
 
     return userOrError.getSuccessValue();

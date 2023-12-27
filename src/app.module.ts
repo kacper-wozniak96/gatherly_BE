@@ -33,6 +33,7 @@ import { LoginUserController } from './modules/User/useCases/Login/LoginUserCont
 import { LoginUserUseCase } from './modules/User/useCases/Login/LoginUserUseCase';
 import { UserRepoSymbol } from './modules/User/repos/utils/symbols';
 import { AuthService } from './modules/AuthModule/Auth.service';
+import { JwtStrategy } from './modules/AuthModule/strategies/jwt.strategy';
 
 export class Provider {
   provide: any;
@@ -57,6 +58,7 @@ export class Provider {
     PrismaService,
     JwtService,
     AuthService,
+    JwtStrategy,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

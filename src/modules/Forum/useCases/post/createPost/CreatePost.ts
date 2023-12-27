@@ -2,7 +2,7 @@ import { UniqueEntityID } from './../../../../../shared/core/UniqueEntityID';
 import { Inject, Injectable, ForbiddenException } from '@nestjs/common';
 
 import { UseCase } from 'src/shared/core/UseCase';
-import { CreatePostDTO } from './CreatePostDTO';
+import { CreatePostDTO, ICreatePost } from './CreatePostDTO';
 import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
 import { PostTitle } from 'src/modules/Forum/domain/postTitle';
 import { PostText } from 'src/modules/Forum/domain/postText';
@@ -21,7 +21,8 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Result<
     @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
   ) {}
 
-  async execute(createPostDTO: CreatePostDTO): Promise<Result<void>> {
+  async execute(createPostDTO: ICreatePost): Promise<Result<void>> {
+    console.log({ createPostDTO });
     const userIdOrError = UserId.create(new UniqueEntityID(createPostDTO.userId));
     const postTitleOrError = PostTitle.create({ value: createPostDTO.title });
     const postTextOrError = PostText.create({ value: createPostDTO.text });
@@ -35,12 +36,6 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Result<
     const userId = userIdOrError.getSuccessValue();
     const postTitle = postTitleOrError.getSuccessValue();
     const postText = postTextOrError.getSuccessValue();
-
-    try {
-      await this.userRepo.getUserByUserId(userId);
-    } catch {
-      throw new ForbiddenException(new CreatePostErrors.UserDoesNotExistError());
-    }
 
     const user = await this.userRepo.getUserByUserId(userId);
 
