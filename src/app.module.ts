@@ -1,4 +1,4 @@
-import { Module, Type } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod, Type } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { CreateMemberUseCaseSymbol, GetMemberByIdUseCaseSymbol, MemberRepoSymbol } from './modules/Member/utils/symbols';
@@ -27,13 +27,14 @@ import { UserCreateController } from './modules/User/useCases/CreateUser/CreateU
 import { UserRepo } from './modules/User/repos/implementations/userRepo';
 import { CreateUserUseCaseSymbol, LoginUserUseCaseSymbol } from './modules/User/utils/symbols';
 import { CreateUserUseCase } from './modules/User/useCases/CreateUser/CreateUserUseCase';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/AuthModule/Auth.guard';
 import { LoginUserController } from './modules/User/useCases/Login/LoginUserController';
 import { LoginUserUseCase } from './modules/User/useCases/Login/LoginUserUseCase';
 import { UserRepoSymbol } from './modules/User/repos/utils/symbols';
 import { AuthService } from './modules/AuthModule/Auth.service';
 import { JwtStrategy } from './modules/AuthModule/strategies/jwt.strategy';
+import { LoggerMiddleware, LoggingInterceptor } from './modules/Logger/logger';
 
 export class Provider {
   provide: any;
@@ -63,6 +64,10 @@ export class Provider {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: LoggingInterceptor,
+    // },
 
     // new Provider(GatheringServiceSymbol, GatheringService),
     // new Provider(CreateGatheringUseCaseSymbol, CreateGatheringUseCase),
@@ -95,4 +100,8 @@ export class Provider {
     new Provider(LoginUserUseCaseSymbol, LoginUserUseCase),
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

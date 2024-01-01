@@ -13,8 +13,9 @@ export class CreatePostController {
     @Inject(REQUEST) private readonly request: CustomRequest,
   ) {}
 
-  @Post()
-  async createMember(@Body() createPostDTO: CreatePostDTO): Promise<void> {
+  @Post('')
+  async execute(@Body() createPostDTO: CreatePostDTO): Promise<void> {
+    console.log({ adasd: this.request.user });
     await this.createPostUseCase.execute({ ...createPostDTO, userId: this.request.user.userId });
     return;
   }

@@ -25,7 +25,7 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Result<
     console.log({ createPostDTO });
     const userIdOrError = UserId.create(new UniqueEntityID(createPostDTO.userId));
     const postTitleOrError = PostTitle.create({ value: createPostDTO.title });
-    const postTextOrError = PostText.create({ value: createPostDTO.text });
+    const postTextOrError = PostText.create({ value: createPostDTO.description });
 
     const failedResults = Result.returnFailedResults([userIdOrError, postTitleOrError, postTextOrError]);
 

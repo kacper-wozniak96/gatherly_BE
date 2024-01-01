@@ -38,6 +38,8 @@ export class LoginUserUseCase implements UseCase<LoginUserDTO, Promise<LoginUser
       throw new ForbiddenException(new LoginUserErrors.PasswordsDontMatch());
     }
 
+    console.log({ user });
+
     const accessToken = await this.authService.signJWT(user.id.toValue() as number);
 
     return { accessToken };
