@@ -1,11 +1,15 @@
 import * as bcrypt from 'bcrypt';
 
-import { Result } from '../../../shared/core/Result';
+import Joi from 'joi';
 import { ValueObject } from 'src/shared/core/ValueObject';
+import { Result } from '../../../shared/core/Result';
 
 interface UserPasswordProps {
   value: string;
+  hashed?: boolean;
 }
+
+const userPasswordSchema = Joi.string().alphanum().min(3).max(30).required();
 
 export class UserPassword extends ValueObject<UserPasswordProps> {
   get value(): string {
@@ -17,6 +21,16 @@ export class UserPassword extends ValueObject<UserPasswordProps> {
   }
 
   public static create(props: UserPasswordProps): Result<UserPassword> {
+    if (props.hashed) {
+      return Result.ok<UserPassword>(new UserPassword(props));
+    }
+
+    const { error } = userPasswordSchema.validate(props.value);
+
+    if (error) {
+      return Result.fail<UserPassword>(error.details[0].message);
+    }
+
     return Result.ok<UserPassword>(new UserPassword(props));
   }
 
@@ -25,8 +39,6 @@ export class UserPassword extends ValueObject<UserPasswordProps> {
   }
 
   public async comparePassword(plainTextPassword: string): Promise<boolean> {
-    console.log({ plainTextPassword, value: this.props.value });
-
     return await bcrypt.compare(plainTextPassword, this.props.value);
   }
 }

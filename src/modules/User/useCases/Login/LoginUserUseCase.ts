@@ -1,47 +1,65 @@
-import { Injectable, Inject, ForbiddenException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
+import { AuthService } from 'src/modules/AuthModule/Auth.service';
+import { AppError } from 'src/shared/core/AppError';
+import { Either, left, Result, right } from 'src/shared/core/Result';
+import { UseCase } from 'src/shared/core/UseCase';
+import { User } from '../../domain/user';
+import { UserName } from '../../domain/UserName';
+import { UserPassword } from '../../domain/UserPassword';
 import { IUserRepo } from '../../repos/userRepo';
 import { UserRepoSymbol } from '../../repos/utils/symbols';
-import { UserUsername } from '../../domain/userUsername';
 import { LoginUserDTO, LoginUserResponseDTO } from './LoginUserDTO';
-import { UserPassword } from '../../domain/userPassword';
-import { Result } from 'src/shared/core/Result';
-import { LoginUserErrors } from './LoginUserErrors';
-import { UseCase } from 'src/shared/core/UseCase';
-import { AuthService } from 'src/modules/AuthModule/Auth.service';
+import { LoginUseCaseErrors } from './LoginUserErrors';
+
+type Response = Either<
+  LoginUseCaseErrors.PasswordDoesntMatchError | LoginUseCaseErrors.UserNameDoesntExistError | AppError.UnexpectedError,
+  Result<LoginUserResponseDTO>
+>;
 
 @Injectable()
-export class LoginUserUseCase implements UseCase<LoginUserDTO, Promise<LoginUserResponseDTO | void>> {
+export class LoginUserUseCase implements UseCase<LoginUserDTO, Promise<Response>> {
   constructor(
     @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
     private readonly authService: AuthService,
   ) {}
 
-  async execute(loginUserDTO: LoginUserDTO): Promise<LoginUserResponseDTO | void> {
-    const userUsernameOrError = UserUsername.create({ value: loginUserDTO.username });
-    const userPasswordOrError = UserPassword.create({ value: loginUserDTO.password });
+  async execute(request: LoginUserDTO): Promise<Response> {
+    let user: User;
+    let username: UserName;
+    let password: UserPassword;
 
-    const failedResults = Result.returnFailedResults([userUsernameOrError, userPasswordOrError]);
+    const usernameOrError = UserName.create({ name: request.username });
+    const passwordOrError = UserPassword.create({ value: request.password });
 
-    if (failedResults?.length) {
-      throw new ForbiddenException(new LoginUserErrors.ValueObjectValidationError(Result.returnErrorValuesFromResults(failedResults)));
+    const payloadResult = Result.combine([usernameOrError, passwordOrError]);
+
+    if (payloadResult.isFailure) {
+      return left(Result.fail<any>(payloadResult.getErrorValue()));
     }
 
-    const userUsername = userUsernameOrError.getSuccessValue();
-    const userPassword = userPasswordOrError.getSuccessValue();
+    username = usernameOrError.getValue();
+    password = passwordOrError.getValue();
 
-    const user = await this.userRepo.getUserByUsername(userUsername, true);
+    user = await this.userRepo.getUserByUsername(username);
+    const userFound = !!user;
 
-    if (!user) throw new ForbiddenException(new LoginUserErrors.UserDoesNotExistError());
-
-    if (!user.props.password.comparePassword(userPassword.value)) {
-      throw new ForbiddenException(new LoginUserErrors.PasswordsDontMatch());
+    if (!userFound) {
+      return left(new LoginUseCaseErrors.UserNameDoesntExistError());
     }
 
-    console.log({ user });
+    const passwordValid = await user.props.password.comparePassword(password.value);
+
+    if (!passwordValid) {
+      return left(new LoginUseCaseErrors.PasswordDoesntMatchError());
+    }
 
     const accessToken = await this.authService.signJWT(user.id.toValue() as number);
 
-    return { accessToken };
+    return right(
+      Result.ok<LoginUserResponseDTO>({
+        accessToken,
+      }),
+    );
   }
 }

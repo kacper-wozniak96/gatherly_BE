@@ -1,8 +1,9 @@
-import { Controller, Post, Body, Inject } from '@nestjs/common';
-import { LoginUserUseCaseSymbol } from '../../utils/symbols';
-import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
+import { BadRequestException, Body, Controller, Inject, InternalServerErrorException, NotFoundException, Post } from '@nestjs/common';
 import { Public } from 'src/modules/AuthModule/Auth.guard';
+import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
+import { LoginUserUseCaseSymbol } from '../../utils/symbols';
 import { LoginUserDTO, LoginUserResponseDTO } from './LoginUserDTO';
+import { LoginUseCaseErrors } from './LoginUserErrors';
 import { LoginUserUseCase } from './LoginUserUseCase';
 
 @Controller(BASE_USER_CONTROLLER_PATH)
@@ -12,6 +13,22 @@ export class LoginUserController {
   @Public()
   @Post('login')
   async createMember(@Body() loginUserDTO: LoginUserDTO): Promise<LoginUserResponseDTO | void> {
-    return await this.useCase.execute(loginUserDTO);
+    const result = await this.useCase.execute(loginUserDTO);
+
+    if (result.isLeft()) {
+      const error = result.value;
+
+      switch (error.constructor) {
+        case LoginUseCaseErrors.UserNameDoesntExistError:
+          throw new NotFoundException(error.getErrorValue().message);
+        case LoginUseCaseErrors.PasswordDoesntMatchError:
+          throw new BadRequestException(error.getErrorValue().message);
+        default:
+          throw new InternalServerErrorException(error.getErrorValue().message);
+      }
+    }
+
+    const responseDTO: LoginUserResponseDTO = result.value.getValue();
+    return responseDTO;
   }
 }

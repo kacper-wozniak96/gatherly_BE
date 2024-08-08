@@ -1,34 +1,20 @@
-import { IError } from 'src/shared/core/Result';
+import { Result } from 'src/shared/core/Result';
 import { UseCaseError } from 'src/shared/core/UseCaseError';
 
 export namespace CreateUserErrors {
-  export class ValueObjectValidationError extends UseCaseError {
-    constructor(errors: IError[]) {
-      super(errors);
+  export class UsernameTakenError extends Result<UseCaseError> {
+    constructor() {
+      super(false, {
+        message: `Username is taken`,
+      } as UseCaseError);
     }
   }
 
-  export class PasswordsDoNotMatchError extends UseCaseError {
+  export class PasswordsDoNotMatchError extends Result<UseCaseError> {
     constructor() {
-      super([{ field: 'password', message: 'Passwords do not match.' }]);
-    }
-  }
-
-  export class UsernameTakenError extends UseCaseError {
-    constructor() {
-      super([{ field: 'username', message: 'Username already taken.' }]);
-    }
-  }
-
-  export class UserCreationError extends UseCaseError {
-    constructor() {
-      super([{ field: 'user', message: 'Error while creating user.' }]);
-    }
-  }
-
-  export class PasswordHashingError extends UseCaseError {
-    constructor() {
-      super([{ field: 'password', message: 'Error while hashing password.' }]);
+      super(false, {
+        message: `Passwords do not match`,
+      } as UseCaseError);
     }
   }
 }

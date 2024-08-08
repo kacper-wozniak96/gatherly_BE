@@ -1,22 +1,20 @@
-import { IError } from 'src/shared/core/Result';
+import { Result } from 'src/shared/core/Result';
 import { UseCaseError } from 'src/shared/core/UseCaseError';
 
-export namespace LoginUserErrors {
-  export class ValueObjectValidationError extends UseCaseError {
-    constructor(errors: IError[]) {
-      super(errors);
+export namespace LoginUseCaseErrors {
+  export class UserNameDoesntExistError extends Result<UseCaseError> {
+    constructor() {
+      super(false, {
+        message: `Username or password incorrect.`,
+      } as UseCaseError);
     }
   }
 
-  export class UserDoesNotExistError extends UseCaseError {
+  export class PasswordDoesntMatchError extends Result<UseCaseError> {
     constructor() {
-      super([{ field: 'user', message: 'Username or password is incorrect' }]);
-    }
-  }
-
-  export class PasswordsDontMatch extends UseCaseError {
-    constructor() {
-      super([{ field: 'password', message: 'Username or password is incorrect' }]);
+      super(false, {
+        message: `Password doesnt match error.`,
+      } as UseCaseError);
     }
   }
 }

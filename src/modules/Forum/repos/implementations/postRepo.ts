@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { IPostRepo } from '../postRepo';
 import { Post } from '../../domain/post';
+import { PostMapper } from '../../mappers/Post';
 
 @Injectable()
 export class PostRepo implements IPostRepo {
@@ -17,5 +18,15 @@ export class PostRepo implements IPostRepo {
     });
 
     return;
+  }
+
+  async getPosts(): Promise<Post[]> {
+    const posts = await this.prisma.post.findMany({
+      include: { user: true },
+    });
+
+    return posts.map((post) => {
+      return PostMapper.toDomain(post);
+    });
   }
 }

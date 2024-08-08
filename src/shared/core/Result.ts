@@ -1,15 +1,10 @@
-export interface IError {
-  field: string;
-  message: string;
-}
-
 export class Result<T> {
   public isSuccess: boolean;
   public isFailure: boolean;
-  private error: IError;
+  private error: T | string;
   private _value: T;
 
-  public constructor(isSuccess: boolean, error?: IError, value?: T) {
+  public constructor(isSuccess: boolean, error?: T | string, value?: T) {
     if (isSuccess && error) {
       throw new Error('InvalidOperation: A result cannot be successful and contain an error');
     }
@@ -25,7 +20,7 @@ export class Result<T> {
     Object.freeze(this);
   }
 
-  public getSuccessValue(): T {
+  public getValue(): T {
     if (!this.isSuccess) {
       console.log(this.error);
       throw new Error("Can't get the value of an error result. Use 'errorValue' instead.");
@@ -34,39 +29,22 @@ export class Result<T> {
     return this._value;
   }
 
-  public getErrorValue(): IError {
-    return this.error;
+  public getErrorValue(): T {
+    return this.error as T;
   }
 
   public static ok<U>(value?: U): Result<U> {
     return new Result<U>(true, null, value);
   }
 
-  public static fail<U>(error: IError): Result<U> {
+  public static fail<U>(error: string): Result<U> {
     return new Result<U>(false, error);
   }
 
-  public static returnFailedResults(results: Result<any>[]): Result<any>[] {
-    const errors: Result<any>[] = results.filter((result) => result.isFailure);
-
-    return errors;
-  }
-
-  public static returnErrorValuesFromResults(results: Result<any>[]): IError[] {
-    const errors: Result<any>[] = results.filter((result) => result.isFailure);
-
-    return errors.map((result) => result.error);
-  }
-
-  public static combine(results: Result<any>[]): Result<any> | Result<any>[] {
-    // const errors: Result<any>[] = results.filter((result) => result.isFailure);
-
-    // if (errors?.length) return Result.fail(errors);
-
+  public static combine(results: Result<any>[]): Result<any> {
     for (const result of results) {
       if (result.isFailure) return result;
     }
-
     return Result.ok();
   }
 }

@@ -1,9 +1,10 @@
-import { Controller, Post, Body, Inject } from '@nestjs/common';
-import { CreateUserUseCase } from './CreateUserUseCase';
-import { CreateUserDTO } from './CreateUserDTO';
-import { CreateUserUseCaseSymbol } from '../../utils/symbols';
-import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
+import { BadRequestException, Body, Controller, Inject, InternalServerErrorException, Post } from '@nestjs/common';
 import { Public } from 'src/modules/AuthModule/Auth.guard';
+import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
+import { CreateUserUseCaseSymbol } from '../../utils/symbols';
+import { CreateUserDTO } from './CreateUserDTO';
+import { CreateUserErrors } from './CreateUserErrors';
+import { CreateUserUseCase } from './CreateUserUseCase';
 
 @Controller(BASE_USER_CONTROLLER_PATH)
 export class UserCreateController {
@@ -11,7 +12,22 @@ export class UserCreateController {
 
   @Public()
   @Post()
-  async createMember(@Body() createUserDTO: CreateUserDTO): Promise<void> {
-    await this.useCase.execute(createUserDTO);
+  async createUser(@Body() createUserDTO: CreateUserDTO): Promise<void> {
+    const result = await this.useCase.execute(createUserDTO);
+
+    if (result.isLeft()) {
+      const error = result.value;
+
+      switch (error.constructor) {
+        case CreateUserErrors.PasswordsDoNotMatchError:
+          throw new BadRequestException(error.getErrorValue().message);
+        case CreateUserErrors.UsernameTakenError:
+          throw new BadRequestException(error.getErrorValue().message);
+        default:
+          throw new InternalServerErrorException(error.getErrorValue().message);
+      }
+    }
+
+    return;
   }
 }

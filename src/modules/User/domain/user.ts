@@ -1,15 +1,15 @@
 import { AggregateRoot } from 'src/shared/core/AggregateRoot';
 import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
-import { UserUsername } from './userUsername';
-import { UserPassword } from './userPassword';
+import { UserName } from './UserName';
+import { UserPassword } from './UserPassword';
 
 export interface UserProps {
-  username: UserUsername;
+  username: UserName;
   password: UserPassword;
 }
 
-export class User extends AggregateRoot<Partial<UserProps>> {
+export class User extends AggregateRoot<UserProps> {
   private constructor(props: Partial<UserProps>, id?: UniqueEntityID) {
     super(props, id);
   }

@@ -1,60 +1,61 @@
-import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
-import { Result } from 'src/shared/core/Result';
+import { AppError } from 'src/shared/core/AppError';
+import { Either, left, Result, right } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';
-import { CreateUserDTO } from './CreateUserDTO';
-import { UserUsername } from '../../domain/userUsername';
-import { UserPassword } from '../../domain/userPassword';
-import { UserConfirmPassword } from '../../domain/userConfirmPassword';
-import { CreateUserErrors } from './CreateUserErrors';
-import { IUserRepo } from '../../repos/userRepo';
 import { User } from '../../domain/user';
+import { UserConfirmPassword } from '../../domain/userConfirmPassword';
+import { UserName } from '../../domain/UserName';
+import { UserPassword } from '../../domain/UserPassword';
+import { IUserRepo } from '../../repos/userRepo';
 import { UserRepoSymbol } from '../../repos/utils/symbols';
+import { CreateUserDTO } from './CreateUserDTO';
+import { CreateUserErrors } from './CreateUserErrors';
+
+type Response = Either<CreateUserErrors.UsernameTakenError | AppError.UnexpectedError | Result<any>, Result<void>>;
 
 @Injectable()
-export class CreateUserUseCase implements UseCase<CreateUserDTO, Promise<Result<void>>> {
+export class CreateUserUseCase implements UseCase<CreateUserDTO, Promise<Response>> {
   constructor(@Inject(UserRepoSymbol) private readonly userRepo: IUserRepo) {}
 
-  async execute(createUserDTO: CreateUserDTO): Promise<Result<void>> {
-    const userUsernameOrError = UserUsername.create({ value: createUserDTO.userName });
+  async execute(createUserDTO: CreateUserDTO): Promise<Response> {
+    const userUsernameOrError = UserName.create({ name: createUserDTO.userName });
     const userPasswordOrError = UserPassword.create({ value: createUserDTO.password });
     const userConfirmPasswordOrError = UserConfirmPassword.create({ value: createUserDTO.confirmPassword });
 
-    const failedResults = Result.returnFailedResults([userUsernameOrError, userPasswordOrError, userConfirmPasswordOrError]);
+    const dtoResult = Result.combine([userUsernameOrError, userPasswordOrError, userConfirmPasswordOrError]);
 
-    if (failedResults?.length) {
-      throw new ForbiddenException(new CreateUserErrors.ValueObjectValidationError(Result.returnErrorValuesFromResults(failedResults)));
+    if (dtoResult.isFailure) {
+      return left(Result.fail<void>(dtoResult.getErrorValue()));
     }
 
-    const userUsername = userUsernameOrError.getSuccessValue();
-    const userPassword = userPasswordOrError.getSuccessValue();
-    const userConfirmPassword = userConfirmPasswordOrError.getSuccessValue();
+    const userName = userUsernameOrError.getValue();
+    const userPassword = userPasswordOrError.getValue();
+    const userConfirmPassword = userConfirmPasswordOrError.getValue();
 
     if (userPassword.value !== userConfirmPassword.value) {
-      throw new ForbiddenException(new CreateUserErrors.PasswordsDoNotMatchError());
+      return left(new CreateUserErrors.PasswordsDoNotMatchError());
     }
 
-    const userWithTheSameUsername = await this.userRepo.getUserByUsername(userUsername);
+    const userWithTheSameUserName = await this.userRepo.getUserByUsername(userName);
 
-    if (userWithTheSameUsername) {
-      throw new ForbiddenException(new CreateUserErrors.UsernameTakenError());
+    if (userWithTheSameUserName) {
+      return left(new CreateUserErrors.UsernameTakenError());
     }
-
-    // const hashedPassword = userPassword.hashPassword();
 
     const userOrError = User.create({
-      username: userUsername,
+      username: userName,
       password: userPassword,
     });
 
     if (userOrError.isFailure) {
-      throw new ForbiddenException(new CreateUserErrors.UserCreationError());
+      return left(Result.fail<User>(userOrError.getErrorValue().toString()));
     }
 
-    const user = userOrError.getSuccessValue();
+    const user = userOrError.getValue();
 
     await this.userRepo.save(user);
 
-    return Result.ok<void>();
+    return right(Result.ok<void>());
   }
 }

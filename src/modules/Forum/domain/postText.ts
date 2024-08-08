@@ -1,5 +1,4 @@
 import { Result } from '../../../shared/core/Result';
-import { Guard } from '../../../shared/core/Guard';
 import { ValueObject } from 'src/shared/core/ValueObject';
 
 interface PostTextProps {
@@ -19,22 +18,22 @@ export class PostText extends ValueObject<PostTextProps> {
   }
 
   public static create(props: PostTextProps): Result<PostText> {
-    const nullGuardResult = Guard.againstNullOrUndefined(props.value, 'postText');
+    // const nullGuardResult = Guard.againstNullOrUndefined(props.value, 'postText');
 
-    if (nullGuardResult.isFailure) {
-      return Result.fail<PostText>(nullGuardResult.getErrorValue());
-    }
+    // if (nullGuardResult.isFailure) {
+    //   return Result.fail<PostText>(nullGuardResult.getErrorValue());
+    // }
 
-    const minGuardResult = Guard.againstAtLeast(this.minLength, props.value);
-    const maxGuardResult = Guard.againstAtMost(this.maxLength, props.value);
+    // const minGuardResult = Guard.againstAtLeast(this.minLength, props.value);
+    // const maxGuardResult = Guard.againstAtMost(this.maxLength, props.value);
 
-    if (minGuardResult.isFailure) {
-      return Result.fail<PostText>(minGuardResult.getErrorValue());
-    }
+    // if (minGuardResult.isFailure) {
+    //   return Result.fail<PostText>(minGuardResult.getErrorValue());
+    // }
 
-    if (maxGuardResult.isFailure) {
-      return Result.fail<PostText>(maxGuardResult.getErrorValue());
-    }
+    // if (maxGuardResult.isFailure) {
+    //   return Result.fail<PostText>(maxGuardResult.getErrorValue());
+    // }
 
     return Result.ok<PostText>(new PostText(props));
   }
