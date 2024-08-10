@@ -1,6 +1,6 @@
 import { User as PrismaUser } from '@prisma/client';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
-import { User } from '../domain/user';
+import { User } from '../domain/User';
 import { UserName } from '../domain/UserName';
 import { UserPassword } from '../domain/UserPassword';
 

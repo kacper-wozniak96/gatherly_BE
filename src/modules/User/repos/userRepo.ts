@@ -1,5 +1,5 @@
-import { User } from '../domain/user';
-import { UserId } from '../domain/userId';
+import { User } from '../domain/User';
+import { UserId } from '../domain/UserId';
 import { UserName } from '../domain/UserName';
 
 export interface IUserRepo {

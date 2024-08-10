@@ -12,7 +12,7 @@ export class LoginUserController {
 
   @Public()
   @Post('login')
-  async createMember(@Body() loginUserDTO: LoginUserDTO): Promise<LoginUserResponseDTO | void> {
+  async execute(@Body() loginUserDTO: LoginUserDTO): Promise<LoginUserResponseDTO | void> {
     const result = await this.useCase.execute(loginUserDTO);
 
     if (result.isLeft()) {
@@ -20,11 +20,11 @@ export class LoginUserController {
 
       switch (error.constructor) {
         case LoginUseCaseErrors.UserNameDoesntExistError:
-          throw new NotFoundException(error.getErrorValue().message);
+          throw new NotFoundException(error.getErrorValue());
         case LoginUseCaseErrors.PasswordDoesntMatchError:
-          throw new BadRequestException(error.getErrorValue().message);
+          throw new BadRequestException(error.getErrorValue());
         default:
-          throw new InternalServerErrorException(error.getErrorValue().message);
+          throw new InternalServerErrorException(error.getErrorValue());
       }
     }
 

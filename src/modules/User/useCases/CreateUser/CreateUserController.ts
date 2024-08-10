@@ -20,11 +20,11 @@ export class UserCreateController {
 
       switch (error.constructor) {
         case CreateUserErrors.PasswordsDoNotMatchError:
-          throw new BadRequestException(error.getErrorValue().message);
+          throw new BadRequestException(error.getErrorValue());
         case CreateUserErrors.UsernameTakenError:
-          throw new BadRequestException(error.getErrorValue().message);
+          throw new BadRequestException(error.getErrorValue());
         default:
-          throw new InternalServerErrorException(error.getErrorValue().message);
+          throw new InternalServerErrorException(error.getErrorValue());
       }
     }
 

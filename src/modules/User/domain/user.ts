@@ -10,11 +10,11 @@ export interface UserProps {
 }
 
 export class User extends AggregateRoot<UserProps> {
-  private constructor(props: Partial<UserProps>, id?: UniqueEntityID) {
+  private constructor(props: UserProps, id?: UniqueEntityID) {
     super(props, id);
   }
 
-  public static create(props: Partial<UserProps>, id?: UniqueEntityID): Result<User> {
+  public static create(props: UserProps, id?: UniqueEntityID): Result<User> {
     const isNewMember = !!id;
 
     const member = new User(props, id);

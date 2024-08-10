@@ -1,10 +1,10 @@
+import { UserId } from 'src/modules/User/domain/UserId';
 import { AggregateRoot } from 'src/shared/core/AggregateRoot';
 import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { PostId } from './postId';
-import { PostTitle } from './postTitle';
 import { PostText } from './postText';
-import { UserId } from 'src/modules/User/domain/userId';
+import { PostTitle } from './postTitle';
 
 export interface PostProps {
   userId: UserId;
@@ -14,7 +14,7 @@ export interface PostProps {
 
 export class Post extends AggregateRoot<PostProps> {
   get postId(): PostId {
-    return PostId.create(this._id).getSuccessValue();
+    return PostId.create(this._id).getValue();
   }
 
   get userId(): UserId {

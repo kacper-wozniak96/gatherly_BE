@@ -1,5 +1,7 @@
 export class Identifier<T> {
-  constructor(private value: T) {
+  private value: T;
+
+  constructor(value: T) {
     this.value = value;
   }
 

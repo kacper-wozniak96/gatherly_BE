@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import * as Joi from 'joi';
 import { ValueObject } from 'src/shared/core/ValueObject';
 import { Result } from '../../../shared/core/Result';
 

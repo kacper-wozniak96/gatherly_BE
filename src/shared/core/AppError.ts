@@ -8,8 +8,8 @@ export namespace AppError {
         message: `An unexpected error occurred.`,
         error: err,
       } as UseCaseError);
-      console.log(`[AppError]: An unexpected error occurred`);
-      console.error(err);
+      // console.log(`[AppError]: An unexpected error occurred`);
+      // console.error(err);
     }
 
     public static create(err: any): UnexpectedError {
