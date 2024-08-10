@@ -37,14 +37,23 @@ export class Result<T> {
     return new Result<U>(true, null, value);
   }
 
-  public static fail<U>(error: string): Result<U> {
+  public static fail<U = string>(error: U): Result<U> {
     return new Result<U>(false, error);
   }
 
   public static combine(results: Result<any>[]): Result<any> {
-    for (const result of results) {
-      if (result.isFailure) return result;
+    // for (const result of results) {
+    //   if (result.isFailure) return result;
+    // }
+
+    const failedResults = results.filter((result) => result.isFailure);
+
+    if (failedResults.length) {
+      const errors = failedResults.map((result) => result.error);
+
+      return Result.fail(errors);
     }
+
     return Result.ok();
   }
 }

@@ -1,4 +1,5 @@
 import { User as PrismaUser } from '@prisma/client';
+import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { User } from '../domain/User';
 import { UserName } from '../domain/UserName';
@@ -9,10 +10,13 @@ export class UserMapper {
     const userNameOrError = UserName.create({ name: raw.username });
     const userPasswordOrError = UserPassword.create({ value: raw.password, hashed: true });
 
+    const userName = (userNameOrError as Result<UserName>).getValue();
+    const userPassword = (userPasswordOrError as Result<UserPassword>).getValue();
+
     const userOrError = User.create(
       {
-        username: userNameOrError.getValue(),
-        password: userPasswordOrError.getValue(),
+        username: userName,
+        password: userPassword,
       },
       new UniqueEntityID(raw?.id),
     );

@@ -60,7 +60,7 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Respons
     if (postOrError.isFailure) {
       // throw new ForbiddenException(new CreatePostErrors.PostCreationError());
       // return left(new AppError.UnexpectedError(postOrError));
-      return left(Result.fail<void>(postOrError.getErrorValue().toString()));
+      return left(Result.fail<any>(postOrError.getErrorValue()));
     }
 
     const post = postOrError.getValue();

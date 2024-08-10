@@ -29,8 +29,9 @@ export class CreateUserUseCase implements UseCase<CreateUserDTO, Promise<Respons
       return left(Result.fail<void>(dtoResult.getErrorValue()));
     }
 
-    const userName = userUsernameOrError.getValue();
-    const userPassword = userPasswordOrError.getValue();
+    const userName = (userUsernameOrError as Result<UserName>).getValue();
+    const userPassword = (userPasswordOrError as Result<UserPassword>).getValue();
+    // const userPassword = userPasswordOrError.getValue();
     const userConfirmPassword = userConfirmPasswordOrError.getValue();
 
     if (userPassword.value !== userConfirmPassword.value) {
@@ -49,7 +50,7 @@ export class CreateUserUseCase implements UseCase<CreateUserDTO, Promise<Respons
     });
 
     if (userOrError.isFailure) {
-      return left(Result.fail<User>(userOrError.getErrorValue().toString()));
+      return left(Result.fail<User>(userOrError.getErrorValue()));
     }
 
     const user = userOrError.getValue();

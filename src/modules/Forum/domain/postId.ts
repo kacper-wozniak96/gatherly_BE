@@ -19,7 +19,7 @@ export class PostId extends ValueObject<{ value: UniqueEntityID }> {
   public static create(value: UniqueEntityID): Result<PostId> {
     const guardResult = Guard.againstNullOrUndefined(value, 'value');
     if (guardResult.isFailure) {
-      return Result.fail<PostId>(guardResult.getErrorValue());
+      return Result.fail<any>(guardResult.getErrorValue());
     }
 
     return Result.ok<PostId>(new PostId(value));
