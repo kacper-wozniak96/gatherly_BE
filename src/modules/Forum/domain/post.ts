@@ -5,11 +5,14 @@ import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { PostId } from './postId';
 import { PostText } from './postText';
 import { PostTitle } from './postTitle';
+import { PostVote } from './postVote';
+import { PostVotes } from './postVotes';
 
 export interface PostProps {
   userId: UserId;
   title: PostTitle;
   text?: PostText;
+  votes?: PostVotes;
 }
 
 export class Post extends AggregateRoot<PostProps> {
@@ -29,9 +32,20 @@ export class Post extends AggregateRoot<PostProps> {
     return this.props.title;
   }
 
+  get votes(): PostVotes {
+    return this.props.votes;
+  }
+
+  public addVote(vote: PostVote): Result<void> {
+    this.props.votes.add(vote);
+    // this.addDomainEvent(new PostVotesChanged(this, vote));
+    return Result.ok<void>();
+  }
+
   public static create(props: PostProps, id?: UniqueEntityID): Result<Post> {
     const defaultValues: PostProps = {
       ...props,
+      votes: props.votes ? props.votes : PostVotes.create([]),
     };
 
     const isNewPost = !!id === false;
@@ -41,6 +55,7 @@ export class Post extends AggregateRoot<PostProps> {
       // post.addDomainEvent(new PostCreated(post));
       // Create with initial upvote from whomever created the post
       // post.addVote(PostVote.createUpvote(props.memberId, post.postId).getValue());
+      post.addVote(PostVote.createUpvote(props.userId, post.postId).getValue());
     }
 
     return Result.ok<Post>(post);

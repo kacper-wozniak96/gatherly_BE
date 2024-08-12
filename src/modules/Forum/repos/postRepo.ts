@@ -1,6 +1,6 @@
 import { Post } from '../domain/post';
 
 export interface IPostRepo {
-  create(post: Post): Promise<void>;
+  save(post: Post): Promise<void>;
   getPosts(): Promise<Post[]>;
 }

@@ -1,39 +1,30 @@
-import { Result } from '../../../shared/core/Result';
+import * as Joi from 'joi';
+
+import { FailedField } from 'src/modules/User/domain/UserName';
 import { ValueObject } from 'src/shared/core/ValueObject';
+import { Result } from '../../../shared/core/Result';
 
 interface PostTitleProps {
   value: string;
 }
 
+const postTitleSchema = Joi.string().alphanum().min(3).max(30).required();
+
 export class PostTitle extends ValueObject<PostTitleProps> {
-  public static minLength: number = 2;
-  public static maxLength: number = 85;
+  private constructor(props: PostTitleProps) {
+    super(props);
+  }
 
   get value(): string {
     return this.props.value;
   }
 
-  private constructor(props: PostTitleProps) {
-    super(props);
-  }
+  public static create(props: PostTitleProps): Result<PostTitle | FailedField> {
+    const { error } = postTitleSchema.validate(props.value);
 
-  public static create(props: PostTitleProps): Result<PostTitle> {
-    // const nullGuardResult = Guard.againstNullOrUndefined(props.value, 'postTitle');
-
-    // if (nullGuardResult.isFailure) {
-    //   return Result.fail<PostTitle>(nullGuardResult.getErrorValue());
-    // }
-
-    // const minGuardResult = Guard.againstAtLeast(this.minLength, props.value);
-    // const maxGuardResult = Guard.againstAtMost(this.maxLength, props.value);
-
-    // if (minGuardResult.isFailure) {
-    //   return Result.fail<PostTitle>(minGuardResult.getErrorValue());
-    // }
-
-    // if (maxGuardResult.isFailure) {
-    //   return Result.fail<PostTitle>(maxGuardResult.getErrorValue());
-    // }
+    if (error) {
+      return Result.fail<FailedField>({ message: error.details[0].message, field: 'postTitle' });
+    }
 
     return Result.ok<PostTitle>(new PostTitle(props));
   }

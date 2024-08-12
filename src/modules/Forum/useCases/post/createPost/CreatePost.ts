@@ -30,7 +30,7 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Respons
   async execute(createPostDTO: CreatePostDTO): Promise<Response> {
     const userIdOrError = UserId.create(new UniqueEntityID(this.request.user.userId));
     const postTitleOrError = PostTitle.create({ value: createPostDTO.title });
-    const postTextOrError = PostText.create({ value: createPostDTO.description });
+    const postTextOrError = PostText.create({ value: createPostDTO.text });
 
     // const failedResults = Result., postTitleOrError, postTextOrError]);
     const dtoResult = Result.combine([userIdOrError, postTitleOrError, postTextOrError]);
@@ -44,8 +44,8 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Respons
     }
 
     const userId = userIdOrError.getValue();
-    const postTitle = postTitleOrError.getValue();
-    const postText = postTextOrError.getValue();
+    const postTitle = postTitleOrError.getValue() as PostTitle;
+    const postText = postTextOrError.getValue() as PostText;
 
     const user = await this.userRepo.getUserByUserId(userId);
 
@@ -65,7 +65,7 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Respons
 
     const post = postOrError.getValue();
 
-    await this.postRepo.create(post);
+    await this.postRepo.save(post);
 
     return right(Result.ok<CreatePostResponseDTO>({ post }));
   }

@@ -1,28 +1,57 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { IPostRepo } from '../postRepo';
 import { Post } from '../../domain/post';
 import { PostMapper } from '../../mappers/Post';
+import { IPostRepo } from '../postRepo';
+import { IPostVoteRepo } from '../postVoteRepo';
+import { PostVoteRepoSymbol } from '../utils/symbols';
 
 @Injectable()
 export class PostRepo implements IPostRepo {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(PostVoteRepoSymbol) private readonly postVoteRepo: IPostVoteRepo,
+  ) {}
 
-  async create(post: Post): Promise<void> {
+  async save(Post: Post): Promise<void> {
+    const postId = Post.postId.getValue().toValue();
+
+    const exists = Number.isInteger(postId);
+
+    if (exists) {
+      await this.prisma.post.update({
+        where: { Id: Post.postId.getValue().toValue() as number },
+        data: {
+          Text: Post.text.value,
+          Title: Post.title.value,
+        },
+      });
+
+      return;
+    }
+
     await this.prisma.post.create({
+      // data: PostMapper.toPersistance(Post),
       data: {
-        text: post?.text.value,
-        title: post?.title.value,
-        user: { connect: { id: post.userId.getValue().toValue() as number } },
+        Title: Post.title.value,
+        Text: Post.text.value,
+        User: { connect: { Id: Post.userId.getValue().toValue() as number } },
+        PostVote: {
+          create: Post.votes.getItems().map((vote) => {
+            return {
+              UserId: vote.memberId.getValue().toValue() as number,
+              VoteId: vote.type,
+            };
+          }),
+        },
       },
     });
-
-    return;
+    // await this.postVoteRepo.create(Post.votes);
   }
 
   async getPosts(): Promise<Post[]> {
     const posts = await this.prisma.post.findMany({
-      include: { user: true },
+      include: { User: true },
     });
 
     return posts.map((post) => {

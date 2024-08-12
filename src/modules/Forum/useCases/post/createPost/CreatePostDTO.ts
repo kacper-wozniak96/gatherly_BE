@@ -2,7 +2,7 @@ import { Post } from 'src/modules/Forum/domain/post';
 
 export interface CreatePostDTO {
   title: string;
-  description: string;
+  text: string;
 }
 
 // export interface ICreatePost {

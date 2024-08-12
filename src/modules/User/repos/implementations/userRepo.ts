@@ -15,24 +15,28 @@ export class UserRepo implements IUserRepo {
 
     await this.prisma.user.create({
       data: {
-        username: user.props.username.value,
-        password: hashedPassword,
+        Username: user.props.username.value,
+        Password: hashedPassword,
       },
     });
   }
 
   async getUserByUserId(userId: UserId): Promise<User | null> {
     const user = await this.prisma.user.findUnique({
-      where: { id: userId.getValue().toValue() as number },
+      where: { Id: userId.getValue().toValue() as number },
     });
+
+    if (!user) return null;
 
     return UserMapper.toDomain(user);
   }
 
   async getUserByUsername(username: UserName): Promise<User | null> {
     const user = await this.prisma.user.findFirst({
-      where: { username: username.value },
+      where: { Username: username.value },
     });
+
+    if (!user) return null;
 
     return UserMapper.toDomain(user);
   }

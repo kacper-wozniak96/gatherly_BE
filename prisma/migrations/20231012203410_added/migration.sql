@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `invitation` ADD COLUMN `createdOnUtc` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);

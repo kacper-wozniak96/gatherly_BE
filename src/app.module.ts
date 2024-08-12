@@ -5,7 +5,8 @@ import { JwtAuthGuard } from './modules/AuthModule/Auth.guard';
 import { AuthService } from './modules/AuthModule/Auth.service';
 import { JwtStrategy } from './modules/AuthModule/strategies/jwt.strategy';
 import { PostRepo } from './modules/Forum/repos/implementations/postRepo';
-import { PostRepoSymbol } from './modules/Forum/repos/utils/symbols';
+import { PostVoteRepo } from './modules/Forum/repos/implementations/postVoteRepo';
+import { PostRepoSymbol, PostVoteRepoSymbol } from './modules/Forum/repos/utils/symbols';
 import { CreatePostUseCase } from './modules/Forum/useCases/post/createPost/CreatePost';
 import { CreatePostController } from './modules/Forum/useCases/post/createPost/CreatePostController';
 import { GetPostsController } from './modules/Forum/useCases/post/getPosts/GetPostsController';
@@ -56,6 +57,7 @@ class Provider {
     new Provider(CreateUserUseCaseSymbol, CreateUserUseCase),
     new Provider(LoginUserUseCaseSymbol, LoginUserUseCase),
     new Provider(GetPostsUseCaseSymbol, GetPostsUseCase),
+    new Provider(PostVoteRepoSymbol, PostVoteRepo),
   ],
 })
 export class AppModule {

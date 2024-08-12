@@ -7,22 +7,28 @@ import { PostTitle } from '../domain/postTitle';
 
 export class PostMapper {
   public static toDomain(raw: PrismaPost): Post {
-    const postTitleOrError = PostTitle.create({ value: raw.title });
-    const postTextOrError = PostText.create({ value: raw.text });
-    const userIdOrError = UserId.create(new UniqueEntityID(raw.userId));
+    const postTitleOrError = PostTitle.create({ value: raw.Title });
+    const postTextOrError = PostText.create({ value: raw.Text });
+    const userIdOrError = UserId.create(new UniqueEntityID(raw.UserId));
 
     const postOrError = Post.create(
       {
-        title: postTitleOrError.getValue(),
-        text: postTextOrError.getValue(),
+        title: postTitleOrError.getValue() as PostTitle,
+        text: postTextOrError.getValue() as PostText,
         userId: userIdOrError.getValue(),
       },
-      new UniqueEntityID(raw?.id),
+      new UniqueEntityID(raw?.Id),
     );
 
     return postOrError.isSuccess ? postOrError.getValue() : null;
   }
 
-  public static toPersistance() {}
+  public static toPersistance(post: Post): any {
+    return {
+      Title: post.title.value,
+      Text: post.text.value,
+      User: { connect: { Id: post.userId.getValue().toValue() } },
+    };
+  }
   public static toDTO() {}
 }

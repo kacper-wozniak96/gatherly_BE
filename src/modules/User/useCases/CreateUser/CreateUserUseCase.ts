@@ -19,7 +19,7 @@ export class CreateUserUseCase implements UseCase<CreateUserDTO, Promise<Respons
   constructor(@Inject(UserRepoSymbol) private readonly userRepo: IUserRepo) {}
 
   async execute(createUserDTO: CreateUserDTO): Promise<Response> {
-    const userUsernameOrError = UserName.create({ name: createUserDTO.userName });
+    const userUsernameOrError = UserName.create({ name: createUserDTO.username });
     const userPasswordOrError = UserPassword.create({ value: createUserDTO.password });
     const userConfirmPasswordOrError = UserConfirmPassword.create({ value: createUserDTO.confirmPassword });
 

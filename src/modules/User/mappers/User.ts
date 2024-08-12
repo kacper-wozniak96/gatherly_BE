@@ -7,8 +7,8 @@ import { UserPassword } from '../domain/UserPassword';
 
 export class UserMapper {
   public static toDomain(raw: PrismaUser): User {
-    const userNameOrError = UserName.create({ name: raw.username });
-    const userPasswordOrError = UserPassword.create({ value: raw.password, hashed: true });
+    const userNameOrError = UserName.create({ name: raw.Username });
+    const userPasswordOrError = UserPassword.create({ value: raw.Password, hashed: true });
 
     const userName = (userNameOrError as Result<UserName>).getValue();
     const userPassword = (userPasswordOrError as Result<UserPassword>).getValue();
@@ -18,7 +18,7 @@ export class UserMapper {
         username: userName,
         password: userPassword,
       },
-      new UniqueEntityID(raw?.id),
+      new UniqueEntityID(raw?.Id),
     );
 
     return userOrError.isSuccess ? userOrError.getValue() : null;
