@@ -1,6 +1,7 @@
 import { AggregateRoot } from 'src/shared/core/AggregateRoot';
 import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
+import { UserId } from './UserId';
 import { UserName } from './UserName';
 import { UserPassword } from './UserPassword';
 
@@ -12,6 +13,10 @@ export interface UserProps {
 export class User extends AggregateRoot<UserProps> {
   private constructor(props: UserProps, id?: UniqueEntityID) {
     super(props, id);
+  }
+
+  get userId(): UserId {
+    return UserId.create(this._id).getValue();
   }
 
   public static create(props: UserProps, id?: UniqueEntityID): Result<User> {

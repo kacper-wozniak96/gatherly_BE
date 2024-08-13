@@ -24,7 +24,7 @@ export class PostVote extends Entity<PostVoteProps> {
     return this.props.postId;
   }
 
-  get memberId(): UserId {
+  get userId(): UserId {
     return this.props.userId;
   }
 

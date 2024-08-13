@@ -42,6 +42,12 @@ export class Post extends AggregateRoot<PostProps> {
     return Result.ok<void>();
   }
 
+  public removeVote(vote: PostVote): Result<void> {
+    this.props.votes.remove(vote);
+    // this.addDomainEvent(new PostVotesChanged(this, vote));
+    return Result.ok<void>();
+  }
+
   public static create(props: PostProps, id?: UniqueEntityID): Result<Post> {
     const defaultValues: PostProps = {
       ...props,

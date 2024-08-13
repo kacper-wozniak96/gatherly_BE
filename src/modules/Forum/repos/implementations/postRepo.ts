@@ -1,6 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Post } from '../../domain/post';
+import { PostId } from '../../domain/postId';
+import { PostVotes } from '../../domain/postVotes';
 import { PostMapper } from '../../mappers/Post';
 import { IPostRepo } from '../postRepo';
 import { IPostVoteRepo } from '../postVoteRepo';
@@ -27,11 +29,12 @@ export class PostRepo implements IPostRepo {
         },
       });
 
+      await this.savePostVotes(Post.votes);
+
       return;
     }
 
     await this.prisma.post.create({
-      // data: PostMapper.toPersistance(Post),
       data: {
         Title: Post.title.value,
         Text: Post.text.value,
@@ -39,14 +42,17 @@ export class PostRepo implements IPostRepo {
         PostVote: {
           create: Post.votes.getItems().map((vote) => {
             return {
-              UserId: vote.memberId.getValue().toValue() as number,
+              UserId: vote.userId.getValue().toValue() as number,
               VoteId: vote.type,
             };
           }),
         },
       },
     });
-    // await this.postVoteRepo.create(Post.votes);
+  }
+
+  private async savePostVotes(postVotes: PostVotes) {
+    return await this.postVoteRepo.save(postVotes);
   }
 
   async getPosts(): Promise<Post[]> {
@@ -57,5 +63,18 @@ export class PostRepo implements IPostRepo {
     return posts.map((post) => {
       return PostMapper.toDomain(post);
     });
+  }
+
+  async getPostByPostId(PostId: PostId): Promise<Post | null> {
+    const postId = PostId.getValue().toValue() as number;
+
+    const post = await this.prisma.post.findUnique({
+      where: { Id: postId },
+      include: { User: true },
+    });
+
+    if (!post) return null;
+
+    return PostMapper.toDomain(post);
   }
 }

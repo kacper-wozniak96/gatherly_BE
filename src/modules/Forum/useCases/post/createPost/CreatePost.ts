@@ -40,7 +40,8 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Respons
     // }
 
     if (dtoResult.isFailure) {
-      return left(Result.fail<void>(dtoResult.getErrorValue()));
+      // return left(Result.fail<void>(dtoResult.getErrorValue()));
+      return left(new CreatePostErrors.InvalidDataError());
     }
 
     const userId = userIdOrError.getValue();
