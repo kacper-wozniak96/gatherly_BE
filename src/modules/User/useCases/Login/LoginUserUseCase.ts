@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
 import { AuthService } from 'src/modules/AuthModule/Auth.service';
 import { AppError } from 'src/shared/core/AppError';
@@ -36,7 +36,8 @@ export class LoginUserUseCase implements UseCase<LoginUserDTO, Promise<Response>
 
     if (payloadResult.isFailure) {
       // return left(Result.fail<any>(payloadResult.getErrorValue()));
-      throw new HttpException(payloadResult.getErrorValue(), HttpStatus.BAD_REQUEST);
+      // throw new HttpException(payloadResult.getErrorValue(), HttpStatus.BAD_REQUEST);
+      return left(new LoginUseCaseErrors.InvalidDataError());
     }
 
     username = (usernameOrError as Result<UserName>).getValue();

@@ -1,14 +1,23 @@
-import * as Joi from 'joi';
-
 import { FailedField } from 'src/modules/User/domain/UserName';
 import { ValueObject } from 'src/shared/core/ValueObject';
+import { z } from 'zod';
 import { Result } from '../../../shared/core/Result';
 
 interface PostTitleProps {
   value: string;
 }
 
-const postTitleSchema = Joi.string().alphanum().min(3).max(30).required();
+const postTitleZodSchema = z
+  .string({
+    required_error: 'Title is required',
+    invalid_type_error: 'Title must be a string',
+  })
+  .min(3, { message: 'Title must be at least 3 characters long' })
+  .max(30, { message: 'Title must be at most 30 characters long' });
+
+const newChema = z.object({
+  title: postTitleZodSchema,
+});
 
 export class PostTitle extends ValueObject<PostTitleProps> {
   private constructor(props: PostTitleProps) {
@@ -20,10 +29,15 @@ export class PostTitle extends ValueObject<PostTitleProps> {
   }
 
   public static create(props: PostTitleProps): Result<PostTitle | FailedField> {
-    const { error } = postTitleSchema.validate(props.value);
+    const validationResult = newChema.safeParse({ title: props.value });
 
-    if (error) {
-      return Result.fail<FailedField>({ message: error.details[0].message, field: 'postTitle' });
+    if (!validationResult.success) {
+      const error = validationResult.error.errors[0];
+
+      return Result.fail<FailedField>({
+        message: error.message,
+        field: error.path[0] as keyof typeof newChema,
+      });
     }
 
     return Result.ok<PostTitle>(new PostTitle(props));

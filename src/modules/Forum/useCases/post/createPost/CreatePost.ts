@@ -28,6 +28,8 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Respons
   ) {}
 
   async execute(createPostDTO: CreatePostDTO): Promise<Response> {
+    // console.log('yooo');
+    // console.log({ createPostDTO });
     const userIdOrError = UserId.create(new UniqueEntityID(this.request.user.userId));
     const postTitleOrError = PostTitle.create({ value: createPostDTO.title });
     const postTextOrError = PostText.create({ value: createPostDTO.text });
@@ -39,9 +41,11 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Respons
     //   throw new ForbiddenException(new CreatePostErrors.ValueObjectValidationError(Result.returnErrorValuesFromResults(failedResults)));
     // }
 
+    console.log({ dtoResult });
+
     if (dtoResult.isFailure) {
       // return left(Result.fail<void>(dtoResult.getErrorValue()));
-      return left(new CreatePostErrors.InvalidDataError());
+      return left(new CreatePostErrors.InvalidDataError(dtoResult.getErrorValue()));
     }
 
     const userId = userIdOrError.getValue();
@@ -56,12 +60,15 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Respons
       userId: userId,
       title: postTitle,
       text: postText,
+      user,
     });
 
     if (postOrError.isFailure) {
       // throw new ForbiddenException(new CreatePostErrors.PostCreationError());
       // return left(new AppError.UnexpectedError(postOrError));
-      return left(Result.fail<any>(postOrError.getErrorValue()));
+      // return left(Result.fail<any>(postOrError.getErrorValue()));
+      // return left(AppError.UnexpectedError);
+      return left(new AppError.UnexpectedError());
     }
 
     const post = postOrError.getValue();

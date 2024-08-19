@@ -10,7 +10,7 @@ interface UserPasswordProps {
   hashed?: boolean;
 }
 
-const userPasswordSchema = Joi.string().alphanum().min(3).max(30).required();
+const userPasswordSchema = Joi.string().alphanum().min(1).max(30).required();
 
 export class UserPassword extends ValueObject<UserPasswordProps> {
   get value(): string {

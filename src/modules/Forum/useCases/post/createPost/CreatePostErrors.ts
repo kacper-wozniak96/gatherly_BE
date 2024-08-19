@@ -1,3 +1,4 @@
+import { FailedField } from 'src/modules/User/domain/UserName';
 import { Result } from 'src/shared/core/Result';
 import { UseCaseError } from 'src/shared/core/UseCaseError';
 
@@ -10,9 +11,10 @@ export namespace CreatePostErrors {
     }
   }
   export class InvalidDataError extends Result<UseCaseError> {
-    constructor() {
+    constructor(failedFields: FailedField[]) {
       super(false, {
-        message: `Invalid data.`,
+        message: failedFields,
+        isFormInvalid: true,
       } as UseCaseError);
     }
   }

@@ -25,5 +25,11 @@ export class UserMapper {
   }
 
   public static toPersistance() {}
-  public static toDTO() {}
+
+  public static toDTO(user: User) {
+    return {
+      id: user.id.toValue() as number,
+      username: user.username.value,
+    };
+  }
 }

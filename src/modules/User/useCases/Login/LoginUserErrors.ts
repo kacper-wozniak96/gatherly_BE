@@ -5,7 +5,7 @@ export namespace LoginUseCaseErrors {
   export class UserNameDoesntExistError extends Result<UseCaseError> {
     constructor() {
       super(false, {
-        message: `Username or password incorrect.`,
+        message: `Username or password incorrect`,
       } as UseCaseError);
     }
   }
@@ -13,7 +13,15 @@ export namespace LoginUseCaseErrors {
   export class PasswordDoesntMatchError extends Result<UseCaseError> {
     constructor() {
       super(false, {
-        message: `Password doesnt match error.`,
+        message: `Username or password incorrect`,
+      } as UseCaseError);
+    }
+  }
+
+  export class InvalidDataError extends Result<UseCaseError> {
+    constructor() {
+      super(false, {
+        message: `Username or password incorrect`,
       } as UseCaseError);
     }
   }

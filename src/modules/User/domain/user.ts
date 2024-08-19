@@ -19,6 +19,10 @@ export class User extends AggregateRoot<UserProps> {
     return UserId.create(this._id).getValue();
   }
 
+  get username(): UserName {
+    return this.props.username;
+  }
+
   public static create(props: UserProps, id?: UniqueEntityID): Result<User> {
     const isNewMember = !!id;
 

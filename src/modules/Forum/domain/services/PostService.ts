@@ -14,6 +14,7 @@ export class PostService {
     const upvoteAlreadyExists = !!existingUpvote;
 
     if (upvoteAlreadyExists) {
+      post.removeVote(existingUpvote);
       return right(Result.ok<void>());
     }
 

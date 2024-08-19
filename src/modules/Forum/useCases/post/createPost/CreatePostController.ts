@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, InternalServerErrorException, NotFoundException, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Inject, InternalServerErrorException, NotFoundException, Post } from '@nestjs/common';
 import { BASE_POST_CONTROLLER_PATH } from '../utils/baseContollerPath';
 import { CreatePostUseCaseSymbol } from '../utils/symbols';
 import { CreatePostUseCase } from './CreatePost';
@@ -19,6 +19,8 @@ export class CreatePostController {
       switch (error.constructor) {
         case CreatePostErrors.UserDoesntExistError:
           throw new NotFoundException(error.getErrorValue());
+        case CreatePostErrors.InvalidDataError:
+          throw new BadRequestException(error.getErrorValue());
         default:
           throw new InternalServerErrorException(error.getErrorValue());
       }

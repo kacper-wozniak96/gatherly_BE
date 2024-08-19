@@ -3,6 +3,8 @@
 // //   field: string;
 // // }
 
+import { FailedField } from 'src/modules/User/domain/UserName';
+
 // // export abstract class UseCaseError implements IError {
 // //   public readonly message: string;
 // //   public readonly field: string;
@@ -30,13 +32,16 @@
 // }
 
 interface IUseCaseError {
-  message: string;
+  message: string | FailedField[];
+  isFormInvalid: boolean;
 }
 
 export abstract class UseCaseError implements IUseCaseError {
-  public readonly message: string;
+  public readonly message: string | FailedField[];
+  public readonly isFormInvalid: boolean;
 
-  constructor(message: string) {
+  constructor(message: string | FailedField[], isFormInvalid = false) {
     this.message = message;
+    this.isFormInvalid = isFormInvalid;
   }
 }

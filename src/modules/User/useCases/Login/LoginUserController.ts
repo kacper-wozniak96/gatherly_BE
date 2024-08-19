@@ -23,6 +23,8 @@ export class LoginUserController {
           throw new NotFoundException(error.getErrorValue());
         case LoginUseCaseErrors.PasswordDoesntMatchError:
           throw new BadRequestException(error.getErrorValue());
+        case LoginUseCaseErrors.InvalidDataError:
+          throw new BadRequestException(error.getErrorValue());
         default:
           throw new InternalServerErrorException(error.getErrorValue());
       }

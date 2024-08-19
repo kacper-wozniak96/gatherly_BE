@@ -1,3 +1,4 @@
+import { User } from 'src/modules/User/domain/User';
 import { UserId } from 'src/modules/User/domain/UserId';
 import { AggregateRoot } from 'src/shared/core/AggregateRoot';
 import { Result } from 'src/shared/core/Result';
@@ -10,7 +11,12 @@ import { PostVotes } from './postVotes';
 
 export interface PostProps {
   userId: UserId;
+  user: User;
   title: PostTitle;
+  upVotesTotal?: number;
+  downVotesTotal?: number;
+  isUpVotedByUser?: boolean;
+  isDownVotedByUser?: boolean;
   text?: PostText;
   votes?: PostVotes;
 }
@@ -36,6 +42,26 @@ export class Post extends AggregateRoot<PostProps> {
     return this.props.votes;
   }
 
+  get user(): User {
+    return this.props.user;
+  }
+
+  get upVotesTotal(): number {
+    return this.props.upVotesTotal;
+  }
+
+  get downVotesTotal(): number {
+    return this.props.downVotesTotal;
+  }
+
+  get isUpVotedByUser(): boolean {
+    return this.props.isUpVotedByUser;
+  }
+
+  get isDownVotedByUser(): boolean {
+    return this.props.isDownVotedByUser;
+  }
+
   public addVote(vote: PostVote): Result<void> {
     this.props.votes.add(vote);
     // this.addDomainEvent(new PostVotesChanged(this, vote));
@@ -48,10 +74,18 @@ export class Post extends AggregateRoot<PostProps> {
     return Result.ok<void>();
   }
 
+  // public constructor(props: PostProps, id?: UniqueEntityID) {
+  //   super(props, id);
+  // }
+
   public static create(props: PostProps, id?: UniqueEntityID): Result<Post> {
     const defaultValues: PostProps = {
       ...props,
       votes: props.votes ? props.votes : PostVotes.create([]),
+      downVotesTotal: props.downVotesTotal ? props.downVotesTotal : 0,
+      upVotesTotal: props.upVotesTotal ? props.upVotesTotal : 0,
+      isDownVotedByUser: props.isDownVotedByUser ? props.isDownVotedByUser : false,
+      isUpVotedByUser: props.isUpVotedByUser ? props.isUpVotedByUser : false,
     };
 
     const isNewPost = !!id === false;
