@@ -10,11 +10,18 @@ import { PostVoteRepo } from './modules/Forum/repos/implementations/postVoteRepo
 import { PostRepoSymbol, PostVoteRepoSymbol } from './modules/Forum/repos/utils/symbols';
 import { CreatePostUseCase } from './modules/Forum/useCases/post/createPost/CreatePost';
 import { CreatePostController } from './modules/Forum/useCases/post/createPost/CreatePostController';
+import { DownVotePostController } from './modules/Forum/useCases/post/downVotePost/DownVotePostController';
+import { DownVotePostUseCase } from './modules/Forum/useCases/post/downVotePost/DownVotePostUseCase';
 import { GetPostsController } from './modules/Forum/useCases/post/getPosts/GetPostsController';
 import { GetPostsUseCase } from './modules/Forum/useCases/post/getPosts/GetPostsUseCase';
 import { UpVotePostController } from './modules/Forum/useCases/post/upVotePost/UpVotePostController';
 import { UpVotePostUseCase } from './modules/Forum/useCases/post/upVotePost/UpVotePostUseCase';
-import { CreatePostUseCaseSymbol, GetPostsUseCaseSymbol, UpVotePostUseCaseSymbol } from './modules/Forum/useCases/post/utils/symbols';
+import {
+  CreatePostUseCaseSymbol,
+  DownVotePostUseCaseSymbol,
+  GetPostsUseCaseSymbol,
+  UpVotePostUseCaseSymbol,
+} from './modules/Forum/useCases/post/utils/symbols';
 import { LoggerMiddleware } from './modules/Logger/logger';
 import { UserRepo } from './modules/User/repos/implementations/userRepo';
 import { UserRepoSymbol } from './modules/User/repos/utils/symbols';
@@ -43,7 +50,14 @@ class Provider {
       signOptions: { expiresIn: '30 days' },
     }),
   ],
-  controllers: [CreatePostController, UserCreateController, LoginUserController, GetPostsController, UpVotePostController],
+  controllers: [
+    CreatePostController,
+    UserCreateController,
+    LoginUserController,
+    GetPostsController,
+    UpVotePostController,
+    DownVotePostController,
+  ],
   providers: [
     PrismaService,
     JwtService,
@@ -62,6 +76,7 @@ class Provider {
     new Provider(GetPostsUseCaseSymbol, GetPostsUseCase),
     new Provider(PostVoteRepoSymbol, PostVoteRepo),
     new Provider(UpVotePostUseCaseSymbol, UpVotePostUseCase),
+    new Provider(DownVotePostUseCaseSymbol, DownVotePostUseCase),
     PostService,
   ],
 })

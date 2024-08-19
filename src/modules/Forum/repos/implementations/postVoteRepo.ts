@@ -33,12 +33,7 @@ export class PostVoteRepo implements IPostVoteRepo {
   private async deleteMany(postVotes: PostVote[]): Promise<void> {
     await this.prisma.postVote.deleteMany({
       where: {
-        OR: postVotes.map((postVote) => {
-          return {
-            UserId: postVote.userId.getValue().toValue() as number,
-            PostId: postVote.postId.getValue().toValue() as number,
-          };
-        }),
+        Id: { in: postVotes.map((postVote) => postVote.id.toValue() as number) },
       },
     });
   }

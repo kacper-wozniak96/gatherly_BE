@@ -5,7 +5,7 @@ import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { Post } from '../domain/post';
 import { PostText } from '../domain/postText';
 import { PostTitle } from '../domain/postTitle';
-import { EVoteType } from '../domain/postVote';
+import { PostVotes } from '../domain/postVotes';
 import { PostDTO } from '../dtos/post';
 import { PostVoteMapper } from './PostVote';
 
@@ -16,7 +16,7 @@ export class PostMapper {
     const userIdOrError = UserId.create(new UniqueEntityID(raw.UserId));
 
     const user = UserMapper.toDomain(raw.User);
-    const votes = raw.PostVote.map((vote) => PostVoteMapper.toDomain(vote));
+    const votes = PostVotes.create(raw.PostVote.map((vote) => PostVoteMapper.toDomain(vote)));
 
     const postOrError = Post.create(
       {
@@ -24,12 +24,10 @@ export class PostMapper {
         text: postTextOrError.getValue() as PostText,
         userId: userIdOrError.getValue(),
         user: user,
-        downVotesTotal: votes?.filter((vote) => vote.type === EVoteType.DOWNVOTE)?.length ?? 0,
-        upVotesTotal: votes?.filter((vote) => vote.type === EVoteType.UPVOTE)?.length ?? 0,
-        isDownVotedByUser:
-          votes?.some((vote) => vote.userId.getValue().toValue() === requestUserId && vote.type === EVoteType.DOWNVOTE) ?? false,
-        isUpVotedByUser:
-          votes?.some((vote) => vote.userId.getValue().toValue() === requestUserId && vote.type === EVoteType.UPVOTE) ?? false,
+        downVotesTotal: votes.getDownVotesTotal(),
+        upVotesTotal: votes.getUpVotesTotal(),
+        isDownVotedByUser: votes.isDownvotedByUser(requestUserId),
+        isUpVotedByUser: votes.isUpVotedByUser(requestUserId),
       },
       new UniqueEntityID(raw?.Id),
     );

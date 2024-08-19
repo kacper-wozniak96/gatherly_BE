@@ -81,11 +81,11 @@ export class Post extends AggregateRoot<PostProps> {
   public static create(props: PostProps, id?: UniqueEntityID): Result<Post> {
     const defaultValues: PostProps = {
       ...props,
-      votes: props.votes ? props.votes : PostVotes.create([]),
-      downVotesTotal: props.downVotesTotal ? props.downVotesTotal : 0,
-      upVotesTotal: props.upVotesTotal ? props.upVotesTotal : 0,
-      isDownVotedByUser: props.isDownVotedByUser ? props.isDownVotedByUser : false,
-      isUpVotedByUser: props.isUpVotedByUser ? props.isUpVotedByUser : false,
+      votes: props?.votes ? props.votes : PostVotes.create([]),
+      downVotesTotal: props?.downVotesTotal ? props.downVotesTotal : 0,
+      upVotesTotal: props?.upVotesTotal ? props.upVotesTotal : 0,
+      isDownVotedByUser: props?.isDownVotedByUser ? props.isDownVotedByUser : false,
+      isUpVotedByUser: props?.isUpVotedByUser ? props.isUpVotedByUser : false,
     };
 
     const isNewPost = !!id === false;

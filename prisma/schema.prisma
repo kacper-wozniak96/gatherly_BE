@@ -11,21 +11,24 @@ generator client {
 }
 
 model User {
-  Id       Int        @id @default(autoincrement())
-  Username String
-  Password String
-  Post     Post[]
-  PostVote PostVote[]
+  Id          Int           @id @default(autoincrement())
+  Username    String
+  Password    String
+  Post        Post[]
+  PostVote    PostVote[]
+  PostComment PostComment[]
 }
 
 model Post {
-  Id     Int    @id @default(autoincrement())
-  UserId Int
-  Title  String
-  Text   String
+  Id        Int      @id @default(autoincrement())
+  UserId    Int
+  Title     String   @db.VarChar(200)
+  Text      String   @db.VarChar(5000)
+  CreatedAt DateTime @default(now())
 
-  User     User       @relation(fields: [UserId], references: [Id])
-  PostVote PostVote[]
+  User        User          @relation(fields: [UserId], references: [Id])
+  PostVote    PostVote[]
+  PostComment PostComment[]
 
   @@index([UserId], name: "UserId")
 }
@@ -36,9 +39,9 @@ model PostVote {
   UserId Int
   VoteId Int
 
-  Post   Post  @relation(fields: [PostId], references: [Id])
-  User   User  @relation(fields: [UserId], references: [Id])
-  Vote   Vote  @relation(fields: [VoteId], references: [Id])
+  Post Post @relation(fields: [PostId], references: [Id])
+  User User @relation(fields: [UserId], references: [Id])
+  Vote Vote @relation(fields: [VoteId], references: [Id])
 
   @@index([PostId], name: "PostId")
 }
@@ -48,4 +51,16 @@ model Vote {
   Label String @db.VarChar(50)
 
   PostVote PostVote[]
+}
+
+model PostComment {
+  Id     Int    @id @default(autoincrement())
+  PostId Int
+  UserId Int
+  Text   String @db.VarChar(5000)
+
+  Post Post @relation(fields: [PostId], references: [Id])
+  User User @relation(fields: [UserId], references: [Id])
+
+  @@index([Id], name: "Id")
 }
