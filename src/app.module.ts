@@ -5,21 +5,28 @@ import { JwtAuthGuard } from './modules/AuthModule/Auth.guard';
 import { AuthService } from './modules/AuthModule/Auth.service';
 import { JwtStrategy } from './modules/AuthModule/strategies/jwt.strategy';
 import { PostService } from './modules/Forum/domain/services/PostService';
+import { CommentRepo } from './modules/Forum/repos/implementations/postCommentRepo';
 import { PostRepo } from './modules/Forum/repos/implementations/postRepo';
 import { PostVoteRepo } from './modules/Forum/repos/implementations/postVoteRepo';
-import { PostRepoSymbol, PostVoteRepoSymbol } from './modules/Forum/repos/utils/symbols';
+import { CommentRepoSymbol, PostRepoSymbol, PostVoteRepoSymbol } from './modules/Forum/repos/utils/symbols';
+import { CreateCommentUseCase } from './modules/Forum/useCases/post/createComment/CreateComment';
+import { CreateCommentController } from './modules/Forum/useCases/post/createComment/CreateCommentController';
 import { CreatePostUseCase } from './modules/Forum/useCases/post/createPost/CreatePost';
 import { CreatePostController } from './modules/Forum/useCases/post/createPost/CreatePostController';
 import { DownVotePostController } from './modules/Forum/useCases/post/downVotePost/DownVotePostController';
 import { DownVotePostUseCase } from './modules/Forum/useCases/post/downVotePost/DownVotePostUseCase';
+import { GetPostController } from './modules/Forum/useCases/post/getPost/GetPostController';
+import { GetPostUseCase } from './modules/Forum/useCases/post/getPost/GetPostUseCase';
 import { GetPostsController } from './modules/Forum/useCases/post/getPosts/GetPostsController';
 import { GetPostsUseCase } from './modules/Forum/useCases/post/getPosts/GetPostsUseCase';
 import { UpVotePostController } from './modules/Forum/useCases/post/upVotePost/UpVotePostController';
 import { UpVotePostUseCase } from './modules/Forum/useCases/post/upVotePost/UpVotePostUseCase';
 import {
+  CreateCommentUseCaseSymbol,
   CreatePostUseCaseSymbol,
   DownVotePostUseCaseSymbol,
   GetPostsUseCaseSymbol,
+  GetPostUseCaseSymbol,
   UpVotePostUseCaseSymbol,
 } from './modules/Forum/useCases/post/utils/symbols';
 import { LoggerMiddleware } from './modules/Logger/logger';
@@ -57,6 +64,8 @@ class Provider {
     GetPostsController,
     UpVotePostController,
     DownVotePostController,
+    GetPostController,
+    CreateCommentController,
   ],
   providers: [
     PrismaService,
@@ -77,6 +86,9 @@ class Provider {
     new Provider(PostVoteRepoSymbol, PostVoteRepo),
     new Provider(UpVotePostUseCaseSymbol, UpVotePostUseCase),
     new Provider(DownVotePostUseCaseSymbol, DownVotePostUseCase),
+    new Provider(GetPostUseCaseSymbol, GetPostUseCase),
+    new Provider(CommentRepoSymbol, CommentRepo),
+    new Provider(CreateCommentUseCaseSymbol, CreateCommentUseCase),
     PostService,
   ],
 })

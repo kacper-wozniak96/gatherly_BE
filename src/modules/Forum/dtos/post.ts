@@ -5,8 +5,10 @@ export interface PostDTO {
   title: string;
   text: string;
   user: UserDTO;
-  upVotesTotal: number;
-  downVotesTotal: number;
+  upVotesTotalNumber: number;
+  downVotesTotalNumber: number;
   isUpVotedByUser: boolean;
   isDownVotedByUser: boolean;
+  createdAt: Date;
+  postCommentTotalNumber: number;
 }

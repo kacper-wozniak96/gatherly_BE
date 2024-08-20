@@ -1,22 +1,28 @@
-import { Post as PrismaPost, PostVote as PrismaPostVote, User as PrismaUser } from '@prisma/client';
+import { Post as PrismaPost, PostComment as PrismaPostComment, PostVote as PrismaPostVote, User as PrismaUser } from '@prisma/client';
 import { UserId } from 'src/modules/User/domain/UserId';
 import { UserMapper } from 'src/modules/User/mappers/User';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
+import { Comments } from '../domain/comments';
 import { Post } from '../domain/post';
 import { PostText } from '../domain/postText';
 import { PostTitle } from '../domain/postTitle';
 import { PostVotes } from '../domain/postVotes';
 import { PostDTO } from '../dtos/post';
+import { PostCommentMapper } from './PostComment';
 import { PostVoteMapper } from './PostVote';
 
 export class PostMapper {
-  public static toDomain(raw: PrismaPost & { User: PrismaUser; PostVote: PrismaPostVote[] }, requestUserId?: number): Post {
+  public static toDomain(
+    raw: PrismaPost & { User: PrismaUser; PostVote: PrismaPostVote[]; PostComment: PrismaPostComment[] },
+    requestUserId?: number,
+  ): Post {
     const postTitleOrError = PostTitle.create({ value: raw.Title });
     const postTextOrError = PostText.create({ value: raw.Text });
     const userIdOrError = UserId.create(new UniqueEntityID(raw.UserId));
 
     const user = UserMapper.toDomain(raw.User);
     const votes = PostVotes.create(raw.PostVote.map((vote) => PostVoteMapper.toDomain(vote)));
+    const postComments = Comments.create(raw.PostComment.map((comment) => PostCommentMapper.toDomain(comment)));
 
     const postOrError = Post.create(
       {
@@ -28,6 +34,8 @@ export class PostMapper {
         upVotesTotal: votes.getUpVotesTotal(),
         isDownVotedByUser: votes.isDownvotedByUser(requestUserId),
         isUpVotedByUser: votes.isUpVotedByUser(requestUserId),
+        createdAt: raw.CreatedAt,
+        postCommentsTotal: postComments.getCommentsTotalNumber(),
       },
       new UniqueEntityID(raw?.Id),
     );
@@ -40,6 +48,7 @@ export class PostMapper {
       Title: post.title.value,
       Text: post.text.value,
       User: { connect: { Id: post.userId.getValue().toValue() } },
+      CreatedAt: post.createdAt,
     };
   }
 
@@ -50,12 +59,14 @@ export class PostMapper {
       text: post.text.value,
       user: {
         id: post.userId.getValue().toValue() as number,
-        username: post.userId.getValue().toValue() as string,
+        username: post.user.username.value as string,
       },
-      upVotesTotal: post.upVotesTotal,
-      downVotesTotal: post.downVotesTotal,
+      upVotesTotalNumber: post.upVotesTotal,
+      downVotesTotalNumber: post.downVotesTotal,
       isUpVotedByUser: post.isUpVotedByUser,
       isDownVotedByUser: post.isDownVotedByUser,
+      createdAt: post.createdAt,
+      postCommentTotalNumber: post.postCommentsTotal,
     };
   }
 }

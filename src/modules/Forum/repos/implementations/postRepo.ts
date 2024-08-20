@@ -2,19 +2,22 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { PrismaService } from 'src/prisma.service';
+import { Comments } from '../../domain/comments';
 import { Post } from '../../domain/post';
 import { PostId } from '../../domain/postId';
 import { PostVotes } from '../../domain/postVotes';
 import { PostMapper } from '../../mappers/Post';
+import { ICommentRepo } from '../postCommentRepo';
 import { IPostRepo } from '../postRepo';
 import { IPostVoteRepo } from '../postVoteRepo';
-import { PostVoteRepoSymbol } from '../utils/symbols';
+import { CommentRepoSymbol, PostVoteRepoSymbol } from '../utils/symbols';
 
 @Injectable()
 export class PostRepo implements IPostRepo {
   constructor(
     private prisma: PrismaService,
     @Inject(PostVoteRepoSymbol) private readonly postVoteRepo: IPostVoteRepo,
+    @Inject(CommentRepoSymbol) private readonly postCommentRepo: ICommentRepo,
     @Inject(REQUEST) private readonly request: CustomRequest,
   ) {}
 
@@ -33,6 +36,7 @@ export class PostRepo implements IPostRepo {
       });
 
       await this.savePostVotes(Post.votes);
+      await this.saveComments(Post.comments);
 
       return;
     }
@@ -58,9 +62,13 @@ export class PostRepo implements IPostRepo {
     return await this.postVoteRepo.save(postVotes);
   }
 
+  private async saveComments(comments: Comments) {
+    return await this.postCommentRepo.save(comments);
+  }
+
   async getPosts(): Promise<Post[]> {
     const posts = await this.prisma.post.findMany({
-      include: { User: true, PostVote: true },
+      include: { User: true, PostVote: true, PostComment: true },
       orderBy: { Id: 'desc' },
     });
 
@@ -74,11 +82,11 @@ export class PostRepo implements IPostRepo {
 
     const post = await this.prisma.post.findUnique({
       where: { Id: postId },
-      include: { User: true, PostVote: true },
+      include: { User: true, PostVote: true, PostComment: true },
     });
 
     if (!post) return null;
 
-    return PostMapper.toDomain(post);
+    return PostMapper.toDomain(post, this.request.user.userId);
   }
 }

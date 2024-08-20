@@ -3,6 +3,8 @@ import { UserId } from 'src/modules/User/domain/UserId';
 import { AggregateRoot } from 'src/shared/core/AggregateRoot';
 import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
+import { Comment } from './comment';
+import { Comments } from './comments';
 import { PostId } from './postId';
 import { PostText } from './postText';
 import { PostTitle } from './postTitle';
@@ -17,8 +19,11 @@ export interface PostProps {
   downVotesTotal?: number;
   isUpVotedByUser?: boolean;
   isDownVotedByUser?: boolean;
+  postCommentsTotal?: number;
+  createdAt?: Date;
   text?: PostText;
   votes?: PostVotes;
+  comments?: Comments;
 }
 
 export class Post extends AggregateRoot<PostProps> {
@@ -42,6 +47,10 @@ export class Post extends AggregateRoot<PostProps> {
     return this.props.votes;
   }
 
+  get comments(): Comments {
+    return this.props.comments;
+  }
+
   get user(): User {
     return this.props.user;
   }
@@ -62,6 +71,14 @@ export class Post extends AggregateRoot<PostProps> {
     return this.props.isDownVotedByUser;
   }
 
+  get postCommentsTotal(): number {
+    return this.props.postCommentsTotal;
+  }
+
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
+
   public addVote(vote: PostVote): Result<void> {
     this.props.votes.add(vote);
     // this.addDomainEvent(new PostVotesChanged(this, vote));
@@ -74,6 +91,16 @@ export class Post extends AggregateRoot<PostProps> {
     return Result.ok<void>();
   }
 
+  public addComment(comment: Comment): Result<void> {
+    this.props.comments.add(comment);
+    return Result.ok<void>();
+  }
+
+  public removeComment(comment: Comment): Result<void> {
+    this.props.comments.remove(comment);
+    return Result.ok<void>();
+  }
+
   // public constructor(props: PostProps, id?: UniqueEntityID) {
   //   super(props, id);
   // }
@@ -82,10 +109,12 @@ export class Post extends AggregateRoot<PostProps> {
     const defaultValues: PostProps = {
       ...props,
       votes: props?.votes ? props.votes : PostVotes.create([]),
+      comments: props?.comments ? props.comments : Comments.create([]),
       downVotesTotal: props?.downVotesTotal ? props.downVotesTotal : 0,
       upVotesTotal: props?.upVotesTotal ? props.upVotesTotal : 0,
       isDownVotedByUser: props?.isDownVotedByUser ? props.isDownVotedByUser : false,
       isUpVotedByUser: props?.isUpVotedByUser ? props.isUpVotedByUser : false,
+      createdAt: props?.createdAt ? props.createdAt : new Date(),
     };
 
     const isNewPost = !!id === false;
