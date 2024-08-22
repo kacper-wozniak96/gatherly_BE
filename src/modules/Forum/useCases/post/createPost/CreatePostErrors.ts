@@ -1,4 +1,4 @@
-import { FailedField } from 'src/modules/User/domain/UserName';
+import { IFailedField } from 'src/modules/User/domain/UserName';
 import { Result } from 'src/shared/core/Result';
 import { UseCaseError } from 'src/shared/core/UseCaseError';
 
@@ -11,7 +11,7 @@ export namespace CreatePostErrors {
     }
   }
   export class InvalidDataError extends Result<UseCaseError> {
-    constructor(failedFields: FailedField[]) {
+    constructor(failedFields: IFailedField[]) {
       super(false, {
         message: failedFields,
         isFormInvalid: true,

@@ -17,19 +17,26 @@ export class UserName extends ValueObject<UserNameProps> {
     return this.props.name;
   }
 
-  public static create(props: UserNameProps): Result<UserName> | Result<FailedField> {
+  public static create(props: UserNameProps): Result<UserName> | Result<IFailedField> {
     const { error } = usernameSchema.validate(props.name);
 
     if (error) {
       // return Result.fail<UserName>(error.details[0].message);
-      return Result.fail<FailedField>({ message: error.details[0].message, field: 'username' });
+      return Result.fail<IFailedField>({ message: error.details[0].message, field: 'username' });
     }
 
     return Result.ok<UserName>(new UserName(props));
   }
 }
 
-export interface FailedField {
+export interface IFailedField {
   field: string;
   message: string;
+}
+
+export class FailedField implements IFailedField {
+  constructor(
+    public field: string,
+    public message: string,
+  ) {}
 }

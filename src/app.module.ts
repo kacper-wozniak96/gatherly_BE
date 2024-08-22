@@ -38,7 +38,14 @@ import { GetUserController } from './modules/User/useCases/getUser/GetUserContro
 import { GetUserUseCase } from './modules/User/useCases/getUser/GetUserUseCase';
 import { LoginUserController } from './modules/User/useCases/Login/LoginUserController';
 import { LoginUserUseCase } from './modules/User/useCases/Login/LoginUserUseCase';
-import { CreateUserUseCaseSymbol, GetUserUseCaseSymbol, LoginUserUseCaseSymbol } from './modules/User/utils/symbols';
+import { UpdateUserController } from './modules/User/useCases/UpdateUser/UpdateUserController';
+import { UpdateUserUseCase } from './modules/User/useCases/UpdateUser/UpdateUserUseCase';
+import {
+  CreateUserUseCaseSymbol,
+  GetUserUseCaseSymbol,
+  LoginUserUseCaseSymbol,
+  UpdateUserUseCaseSymbol,
+} from './modules/User/utils/symbols';
 import { PrismaService } from './prisma.service';
 
 class Provider {
@@ -69,6 +76,7 @@ class Provider {
     GetPostController,
     CreateCommentController,
     GetUserController,
+    UpdateUserController,
   ],
   providers: [
     PrismaService,
@@ -92,6 +100,7 @@ class Provider {
     new Provider(CommentRepoSymbol, CommentRepo),
     new Provider(CreateCommentUseCaseSymbol, CreateCommentUseCase),
     new Provider(GetUserUseCaseSymbol, GetUserUseCase),
+    new Provider(UpdateUserUseCaseSymbol, UpdateUserUseCase),
     PostService,
   ],
 })

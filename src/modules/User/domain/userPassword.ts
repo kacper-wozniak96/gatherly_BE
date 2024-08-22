@@ -3,7 +3,7 @@ import * as Joi from 'joi';
 
 import { ValueObject } from 'src/shared/core/ValueObject';
 import { Result } from '../../../shared/core/Result';
-import { FailedField } from './UserName';
+import { IFailedField } from './UserName';
 
 interface UserPasswordProps {
   value: string;
@@ -21,7 +21,7 @@ export class UserPassword extends ValueObject<UserPasswordProps> {
     super(props);
   }
 
-  public static create(props: UserPasswordProps): Result<UserPassword> | Result<FailedField> {
+  public static create(props: UserPasswordProps): Result<UserPassword> | Result<IFailedField> {
     if (props.hashed) {
       return Result.ok<UserPassword>(new UserPassword(props));
     }
@@ -29,7 +29,7 @@ export class UserPassword extends ValueObject<UserPasswordProps> {
     const { error } = userPasswordSchema.validate(props.value);
 
     if (error) {
-      return Result.fail<FailedField>({ message: error.details[0].message, field: 'password' });
+      return Result.fail<IFailedField>({ message: error.details[0].message, field: 'password' });
     }
 
     return Result.ok<UserPassword>(new UserPassword(props));

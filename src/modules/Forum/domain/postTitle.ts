@@ -1,4 +1,4 @@
-import { FailedField } from 'src/modules/User/domain/UserName';
+import { IFailedField } from 'src/modules/User/domain/UserName';
 import { ValueObject } from 'src/shared/core/ValueObject';
 import { z } from 'zod';
 import { Result } from '../../../shared/core/Result';
@@ -28,13 +28,13 @@ export class PostTitle extends ValueObject<PostTitleProps> {
     return this.props.value;
   }
 
-  public static create(props: PostTitleProps): Result<PostTitle | FailedField> {
+  public static create(props: PostTitleProps): Result<PostTitle | IFailedField> {
     const validationResult = newChema.safeParse({ title: props.value });
 
     if (!validationResult.success) {
       const error = validationResult.error.errors[0];
 
-      return Result.fail<FailedField>({
+      return Result.fail<IFailedField>({
         message: error.message,
         field: error.path[0] as keyof typeof newChema,
       });

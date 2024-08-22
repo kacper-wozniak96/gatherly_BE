@@ -11,8 +11,24 @@ export class UserRepo implements IUserRepo {
   constructor(private prisma: PrismaService) {}
 
   async save(user: User): Promise<void> {
-    const hashedPassword = await user.props.password.hashPassword();
+    const postId = user.userId.getValue().toValue();
 
+    const exists = Number.isInteger(postId);
+
+    console.log({ user: user.username.value });
+
+    if (exists) {
+      await this.prisma.user.update({
+        where: { Id: user.userId.getValue().toValue() as number },
+        data: {
+          Username: user.username.value,
+        },
+      });
+
+      return;
+    }
+
+    const hashedPassword = await user.props.password.hashPassword();
     await this.prisma.user.create({
       data: {
         Username: user.props.username.value,

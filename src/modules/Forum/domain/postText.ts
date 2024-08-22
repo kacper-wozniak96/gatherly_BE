@@ -1,4 +1,4 @@
-import { FailedField } from 'src/modules/User/domain/UserName';
+import { IFailedField } from 'src/modules/User/domain/UserName';
 import { ValueObject } from 'src/shared/core/ValueObject';
 import { z } from 'zod';
 import { Result } from '../../../shared/core/Result';
@@ -22,7 +22,7 @@ export class PostText extends ValueObject<PostTextProps> {
     return this.props.value;
   }
 
-  public static create(props: PostTextProps): Result<PostText | FailedField> {
+  public static create(props: PostTextProps): Result<PostText | IFailedField> {
     // const { error } = postTextSchema.validate(props.value);
     const validationResult = newChema.safeParse({ text: props.value });
 
@@ -33,7 +33,7 @@ export class PostText extends ValueObject<PostTextProps> {
     if (!validationResult.success) {
       const error = validationResult.error.errors[0];
 
-      return Result.fail<FailedField>({
+      return Result.fail<IFailedField>({
         message: error.message,
         field: error.path[0] as keyof typeof newChema,
       });

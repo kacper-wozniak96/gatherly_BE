@@ -1,8 +1,8 @@
-import { IFailedField } from 'src/modules/User/domain/UserName';
 import { Result } from 'src/shared/core/Result';
 import { UseCaseError } from 'src/shared/core/UseCaseError';
+import { IFailedField } from '../../domain/UserName';
 
-export namespace CreateCommentErrors {
+export namespace UpdateUserErrors {
   export class UserDoesntExistError extends Result<UseCaseError> {
     constructor() {
       super(false, {
@@ -10,13 +10,29 @@ export namespace CreateCommentErrors {
       } as UseCaseError);
     }
   }
-  export class PostDoesntExistError extends Result<UseCaseError> {
+
+  export class UsernameTakenError extends Result<UseCaseError> {
     constructor() {
       super(false, {
-        message: `Post with provided postId doesn't exist`,
+        message: [
+          {
+            field: 'username',
+            message: 'Username already taken',
+          },
+        ],
+        isFormInvalid: false,
       } as UseCaseError);
     }
   }
+
+  // export class InvalidDataError extends Result<UseCaseError> {
+  //   constructor() {
+  //     super(false, {
+  //       message: `Invalid data`,
+  //     } as UseCaseError);
+  //   }
+  // }
+
   export class InvalidDataError extends Result<UseCaseError> {
     constructor(failedFields: IFailedField[]) {
       super(false, {

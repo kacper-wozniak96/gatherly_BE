@@ -7,7 +7,7 @@ import { UserPassword } from './UserPassword';
 
 export interface UserProps {
   username: UserName;
-  password: UserPassword;
+  password?: UserPassword;
 }
 
 export class User extends AggregateRoot<UserProps> {
