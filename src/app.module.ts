@@ -34,9 +34,11 @@ import { UserRepo } from './modules/User/repos/implementations/userRepo';
 import { UserRepoSymbol } from './modules/User/repos/utils/symbols';
 import { UserCreateController } from './modules/User/useCases/CreateUser/CreateUserController';
 import { CreateUserUseCase } from './modules/User/useCases/CreateUser/CreateUserUseCase';
+import { GetUserController } from './modules/User/useCases/getUser/GetUserController';
+import { GetUserUseCase } from './modules/User/useCases/getUser/GetUserUseCase';
 import { LoginUserController } from './modules/User/useCases/Login/LoginUserController';
 import { LoginUserUseCase } from './modules/User/useCases/Login/LoginUserUseCase';
-import { CreateUserUseCaseSymbol, LoginUserUseCaseSymbol } from './modules/User/utils/symbols';
+import { CreateUserUseCaseSymbol, GetUserUseCaseSymbol, LoginUserUseCaseSymbol } from './modules/User/utils/symbols';
 import { PrismaService } from './prisma.service';
 
 class Provider {
@@ -66,6 +68,7 @@ class Provider {
     DownVotePostController,
     GetPostController,
     CreateCommentController,
+    GetUserController,
   ],
   providers: [
     PrismaService,
@@ -79,7 +82,6 @@ class Provider {
     new Provider(PostRepoSymbol, PostRepo),
     new Provider(UserRepoSymbol, UserRepo),
     new Provider(CreatePostUseCaseSymbol, CreatePostUseCase),
-
     new Provider(CreateUserUseCaseSymbol, CreateUserUseCase),
     new Provider(LoginUserUseCaseSymbol, LoginUserUseCase),
     new Provider(GetPostsUseCaseSymbol, GetPostsUseCase),
@@ -89,6 +91,7 @@ class Provider {
     new Provider(GetPostUseCaseSymbol, GetPostUseCase),
     new Provider(CommentRepoSymbol, CommentRepo),
     new Provider(CreateCommentUseCaseSymbol, CreateCommentUseCase),
+    new Provider(GetUserUseCaseSymbol, GetUserUseCase),
     PostService,
   ],
 })

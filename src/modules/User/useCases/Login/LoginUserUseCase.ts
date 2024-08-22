@@ -7,6 +7,7 @@ import { UseCase } from 'src/shared/core/UseCase';
 import { User } from '../../domain/User';
 import { UserName } from '../../domain/UserName';
 import { UserPassword } from '../../domain/UserPassword';
+import { UserMapper } from '../../mappers/User';
 import { IUserRepo } from '../../repos/userRepo';
 import { UserRepoSymbol } from '../../repos/utils/symbols';
 import { LoginUserDTO, LoginUserResponseDTO } from './LoginUserDTO';
@@ -62,6 +63,7 @@ export class LoginUserUseCase implements UseCase<LoginUserDTO, Promise<Response>
     return right(
       Result.ok<LoginUserResponseDTO>({
         accessToken,
+        user: UserMapper.toDTO(user),
       }),
     );
   }

@@ -4,6 +4,7 @@ import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { User } from '../domain/User';
 import { UserName } from '../domain/UserName';
 import { UserPassword } from '../domain/UserPassword';
+import { UserDTO } from '../dtos/user';
 
 export class UserMapper {
   public static toDomain(raw: PrismaUser): User {
@@ -26,7 +27,7 @@ export class UserMapper {
 
   public static toPersistance() {}
 
-  public static toDTO(user: User) {
+  public static toDTO(user: User): UserDTO {
     return {
       id: user.id.toValue() as number,
       username: user.username.value,
