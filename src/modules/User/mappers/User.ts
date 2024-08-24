@@ -18,6 +18,7 @@ export class UserMapper {
       {
         username: userName,
         password: userPassword,
+        avatarS3Key: raw.AvatarS3Key,
       },
       new UniqueEntityID(raw?.Id),
     );
@@ -31,6 +32,7 @@ export class UserMapper {
     return {
       id: user.id.toValue() as number,
       username: user.username.value,
+      avatarSignedURL: user.avatarSignedURL,
     };
   }
 }

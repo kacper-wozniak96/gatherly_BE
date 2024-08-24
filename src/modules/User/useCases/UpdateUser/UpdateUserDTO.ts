@@ -3,6 +3,7 @@ export interface UpdateUserRequestDTO {
 }
 
 export interface UpdateUserDTO {
-  username: string;
+  username?: string;
   userId: number;
+  file?: Express.Multer.File;
 }

@@ -8,6 +8,9 @@ import { UserPassword } from './UserPassword';
 export interface UserProps {
   username: UserName;
   password?: UserPassword;
+  avatarS3Key?: string;
+
+  avatarsignedURl?: string;
 }
 
 export class User extends AggregateRoot<UserProps> {
@@ -21,6 +24,29 @@ export class User extends AggregateRoot<UserProps> {
 
   get username(): UserName {
     return this.props.username;
+  }
+
+  get avatarS3Key(): string {
+    return this.props.avatarS3Key;
+  }
+
+  get avatarSignedURL(): string {
+    return this.props.avatarsignedURl;
+  }
+
+  updateUsername(username: UserName): Result<void> {
+    this.props.username = username;
+    return Result.ok<void>();
+  }
+
+  updateAvatarS3Key(avatarS3Key: string): Result<void> {
+    this.props.avatarS3Key = avatarS3Key;
+    return Result.ok<void>();
+  }
+
+  updateAvatartSignedUrl(avatarsignedURl: string): Result<void> {
+    this.props.avatarsignedURl = avatarsignedURl;
+    return Result.ok<void>();
   }
 
   public static create(props: UserProps, id?: UniqueEntityID): Result<User> {

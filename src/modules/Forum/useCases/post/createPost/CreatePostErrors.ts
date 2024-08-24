@@ -1,6 +1,6 @@
-import { IFailedField } from 'src/modules/User/domain/UserName';
 import { Result } from 'src/shared/core/Result';
 import { UseCaseError } from 'src/shared/core/UseCaseError';
+import { IFailedField } from 'src/utils/FailedField';
 
 export namespace CreatePostErrors {
   export class UserDoesntExistError extends Result<UseCaseError> {

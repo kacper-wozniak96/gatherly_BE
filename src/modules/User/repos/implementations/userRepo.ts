@@ -11,9 +11,9 @@ export class UserRepo implements IUserRepo {
   constructor(private prisma: PrismaService) {}
 
   async save(user: User): Promise<void> {
-    const postId = user.userId.getValue().toValue();
+    const userId = user.userId.getValue().toValue();
 
-    const exists = Number.isInteger(postId);
+    const exists = Number.isInteger(userId);
 
     console.log({ user: user.username.value });
 
@@ -21,7 +21,8 @@ export class UserRepo implements IUserRepo {
       await this.prisma.user.update({
         where: { Id: user.userId.getValue().toValue() as number },
         data: {
-          Username: user.username.value,
+          Username: user?.username?.value,
+          AvatarS3Key: user?.avatarS3Key,
         },
       });
 

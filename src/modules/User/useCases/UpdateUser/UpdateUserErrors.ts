@@ -1,6 +1,6 @@
 import { Result } from 'src/shared/core/Result';
 import { UseCaseError } from 'src/shared/core/UseCaseError';
-import { IFailedField } from '../../domain/UserName';
+import { IFailedField } from 'src/utils/FailedField';
 
 export namespace UpdateUserErrors {
   export class UserDoesntExistError extends Result<UseCaseError> {

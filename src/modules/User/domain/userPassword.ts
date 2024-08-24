@@ -2,8 +2,8 @@ import * as bcrypt from 'bcrypt';
 import * as Joi from 'joi';
 
 import { ValueObject } from 'src/shared/core/ValueObject';
+import { IFailedField } from 'src/utils/FailedField';
 import { Result } from '../../../shared/core/Result';
-import { IFailedField } from './UserName';
 
 interface UserPasswordProps {
   value: string;

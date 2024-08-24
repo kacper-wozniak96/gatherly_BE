@@ -3,7 +3,7 @@
 // //   field: string;
 // // }
 
-import { IFailedField } from 'src/modules/User/domain/UserName';
+import { IFailedField } from 'src/utils/FailedField';
 
 // // export abstract class UseCaseError implements IError {
 // //   public readonly message: string;

@@ -14,6 +14,7 @@ model User {
   Id          Int           @id @default(autoincrement())
   Username    String
   Password    String
+  AvatarS3Key String?        
   Post        Post[]
   PostVote    PostVote[]
   PostComment PostComment[]

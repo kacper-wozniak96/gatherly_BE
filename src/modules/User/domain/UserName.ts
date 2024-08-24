@@ -1,5 +1,6 @@
 import * as Joi from 'joi';
 import { ValueObject } from 'src/shared/core/ValueObject';
+import { IFailedField } from 'src/utils/FailedField';
 import { Result } from '../../../shared/core/Result';
 
 interface UserNameProps {
@@ -21,22 +22,9 @@ export class UserName extends ValueObject<UserNameProps> {
     const { error } = usernameSchema.validate(props.name);
 
     if (error) {
-      // return Result.fail<UserName>(error.details[0].message);
       return Result.fail<IFailedField>({ message: error.details[0].message, field: 'username' });
     }
 
     return Result.ok<UserName>(new UserName(props));
   }
-}
-
-export interface IFailedField {
-  field: string;
-  message: string;
-}
-
-export class FailedField implements IFailedField {
-  constructor(
-    public field: string,
-    public message: string,
-  ) {}
 }

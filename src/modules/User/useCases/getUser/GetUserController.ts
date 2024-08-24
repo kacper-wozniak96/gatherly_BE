@@ -1,6 +1,5 @@
 import { BadRequestException, Controller, Get, Inject, InternalServerErrorException, Param, ParseIntPipe } from '@nestjs/common';
 import { UserDTO } from '../../dtos/user';
-import { UserMapper } from '../../mappers/User';
 import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
 import { GetUserUseCaseSymbol } from '../../utils/symbols';
 import { GetUserErrors } from './GetUserErrors';
@@ -27,6 +26,6 @@ export class GetUserController {
 
     const user = result.value.getValue();
 
-    return UserMapper.toDTO(user);
+    return user;
   }
 }

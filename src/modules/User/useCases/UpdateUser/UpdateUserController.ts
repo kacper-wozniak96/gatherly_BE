@@ -1,4 +1,17 @@
-import { Body, Controller, Inject, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Patch } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Inject,
+  InternalServerErrorException,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
 import { UpdateUserUseCaseSymbol } from '../../utils/symbols';
 import { UpdateUserRequestDTO } from './UpdateUserDTO';
@@ -9,9 +22,15 @@ import { UpdateUserUseCase } from './UpdateUserUseCase';
 export class UpdateUserController {
   constructor(@Inject(UpdateUserUseCaseSymbol) private readonly useCase: UpdateUserUseCase) {}
 
-  @Patch('/:id')
-  async updateUser(@Param('id', ParseIntPipe) userId: number, @Body() updateUserDTO: UpdateUserRequestDTO): Promise<void> {
-    const result = await this.useCase.execute({ ...updateUserDTO, userId });
+  @Post('/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  async updateUser(
+    @Param('id', ParseIntPipe) userId: number,
+    @Body() updateUserDTO: UpdateUserRequestDTO,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<void> {
+    // console.log({ file });
+    const result = await this.useCase.execute({ ...updateUserDTO, userId, file });
 
     if (result.isLeft()) {
       const error = result.value;
@@ -19,6 +38,10 @@ export class UpdateUserController {
       switch (error.constructor) {
         case UpdateUserErrors.UserDoesntExistError:
           throw new NotFoundException(error.getErrorValue());
+        case UpdateUserErrors.UsernameTakenError:
+          throw new BadRequestException(error.getErrorValue());
+        case UpdateUserErrors.InvalidDataError:
+          throw new BadRequestException(error.getErrorValue());
         default:
           throw new InternalServerErrorException(error.getErrorValue());
       }

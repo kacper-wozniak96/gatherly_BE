@@ -1,5 +1,5 @@
-import { IFailedField } from 'src/modules/User/domain/UserName';
 import { ValueObject } from 'src/shared/core/ValueObject';
+import { IFailedField } from 'src/utils/FailedField';
 import { z } from 'zod';
 import { Result } from '../../../shared/core/Result';
 

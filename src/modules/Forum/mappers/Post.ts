@@ -57,10 +57,7 @@ export class PostMapper {
       id: post.id.toValue() as number,
       title: post.title.value,
       text: post.text.value,
-      user: {
-        id: post.userId.getValue().toValue() as number,
-        username: post.user.username.value as string,
-      },
+      user: UserMapper.toDTO(post.user),
       upVotesTotalNumber: post.upVotesTotal,
       downVotesTotalNumber: post.downVotesTotal,
       isUpVotedByUser: post.isUpVotedByUser,
