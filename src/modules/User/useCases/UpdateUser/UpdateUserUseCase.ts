@@ -50,9 +50,7 @@ export class UpdateUserUseCase implements UseCase<UpdateUserDTO, Promise<Respons
         return left(new UpdateUserErrors.InvalidDataError(failedFields));
       }
 
-      const didUserSetAvatarBefore = !!user?.avatarS3Key;
-
-      if (didUserSetAvatarBefore) {
+      if (user.hasSetAvatar()) {
         await this.awsS3Service.deleteFile(user.avatarS3Key);
       }
       const avatarS3Key = uuid();

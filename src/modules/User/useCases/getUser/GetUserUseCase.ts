@@ -50,7 +50,7 @@ export class GetUserUseCase implements UseCase<GetUserRequestDTO, Promise<Respon
         Key: user.avatarS3Key,
       });
       const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-      user.updateAvatartSignedUrl(url);
+      user.updateUserAvatarSignedUrl(url);
     }
 
     const userDTO = UserMapper.toDTO(user);

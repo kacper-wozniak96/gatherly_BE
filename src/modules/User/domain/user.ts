@@ -44,9 +44,13 @@ export class User extends AggregateRoot<UserProps> {
     return Result.ok<void>();
   }
 
-  updateAvatartSignedUrl(avatarsignedURl: string): Result<void> {
+  updateUserAvatarSignedUrl(avatarsignedURl: string): Result<void> {
     this.props.avatarsignedURl = avatarsignedURl;
     return Result.ok<void>();
+  }
+
+  hasSetAvatar(): boolean {
+    return !!this.props.avatarS3Key;
   }
 
   public static create(props: UserProps, id?: UniqueEntityID): Result<User> {
