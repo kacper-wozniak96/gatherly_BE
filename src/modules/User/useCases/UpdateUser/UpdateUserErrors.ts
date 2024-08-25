@@ -20,18 +20,10 @@ export namespace UpdateUserErrors {
             message: 'Username already taken',
           },
         ],
-        isFormInvalid: false,
+        isFormInvalid: true,
       } as UseCaseError);
     }
   }
-
-  // export class InvalidDataError extends Result<UseCaseError> {
-  //   constructor() {
-  //     super(false, {
-  //       message: `Invalid data`,
-  //     } as UseCaseError);
-  //   }
-  // }
 
   export class InvalidDataError extends Result<UseCaseError> {
     constructor(failedFields: IFailedField[]) {

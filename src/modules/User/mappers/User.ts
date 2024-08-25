@@ -13,12 +13,13 @@ export class UserMapper {
 
     const userName = (userNameOrError as Result<UserName>).getValue();
     const userPassword = (userPasswordOrError as Result<UserPassword>).getValue();
+    const avatarS3Key = raw?.AvatarS3Key ?? null;
 
     const userOrError = User.create(
       {
         username: userName,
         password: userPassword,
-        avatarS3Key: raw.AvatarS3Key,
+        avatarS3Key: avatarS3Key,
       },
       new UniqueEntityID(raw?.Id),
     );

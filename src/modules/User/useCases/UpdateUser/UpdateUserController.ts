@@ -29,7 +29,6 @@ export class UpdateUserController {
     @Body() updateUserDTO: UpdateUserRequestDTO,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<void> {
-    // console.log({ file });
     const result = await this.useCase.execute({ ...updateUserDTO, userId, file });
 
     if (result.isLeft()) {

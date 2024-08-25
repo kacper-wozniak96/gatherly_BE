@@ -47,6 +47,7 @@ import {
   UpdateUserUseCaseSymbol,
 } from './modules/User/utils/symbols';
 import { PrismaService } from './prisma.service';
+import { AwsS3Service, AwsS3ServiceSymbol } from './shared/infra/AWS/s3client';
 
 class Provider {
   provide: symbol;
@@ -101,6 +102,7 @@ class Provider {
     new Provider(CreateCommentUseCaseSymbol, CreateCommentUseCase),
     new Provider(GetUserUseCaseSymbol, GetUserUseCase),
     new Provider(UpdateUserUseCaseSymbol, UpdateUserUseCase),
+    new Provider(AwsS3ServiceSymbol, AwsS3Service),
     PostService,
   ],
 })

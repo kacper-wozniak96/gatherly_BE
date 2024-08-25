@@ -1,14 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { AppError } from 'src/shared/core/AppError';
 import { Either, left, Result, right } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { UseCase } from 'src/shared/core/UseCase';
-import { FailedField, IFailedField } from 'src/utils/FailedField';
+import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
+import { Changes } from 'src/utils/changes';
+import { IFailedField } from 'src/utils/FailedField';
 import { has } from 'src/utils/has';
 import { uuid } from 'uuidv4';
-import { User } from '../../domain/User';
 import { UserAvatar } from '../../domain/UserAvatar';
 import { UserId } from '../../domain/UserId';
 import { UserName } from '../../domain/UserName';
@@ -22,42 +22,15 @@ type Response = Either<
   Result<void>
 >;
 
-export interface WithChanges {
-  changes: Changes;
-}
-
-// Extracted into its own class
-export class Changes {
-  private changes: Result<any>[];
-
-  constructor() {
-    this.changes = [];
-  }
-
-  public addChange(result: Result<any>): void {
-    this.changes.push(result);
-  }
-
-  public getCombinedChangesResult(): Result<any> {
-    return Result.combine(this.changes);
-  }
-}
-
 @Injectable()
 export class UpdateUserUseCase implements UseCase<UpdateUserDTO, Promise<Response>> {
-  constructor(@Inject(UserRepoSymbol) private readonly userRepo: IUserRepo) {}
+  constructor(
+    @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
+    @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
+  ) {}
 
   async execute(updateUserDTO: UpdateUserDTO): Promise<Response> {
-    const s3 = new S3Client({
-      credentials: {
-        accessKeyId: 'AKIA4RCAOI2PVVQHNWR2',
-        secretAccessKey: '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',
-      },
-      region: 'eu-north-1',
-    });
-    let user: User;
     const changes = new Changes();
-    let avatarS3Key: string;
 
     const userIdOrError = UserId.create(new UniqueEntityID(updateUserDTO.userId));
 
@@ -65,53 +38,50 @@ export class UpdateUserUseCase implements UseCase<UpdateUserDTO, Promise<Respons
 
     const userId = userIdOrError.getValue();
 
-    user = await this.userRepo.getUserByUserId(userId);
+    const user = await this.userRepo.getUserByUserId(userId);
 
-    if (!user) {
-      return left(new UpdateUserErrors.UserDoesntExistError());
-    }
+    if (!user) return left(new UpdateUserErrors.UserDoesntExistError());
 
     if (has(updateUserDTO, 'file')) {
-      avatarS3Key = uuid();
       const userAvatarOrError = UserAvatar.create({ avatar: updateUserDTO.file });
 
-      if (userAvatarOrError.isSuccess) {
-        changes.addChange(user.updateAvatarS3Key(avatarS3Key));
-      } else {
-        left(new UpdateUserErrors.InvalidDataError([(userAvatarOrError as Result<IFailedField>).getErrorValue()]));
+      if (userAvatarOrError.isFailure) {
+        const failedFields = [(userAvatarOrError as Result<IFailedField>).getErrorValue()];
+        return left(new UpdateUserErrors.InvalidDataError(failedFields));
       }
+
+      const didUserSetAvatarBefore = !!user?.avatarS3Key;
+
+      if (didUserSetAvatarBefore) {
+        await this.awsS3Service.deleteFile(user.avatarS3Key);
+      }
+      const avatarS3Key = uuid();
+      await this.awsS3Service.sendFile(avatarS3Key, updateUserDTO.file.buffer);
+
+      changes.addChange(user.updateAvatarS3Key(avatarS3Key));
     }
 
     if (has(updateUserDTO, 'username')) {
       const updatedUsernameOrError = UserName.create({ name: updateUserDTO.username });
 
-      if (updatedUsernameOrError.isSuccess) {
-        changes.addChange(user.updateUsername(updatedUsernameOrError.getValue() as UserName));
-      } else {
-        left(new UpdateUserErrors.InvalidDataError([(updatedUsernameOrError as Result<IFailedField>).getErrorValue()]));
+      if (updatedUsernameOrError.isFailure) {
+        const failedFields = [(updatedUsernameOrError as Result<IFailedField>).getErrorValue()];
+        return left(new UpdateUserErrors.InvalidDataError(failedFields));
       }
-    }
 
-    const userWithTheSameUserName = await this.userRepo.getUserByUsername(user.username);
+      const newUserName = updatedUsernameOrError.getValue() as UserName;
+      const isUsernameTaken = await this.userRepo.getUserByUsername(newUserName);
 
-    if (userWithTheSameUserName) {
-      return left(new UpdateUserErrors.InvalidDataError([new FailedField('username', 'Username already exists')]));
-    }
-
-    if (changes.getCombinedChangesResult().isSuccess) {
-      if (updateUserDTO?.file?.buffer) {
-        await s3.send(
-          new PutObjectCommand({
-            Bucket: process.env.AWS_PUBLIC_BUCKET_NAME,
-            Key: avatarS3Key,
-            Body: updateUserDTO.file.buffer,
-          }),
-        );
+      if (isUsernameTaken) {
+        return left(new UpdateUserErrors.UsernameTakenError());
       }
-      await this.userRepo.save(user);
-    } else {
-      return left(new AppError.UnexpectedError());
+
+      changes.addChange(user.updateUsername(newUserName));
     }
+
+    if (changes.getCombinedChangesResult().isFailure) return left(new AppError.UnexpectedError());
+
+    await this.userRepo.save(user);
 
     return right(Result.ok<void>());
   }
