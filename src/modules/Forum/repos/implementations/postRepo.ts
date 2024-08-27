@@ -1,6 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
-import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { PrismaService } from 'src/prisma.service';
 import { Comments } from '../../domain/comments';
 import { Post } from '../../domain/post';
@@ -18,7 +16,6 @@ export class PostRepo implements IPostRepo {
     private prisma: PrismaService,
     @Inject(PostVoteRepoSymbol) private readonly postVoteRepo: IPostVoteRepo,
     @Inject(CommentRepoSymbol) private readonly postCommentRepo: ICommentRepo,
-    @Inject(REQUEST) private readonly request: CustomRequest,
   ) {}
 
   async save(Post: Post): Promise<void> {
@@ -68,12 +65,21 @@ export class PostRepo implements IPostRepo {
 
   async getPosts(): Promise<Post[]> {
     const posts = await this.prisma.post.findMany({
-      include: { User: true, PostVote: true, PostComment: true },
+      include: {
+        User: true,
+        PostVote: true,
+        PostComment: {
+          include: {
+            User: true,
+            Post: true,
+          },
+        },
+      },
       orderBy: { Id: 'desc' },
     });
 
     return posts.map((post) => {
-      return PostMapper.toDomain(post, this.request.user.userId);
+      return PostMapper.toDomain(post);
     });
   }
 
@@ -82,11 +88,21 @@ export class PostRepo implements IPostRepo {
 
     const post = await this.prisma.post.findUnique({
       where: { Id: postId },
-      include: { User: true, PostVote: true, PostComment: true },
+      include: {
+        User: true,
+        PostVote: true,
+        PostComment: {
+          include: {
+            Post: true,
+            User: true,
+          },
+          take: 5,
+        },
+      },
     });
 
     if (!post) return null;
 
-    return PostMapper.toDomain(post, this.request.user.userId);
+    return PostMapper.toDomain(post);
   }
 }

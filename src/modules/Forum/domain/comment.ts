@@ -1,5 +1,6 @@
 import { Result } from '../../../shared/core/Result';
 
+import { User } from 'src/modules/User/domain/User';
 import { UserId } from 'src/modules/User/domain/UserId';
 import { Entity } from 'src/shared/core/Entity';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
@@ -9,6 +10,7 @@ import { PostId } from './postId';
 
 export interface CommentProps {
   userId: UserId;
+  user: User;
   text: CommentText;
   postId: PostId;
 }
@@ -32,6 +34,10 @@ export class Comment extends Entity<CommentProps> {
 
   get text(): CommentText {
     return this.props.text;
+  }
+
+  get user(): User {
+    return this.props.user;
   }
 
   private constructor(props: CommentProps, id?: UniqueEntityID) {

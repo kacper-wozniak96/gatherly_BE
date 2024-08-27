@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Comment } from '../../domain/comment';
 import { Comments } from '../../domain/comments';
+import { PostId } from '../../domain/postId';
+import { CommentMapper } from '../../mappers/Comment';
 import { ICommentRepo } from '../postCommentRepo';
 
 @Injectable()
@@ -11,8 +13,6 @@ export class CommentRepo implements ICommentRepo {
   async save(comments: Comments): Promise<void> {
     const addedComments = comments.getNewItems();
     const deletedComments = comments.getRemovedItems();
-
-    console.log({ comments });
 
     await Promise.all([this.createMany(addedComments), this.deleteMany(deletedComments)]);
   }
@@ -33,6 +33,34 @@ export class CommentRepo implements ICommentRepo {
     await this.prisma.postComment.deleteMany({
       where: {
         Id: { in: comments.map((comment) => comment.id.toValue() as number) },
+      },
+    });
+  }
+
+  async getCommentsByPostId(PostId: PostId, offset: number): Promise<Comment[]> {
+    const postId = PostId.getValue().toValue() as number;
+
+    const comments = await this.prisma.postComment.findMany({
+      where: {
+        PostId: postId,
+      },
+      include: {
+        User: true,
+      },
+      skip: offset,
+      take: 5,
+      orderBy: { Id: 'desc' },
+    });
+
+    return comments.map((comment) => CommentMapper.toDomain(comment));
+  }
+
+  async countCommentsByPostId(PostId: PostId): Promise<number> {
+    const postId = PostId.getValue().toValue() as number;
+
+    return await this.prisma.postComment.count({
+      where: {
+        PostId: postId,
       },
     });
   }

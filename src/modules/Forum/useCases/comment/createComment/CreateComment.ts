@@ -40,7 +40,7 @@ export class CreateCommentUseCase implements UseCase<CreateCommentRequestDTO, Pr
 
     const userId = userIdOrError.getValue();
     const postId = postIdOrError.getValue();
-    const commentText = commentTextOrError.getValue();
+    const commentText = commentTextOrError.getValue() as CommentText;
 
     const user = await this.userRepo.getUserByUserId(userId);
 
@@ -54,6 +54,7 @@ export class CreateCommentUseCase implements UseCase<CreateCommentRequestDTO, Pr
       userId: userId,
       text: commentText,
       postId,
+      user,
     });
 
     if (commentOrError.isFailure) {

@@ -8,13 +8,12 @@ import { PostText } from '../domain/postText';
 import { PostTitle } from '../domain/postTitle';
 import { PostVotes } from '../domain/postVotes';
 import { PostDTO } from '../dtos/post';
-import { PostCommentMapper } from './PostComment';
+import { CommentMapper } from './Comment';
 import { PostVoteMapper } from './PostVote';
 
 export class PostMapper {
   public static toDomain(
-    raw: PrismaPost & { User: PrismaUser; PostVote: PrismaPostVote[]; PostComment: PrismaPostComment[] },
-    requestUserId?: number,
+    raw: PrismaPost & { User: PrismaUser; PostVote: PrismaPostVote[]; PostComment: (PrismaPostComment & { User: PrismaUser })[] },
   ): Post {
     const postTitleOrError = PostTitle.create({ value: raw.Title });
     const postTextOrError = PostText.create({ value: raw.Text });
@@ -22,7 +21,7 @@ export class PostMapper {
 
     const user = UserMapper.toDomain(raw.User);
     const votes = PostVotes.create(raw.PostVote.map((vote) => PostVoteMapper.toDomain(vote)));
-    const postComments = Comments.create(raw.PostComment.map((comment) => PostCommentMapper.toDomain(comment)));
+    const comments = Comments.create(raw.PostComment.map((comment) => CommentMapper.toDomain(comment)));
 
     const postOrError = Post.create(
       {
@@ -30,12 +29,14 @@ export class PostMapper {
         text: postTextOrError.getValue() as PostText,
         userId: userIdOrError.getValue(),
         user: user,
-        downVotesTotal: votes.getDownVotesTotal(),
-        upVotesTotal: votes.getUpVotesTotal(),
-        isDownVotedByUser: votes.isDownvotedByUser(requestUserId),
-        isUpVotedByUser: votes.isUpVotedByUser(requestUserId),
+        // downVotesTotal: votes.getDownVotesTotal(),
+        // upVotesTotal: votes.getUpVotesTotal(),
+        // isDownVotedByUser: votes.isDownvotedByUser(requestUserId),
+        // isUpVotedByUser: votes.isUpVotedByUser(requestUserId),
         createdAt: raw.CreatedAt,
-        postCommentsTotal: postComments.getCommentsTotalNumber(),
+        // postCommentsTotal: comments.getCommentsTotalNumber(),
+        votes: votes,
+        comments: comments,
       },
       new UniqueEntityID(raw?.Id),
     );
@@ -52,18 +53,22 @@ export class PostMapper {
     };
   }
 
-  public static toDTO(post: Post): PostDTO {
+  public static toDTO(post: Post, requestUserId: number): PostDTO {
     return {
       id: post.id.toValue() as number,
       title: post.title.value,
       text: post.text.value,
       user: UserMapper.toDTO(post.user),
-      upVotesTotalNumber: post.upVotesTotal,
-      downVotesTotalNumber: post.downVotesTotal,
-      isUpVotedByUser: post.isUpVotedByUser,
-      isDownVotedByUser: post.isDownVotedByUser,
+      upVotesTotalNumber: post.votes.getUpVotesTotal(),
+      downVotesTotalNumber: post.votes.getDownVotesTotal(),
+      isUpVotedByUser: post.votes.isUpVotedByUser(requestUserId),
+      // isUpVotedByUser: post.isUpVotedByUser,
+      isDownVotedByUser: post.votes.isDownvotedByUser(requestUserId),
+      // isDownVotedByUser: post.isDownVotedByUser,
       createdAt: post.createdAt,
-      postCommentTotalNumber: post.postCommentsTotal,
+      postCommentsTotalNumber: post.comments.getCommentsTotalNumber(),
+      // postCommentTotalNumber: post.postCommentsTotal,
+      comments: post.comments.getItems().map((comment) => CommentMapper.toDTO(comment)),
     };
   }
 }

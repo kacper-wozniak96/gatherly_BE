@@ -5,12 +5,15 @@ import { JwtAuthGuard } from './modules/AuthModule/Auth.guard';
 import { AuthService } from './modules/AuthModule/Auth.service';
 import { JwtStrategy } from './modules/AuthModule/strategies/jwt.strategy';
 import { PostService } from './modules/Forum/domain/services/PostService';
-import { CommentRepo } from './modules/Forum/repos/implementations/postCommentRepo';
+import { CommentRepo } from './modules/Forum/repos/implementations/commentRepo';
 import { PostRepo } from './modules/Forum/repos/implementations/postRepo';
 import { PostVoteRepo } from './modules/Forum/repos/implementations/postVoteRepo';
 import { CommentRepoSymbol, PostRepoSymbol, PostVoteRepoSymbol } from './modules/Forum/repos/utils/symbols';
-import { CreateCommentUseCase } from './modules/Forum/useCases/post/createComment/CreateComment';
-import { CreateCommentController } from './modules/Forum/useCases/post/createComment/CreateCommentController';
+import { CreateCommentUseCase } from './modules/Forum/useCases/comment/createComment/CreateComment';
+import { CreateCommentController } from './modules/Forum/useCases/comment/createComment/CreateCommentController';
+import { GetCommentsController } from './modules/Forum/useCases/comment/getComments/GetCommentsController';
+import { GetCommentsUseCase } from './modules/Forum/useCases/comment/getComments/GetCommentsUseCase';
+import { CreateCommentUseCaseSymbol, GetCommentsUseCaseSymbol } from './modules/Forum/useCases/comment/utils/symbols';
 import { CreatePostUseCase } from './modules/Forum/useCases/post/createPost/CreatePost';
 import { CreatePostController } from './modules/Forum/useCases/post/createPost/CreatePostController';
 import { DownVotePostController } from './modules/Forum/useCases/post/downVotePost/DownVotePostController';
@@ -22,7 +25,6 @@ import { GetPostsUseCase } from './modules/Forum/useCases/post/getPosts/GetPosts
 import { UpVotePostController } from './modules/Forum/useCases/post/upVotePost/UpVotePostController';
 import { UpVotePostUseCase } from './modules/Forum/useCases/post/upVotePost/UpVotePostUseCase';
 import {
-  CreateCommentUseCaseSymbol,
   CreatePostUseCaseSymbol,
   DownVotePostUseCaseSymbol,
   GetPostsUseCaseSymbol,
@@ -78,6 +80,7 @@ class Provider {
     CreateCommentController,
     GetUserController,
     UpdateUserController,
+    GetCommentsController,
   ],
   providers: [
     PrismaService,
@@ -103,6 +106,7 @@ class Provider {
     new Provider(GetUserUseCaseSymbol, GetUserUseCase),
     new Provider(UpdateUserUseCaseSymbol, UpdateUserUseCase),
     new Provider(AwsS3ServiceSymbol, AwsS3Service),
+    new Provider(GetCommentsUseCaseSymbol, GetCommentsUseCase),
     PostService,
   ],
 })

@@ -10,5 +10,13 @@ export interface PostDTO {
   isUpVotedByUser: boolean;
   isDownVotedByUser: boolean;
   createdAt: Date;
-  postCommentTotalNumber: number;
+  postCommentsTotalNumber: number;
+  comments: CommentDTO[];
+}
+
+export interface CommentDTO {
+  id: number;
+  postId: number;
+  text: string;
+  user: UserDTO;
 }

@@ -5,6 +5,8 @@ import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
 import { Result, right } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';
 
+import { REQUEST } from '@nestjs/core';
+import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { PostId } from 'src/modules/Forum/domain/postId';
 import { PostDTO } from 'src/modules/Forum/dtos/post';
 import { PostMapper } from 'src/modules/Forum/mappers/Post';
@@ -12,7 +14,6 @@ import { AppError } from 'src/shared/core/AppError';
 import { Either, left } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
-import { Changes } from 'src/utils/changes';
 import { GetPostDTO } from './GetPostDTO';
 import { GetPostErrors } from './GetPostErrors';
 
@@ -23,11 +24,10 @@ export class GetPostUseCase implements UseCase<undefined, Promise<Response>> {
   constructor(
     @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,
     @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
+    @Inject(REQUEST) private readonly request: CustomRequest,
   ) {}
 
   async execute(getPostDTO: GetPostDTO): Promise<Response> {
-    const changes = new Changes();
-
     const postIdOrError = PostId.create(new UniqueEntityID(getPostDTO.postId));
 
     if (postIdOrError.isFailure) return left(new AppError.UnexpectedError());
@@ -40,12 +40,21 @@ export class GetPostUseCase implements UseCase<undefined, Promise<Response>> {
 
     if (post.user.hasSetAvatar()) {
       const userAvatarUrl = await this.awsS3Service.getFileUrl(post.user.avatarS3Key);
-      changes.addChange(post.user.updateUserAvatarSignedUrl(userAvatarUrl));
+      post.user.updateUserAvatarSignedUrl(userAvatarUrl);
     }
 
-    if (changes.getCombinedChangesResult().isFailure) return left(new AppError.UnexpectedError());
+    const comments = post.comments.getItems();
 
-    const postDTO = PostMapper.toDTO(post);
+    await Promise.all(
+      comments.map(async (comment) => {
+        if (comment.user.hasSetAvatar()) {
+          const signedURL = await this.awsS3Service.getFileUrl(comment.user.avatarS3Key);
+          comment.user.updateUserAvatarSignedUrl(signedURL);
+        }
+      }),
+    );
+
+    const postDTO = PostMapper.toDTO(post, this.request.user.userId);
 
     return right(Result.ok<PostDTO>(postDTO));
   }

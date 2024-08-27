@@ -15,11 +15,11 @@ export interface PostProps {
   userId: UserId;
   user: User;
   title: PostTitle;
-  upVotesTotal?: number;
-  downVotesTotal?: number;
-  isUpVotedByUser?: boolean;
-  isDownVotedByUser?: boolean;
-  postCommentsTotal?: number;
+  // upVotesTotal?: number;
+  // downVotesTotal?: number;
+  // isUpVotedByUser?: boolean;
+  // isDownVotedByUser?: boolean;
+  // postCommentsTotal?: number;
   createdAt?: Date;
   text?: PostText;
   votes?: PostVotes;
@@ -55,25 +55,25 @@ export class Post extends AggregateRoot<PostProps> {
     return this.props.user;
   }
 
-  get upVotesTotal(): number {
-    return this.props.upVotesTotal;
-  }
+  // get upVotesTotal(): number {
+  //   return this.props.upVotesTotal;
+  // }
 
-  get downVotesTotal(): number {
-    return this.props.downVotesTotal;
-  }
+  // get downVotesTotal(): number {
+  //   return this.props.downVotesTotal;
+  // }
 
-  get isUpVotedByUser(): boolean {
-    return this.props.isUpVotedByUser;
-  }
+  // get isUpVotedByUser(): boolean {
+  //   return this.props.isUpVotedByUser;
+  // }
 
-  get isDownVotedByUser(): boolean {
-    return this.props.isDownVotedByUser;
-  }
+  // get isDownVotedByUser(): boolean {
+  //   return this.props.isDownVotedByUser;
+  // }
 
-  get postCommentsTotal(): number {
-    return this.props.postCommentsTotal;
-  }
+  // get postCommentsTotal(): number {
+  //   return this.props.postCommentsTotal;
+  // }
 
   get createdAt(): Date {
     return this.props.createdAt;
@@ -110,10 +110,10 @@ export class Post extends AggregateRoot<PostProps> {
       ...props,
       votes: props?.votes ? props.votes : PostVotes.create([]),
       comments: props?.comments ? props.comments : Comments.create([]),
-      downVotesTotal: props?.downVotesTotal ? props.downVotesTotal : 0,
-      upVotesTotal: props?.upVotesTotal ? props.upVotesTotal : 0,
-      isDownVotedByUser: props?.isDownVotedByUser ? props.isDownVotedByUser : false,
-      isUpVotedByUser: props?.isUpVotedByUser ? props.isUpVotedByUser : false,
+      // downVotesTotal: props?.downVotesTotal ? props.downVotesTotal : 0,
+      // upVotesTotal: props?.upVotesTotal ? props.upVotesTotal : 0,
+      // isDownVotedByUser: props?.isDownVotedByUser ? props.isDownVotedByUser : false,
+      // isUpVotedByUser: props?.isUpVotedByUser ? props.isUpVotedByUser : false,
       createdAt: props?.createdAt ? props.createdAt : new Date(),
     };
 
