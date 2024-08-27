@@ -5,7 +5,7 @@ import { Post } from '../../domain/post';
 import { PostId } from '../../domain/postId';
 import { PostVotes } from '../../domain/postVotes';
 import { PostMapper } from '../../mappers/Post';
-import { ICommentRepo } from '../postCommentRepo';
+import { ICommentRepo } from '../commentRepo';
 import { IPostRepo } from '../postRepo';
 import { IPostVoteRepo } from '../postVoteRepo';
 import { CommentRepoSymbol, PostVoteRepoSymbol } from '../utils/symbols';
@@ -63,7 +63,7 @@ export class PostRepo implements IPostRepo {
     return await this.postCommentRepo.save(comments);
   }
 
-  async getPosts(): Promise<Post[]> {
+  async getPosts(offset: number): Promise<Post[]> {
     const posts = await this.prisma.post.findMany({
       include: {
         User: true,
@@ -75,12 +75,18 @@ export class PostRepo implements IPostRepo {
           },
         },
       },
+      skip: offset,
+      take: 5,
       orderBy: { Id: 'desc' },
     });
 
     return posts.map((post) => {
       return PostMapper.toDomain(post);
     });
+  }
+
+  async getPostsTotalCount(): Promise<number> {
+    return await this.prisma.post.count();
   }
 
   async getPostByPostId(PostId: PostId): Promise<Post | null> {

@@ -1,22 +1,16 @@
-import { Controller, Get, Inject, InternalServerErrorException } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
-import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
-import { PostDTO } from 'src/modules/Forum/dtos/post';
-import { PostMapper } from 'src/modules/Forum/mappers/Post';
+import { Controller, Get, Inject, InternalServerErrorException, ParseIntPipe, Query } from '@nestjs/common';
 import { BASE_POST_CONTROLLER_PATH } from '../utils/baseContollerPath';
 import { GetPostsUseCaseSymbol } from '../utils/symbols';
+import { GetPostsResponseDTO } from './GetPostsDTO';
 import { GetPostsUseCase } from './GetPostsUseCase';
 
 @Controller(BASE_POST_CONTROLLER_PATH)
 export class GetPostsController {
-  constructor(
-    @Inject(GetPostsUseCaseSymbol) private readonly getPostsUseCase: GetPostsUseCase,
-    @Inject(REQUEST) private readonly request: CustomRequest,
-  ) {}
+  constructor(@Inject(GetPostsUseCaseSymbol) private readonly getPostsUseCase: GetPostsUseCase) {}
 
   @Get('')
-  async execute(): Promise<PostDTO[] | void> {
-    const result = await this.getPostsUseCase.execute();
+  async execute(@Query('offset', ParseIntPipe) offset: number): Promise<GetPostsResponseDTO | void> {
+    const result = await this.getPostsUseCase.execute({ offset });
 
     if (result.isLeft()) {
       const error = result.value;
@@ -27,8 +21,8 @@ export class GetPostsController {
       }
     }
 
-    const posts = result.value.getValue();
+    const data = result.value.getValue();
 
-    return posts.map((post) => PostMapper.toDTO(post, this.request.user.userId));
+    return data;
   }
 }

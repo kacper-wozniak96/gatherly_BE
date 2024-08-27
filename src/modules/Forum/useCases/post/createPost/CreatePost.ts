@@ -14,10 +14,10 @@ import { UserRepoSymbol } from 'src/modules/User/repos/utils/symbols';
 import { AppError } from 'src/shared/core/AppError';
 import { Either, left, Result, right } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';
-import { CreatePostDTO, CreatePostResponseDTO } from './CreatePostDTO';
+import { CreatePostDTO } from './CreatePostDTO';
 import { CreatePostErrors } from './CreatePostErrors';
 
-type Response = Either<CreatePostErrors.UserDoesntExistError | AppError.UnexpectedError | Result<void>, Result<CreatePostResponseDTO>>;
+type Response = Either<CreatePostErrors.UserDoesntExistError | AppError.UnexpectedError | Result<void>, Result<void>>;
 
 @Injectable()
 export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Response>> {
@@ -28,23 +28,13 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Respons
   ) {}
 
   async execute(createPostDTO: CreatePostDTO): Promise<Response> {
-    // console.log('yooo');
-    // console.log({ createPostDTO });
     const userIdOrError = UserId.create(new UniqueEntityID(this.request.user.userId));
     const postTitleOrError = PostTitle.create({ value: createPostDTO.title });
     const postTextOrError = PostText.create({ value: createPostDTO.text });
 
-    // const failedResults = Result., postTitleOrError, postTextOrError]);
     const dtoResult = Result.combine([userIdOrError, postTitleOrError, postTextOrError]);
 
-    // if (dtoResult?.length) {
-    //   throw new ForbiddenException(new CreatePostErrors.ValueObjectValidationError(Result.returnErrorValuesFromResults(failedResults)));
-    // }
-
-    console.log({ dtoResult });
-
     if (dtoResult.isFailure) {
-      // return left(Result.fail<void>(dtoResult.getErrorValue()));
       return left(new CreatePostErrors.InvalidDataError(dtoResult.getErrorValue()));
     }
 
@@ -64,10 +54,6 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Respons
     });
 
     if (postOrError.isFailure) {
-      // throw new ForbiddenException(new CreatePostErrors.PostCreationError());
-      // return left(new AppError.UnexpectedError(postOrError));
-      // return left(Result.fail<any>(postOrError.getErrorValue()));
-      // return left(AppError.UnexpectedError);
       return left(new AppError.UnexpectedError());
     }
 
@@ -75,6 +61,6 @@ export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Respons
 
     await this.postRepo.save(post);
 
-    return right(Result.ok<CreatePostResponseDTO>({ post }));
+    return right(Result.ok<void>());
   }
 }

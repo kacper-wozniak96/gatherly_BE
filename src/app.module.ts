@@ -11,9 +11,15 @@ import { PostVoteRepo } from './modules/Forum/repos/implementations/postVoteRepo
 import { CommentRepoSymbol, PostRepoSymbol, PostVoteRepoSymbol } from './modules/Forum/repos/utils/symbols';
 import { CreateCommentUseCase } from './modules/Forum/useCases/comment/createComment/CreateComment';
 import { CreateCommentController } from './modules/Forum/useCases/comment/createComment/CreateCommentController';
+import { DeleteCommentUseCase } from './modules/Forum/useCases/comment/deleteComment/DeleteComment';
+import { DeleteCommentController } from './modules/Forum/useCases/comment/deleteComment/DeleteCommentController';
 import { GetCommentsController } from './modules/Forum/useCases/comment/getComments/GetCommentsController';
 import { GetCommentsUseCase } from './modules/Forum/useCases/comment/getComments/GetCommentsUseCase';
-import { CreateCommentUseCaseSymbol, GetCommentsUseCaseSymbol } from './modules/Forum/useCases/comment/utils/symbols';
+import {
+  CreateCommentUseCaseSymbol,
+  DeleteCommentUseCaseSymbol,
+  GetCommentsUseCaseSymbol,
+} from './modules/Forum/useCases/comment/utils/symbols';
 import { CreatePostUseCase } from './modules/Forum/useCases/post/createPost/CreatePost';
 import { CreatePostController } from './modules/Forum/useCases/post/createPost/CreatePostController';
 import { DownVotePostController } from './modules/Forum/useCases/post/downVotePost/DownVotePostController';
@@ -81,6 +87,7 @@ class Provider {
     GetUserController,
     UpdateUserController,
     GetCommentsController,
+    DeleteCommentController,
   ],
   providers: [
     PrismaService,
@@ -107,6 +114,7 @@ class Provider {
     new Provider(UpdateUserUseCaseSymbol, UpdateUserUseCase),
     new Provider(AwsS3ServiceSymbol, AwsS3Service),
     new Provider(GetCommentsUseCaseSymbol, GetCommentsUseCase),
+    new Provider(DeleteCommentUseCaseSymbol, DeleteCommentUseCase),
     PostService,
   ],
 })

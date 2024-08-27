@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Comment } from '../../domain/comment';
+import { CommentId } from '../../domain/commentId';
 import { Comments } from '../../domain/comments';
 import { PostId } from '../../domain/postId';
 import { CommentMapper } from '../../mappers/Comment';
-import { ICommentRepo } from '../postCommentRepo';
+import { ICommentRepo } from '../commentRepo';
 
 @Injectable()
 export class CommentRepo implements ICommentRepo {
@@ -53,6 +54,21 @@ export class CommentRepo implements ICommentRepo {
     });
 
     return comments.map((comment) => CommentMapper.toDomain(comment));
+  }
+
+  async getCommentByCommentId(CommentId: CommentId): Promise<Comment> {
+    const commentId = CommentId.getValue().toValue() as number;
+
+    const comment = await this.prisma.postComment.findUnique({
+      where: {
+        Id: commentId,
+      },
+      include: {
+        User: true,
+      },
+    });
+
+    return CommentMapper.toDomain(comment);
   }
 
   async countCommentsByPostId(PostId: PostId): Promise<number> {

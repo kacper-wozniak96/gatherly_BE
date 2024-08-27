@@ -96,6 +96,11 @@ export class Post extends AggregateRoot<PostProps> {
     return Result.ok<void>();
   }
 
+  public deleteComment(comment: Comment): Result<void> {
+    this.props.comments.remove(comment);
+    return Result.ok<void>();
+  }
+
   public removeComment(comment: Comment): Result<void> {
     this.props.comments.remove(comment);
     return Result.ok<void>();
