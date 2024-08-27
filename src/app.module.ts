@@ -22,6 +22,8 @@ import {
 } from './modules/Forum/useCases/comment/utils/symbols';
 import { CreatePostUseCase } from './modules/Forum/useCases/post/createPost/CreatePost';
 import { CreatePostController } from './modules/Forum/useCases/post/createPost/CreatePostController';
+import { DeletePostUseCase } from './modules/Forum/useCases/post/deletePost/DeletePost';
+import { DeletePostController } from './modules/Forum/useCases/post/deletePost/DeletePostController';
 import { DownVotePostController } from './modules/Forum/useCases/post/downVotePost/DownVotePostController';
 import { DownVotePostUseCase } from './modules/Forum/useCases/post/downVotePost/DownVotePostUseCase';
 import { GetPostController } from './modules/Forum/useCases/post/getPost/GetPostController';
@@ -32,6 +34,7 @@ import { UpVotePostController } from './modules/Forum/useCases/post/upVotePost/U
 import { UpVotePostUseCase } from './modules/Forum/useCases/post/upVotePost/UpVotePostUseCase';
 import {
   CreatePostUseCaseSymbol,
+  DeletePostUseCaseSymbol,
   DownVotePostUseCaseSymbol,
   GetPostsUseCaseSymbol,
   GetPostUseCaseSymbol,
@@ -88,6 +91,7 @@ class Provider {
     UpdateUserController,
     GetCommentsController,
     DeleteCommentController,
+    DeletePostController,
   ],
   providers: [
     PrismaService,
@@ -115,6 +119,7 @@ class Provider {
     new Provider(AwsS3ServiceSymbol, AwsS3Service),
     new Provider(GetCommentsUseCaseSymbol, GetCommentsUseCase),
     new Provider(DeleteCommentUseCaseSymbol, DeleteCommentUseCase),
+    new Provider(DeletePostUseCaseSymbol, DeletePostUseCase),
     PostService,
   ],
 })

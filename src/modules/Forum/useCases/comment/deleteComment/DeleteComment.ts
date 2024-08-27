@@ -55,6 +55,8 @@ export class DeleteCommentUseCase implements UseCase<DeleteCommentUseCaseData, P
 
     if (!comment) return left(new DeleteCommentErrors.CommentDoesntExistError());
 
+    if (!comment.isCreatedByUser(userId)) return left(new DeleteCommentErrors.UserDoesntOwnCommentError());
+
     post.deleteComment(comment);
 
     await this.postRepo.save(post);

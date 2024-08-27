@@ -24,6 +24,7 @@ export interface PostProps {
   text?: PostText;
   votes?: PostVotes;
   comments?: Comments;
+  isDeleted?: boolean;
 }
 
 export class Post extends AggregateRoot<PostProps> {
@@ -53,6 +54,10 @@ export class Post extends AggregateRoot<PostProps> {
 
   get user(): User {
     return this.props.user;
+  }
+
+  get isDeleted(): boolean {
+    return this.props.isDeleted;
   }
 
   // get upVotesTotal(): number {
@@ -106,6 +111,17 @@ export class Post extends AggregateRoot<PostProps> {
     return Result.ok<void>();
   }
 
+  public delete(): void {
+    if (!this.props.isDeleted) {
+      // this.addDomainEvent(new UserDeleted(this));
+      this.props.isDeleted = true;
+    }
+  }
+
+  public isCreatedByUser(userId: UserId): boolean {
+    return this.userId.equals(userId);
+  }
+
   // public constructor(props: PostProps, id?: UniqueEntityID) {
   //   super(props, id);
   // }
@@ -115,6 +131,7 @@ export class Post extends AggregateRoot<PostProps> {
       ...props,
       votes: props?.votes ? props.votes : PostVotes.create([]),
       comments: props?.comments ? props.comments : Comments.create([]),
+      isDeleted: props.isDeleted ? props.isDeleted : false,
       // downVotesTotal: props?.downVotesTotal ? props.downVotesTotal : 0,
       // upVotesTotal: props?.upVotesTotal ? props.upVotesTotal : 0,
       // isDownVotedByUser: props?.isDownVotedByUser ? props.isDownVotedByUser : false,

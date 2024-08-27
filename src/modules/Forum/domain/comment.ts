@@ -40,6 +40,10 @@ export class Comment extends Entity<CommentProps> {
     return this.props.user;
   }
 
+  public isCreatedByUser(userId: UserId): boolean {
+    return this.props.userId.equals(userId);
+  }
+
   private constructor(props: CommentProps, id?: UniqueEntityID) {
     super(props, id);
   }

@@ -26,6 +26,7 @@ model Post {
   Title     String   @db.VarChar(200)
   Text      String   @db.VarChar(5000)
   CreatedAt DateTime @default(now())
+  IsDeleted Boolean  @default(false)
 
   User        User          @relation(fields: [UserId], references: [Id])
   PostVote    PostVote[]

@@ -11,7 +11,7 @@ export class LoginUserController {
   constructor(@Inject(LoginUserUseCaseSymbol) private readonly useCase: LoginUserUseCase) {}
 
   @Public()
-  @Post('login')
+  @Post('/login')
   async execute(@Body() loginUserDTO: LoginUserDTO): Promise<LoginUserResponseDTO | void> {
     const result = await this.useCase.execute(loginUserDTO);
 

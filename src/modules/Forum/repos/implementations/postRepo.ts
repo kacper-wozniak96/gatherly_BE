@@ -29,6 +29,7 @@ export class PostRepo implements IPostRepo {
         data: {
           Text: Post.text.value,
           Title: Post.title.value,
+          IsDeleted: Post.isDeleted,
         },
       });
 
@@ -75,6 +76,7 @@ export class PostRepo implements IPostRepo {
           },
         },
       },
+      where: { IsDeleted: false },
       skip: offset,
       take: 5,
       orderBy: { Id: 'desc' },
@@ -86,7 +88,9 @@ export class PostRepo implements IPostRepo {
   }
 
   async getPostsTotalCount(): Promise<number> {
-    return await this.prisma.post.count();
+    return await this.prisma.post.count({
+      where: { IsDeleted: false },
+    });
   }
 
   async getPostByPostId(PostId: PostId): Promise<Post | null> {

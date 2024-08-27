@@ -2,7 +2,7 @@ import { Result } from 'src/shared/core/Result';
 import { UseCaseError } from 'src/shared/core/UseCaseError';
 import { IFailedField } from 'src/utils/FailedField';
 
-export namespace DeleteCommentErrors {
+export namespace DeletePostErrors {
   export class UserDoesntExistError extends Result<UseCaseError> {
     constructor() {
       super(false, {
@@ -17,17 +17,11 @@ export namespace DeleteCommentErrors {
       } as UseCaseError);
     }
   }
-  export class CommentDoesntExistError extends Result<UseCaseError> {
+
+  export class UserDoesntOwnPostError extends Result<UseCaseError> {
     constructor() {
       super(false, {
-        message: `Comment does not exist`,
-      } as UseCaseError);
-    }
-  }
-  export class UserDoesntOwnCommentError extends Result<UseCaseError> {
-    constructor() {
-      super(false, {
-        message: `Comment created by another user`,
+        message: `Post created by another user`,
       } as UseCaseError);
     }
   }
