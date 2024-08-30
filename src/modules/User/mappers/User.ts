@@ -8,7 +8,7 @@ import { UserDTO } from '../dtos/user';
 
 export class UserMapper {
   public static toDomain(raw: PrismaUser): User {
-    const userNameOrError = UserName.create({ name: raw.Username });
+    const userNameOrError = UserName.create({ value: raw.Username });
     const userPasswordOrError = UserPassword.create({ value: raw.Password, hashed: true });
 
     const userName = (userNameOrError as Result<UserName>).getValue();

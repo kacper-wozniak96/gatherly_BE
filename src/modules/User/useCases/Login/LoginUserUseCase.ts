@@ -30,7 +30,7 @@ export class LoginUserUseCase implements UseCase<LoginUserDTO, Promise<Response>
     let username: UserName;
     let password: UserPassword;
 
-    const usernameOrError = UserName.create({ name: request.username });
+    const usernameOrError = UserName.create({ value: request.username });
     const passwordOrError = UserPassword.create({ value: request.password });
 
     const payloadResult = Result.combine([usernameOrError, passwordOrError]);

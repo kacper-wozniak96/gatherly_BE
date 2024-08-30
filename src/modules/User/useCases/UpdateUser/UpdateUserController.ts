@@ -41,6 +41,8 @@ export class UpdateUserController {
           throw new BadRequestException(error.getErrorValue());
         case UpdateUserErrors.InvalidDataError:
           throw new BadRequestException(error.getErrorValue());
+        case UpdateUserErrors.CannotUpdateGuestUserError:
+          throw new BadRequestException(error.getErrorValue());
         default:
           throw new InternalServerErrorException(error.getErrorValue());
       }

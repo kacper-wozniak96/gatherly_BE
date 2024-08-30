@@ -1,8 +1,7 @@
 import * as bcrypt from 'bcrypt';
-import * as Joi from 'joi';
-
 import { ValueObject } from 'src/shared/core/ValueObject';
 import { IFailedField } from 'src/utils/FailedField';
+import { z } from 'zod';
 import { Result } from '../../../shared/core/Result';
 
 interface UserPasswordProps {
@@ -10,7 +9,15 @@ interface UserPasswordProps {
   hashed?: boolean;
 }
 
-const userPasswordSchema = Joi.string().alphanum().min(1).max(30).required();
+const userPasswordSchema = z.object({
+  password: z
+    .string({
+      required_error: 'Password is required',
+      invalid_type_error: 'Password must be a string',
+    })
+    .min(1, { message: 'Password must be at least 1 character long' })
+    .max(30, { message: 'Password must be at most 30 characters long' }),
+});
 
 export class UserPassword extends ValueObject<UserPasswordProps> {
   get value(): string {
@@ -21,15 +28,22 @@ export class UserPassword extends ValueObject<UserPasswordProps> {
     super(props);
   }
 
-  public static create(props: UserPasswordProps): Result<UserPassword> | Result<IFailedField> {
+  public static create(props: UserPasswordProps): Result<UserPassword | IFailedField> {
     if (props.hashed) {
       return Result.ok<UserPassword>(new UserPassword(props));
     }
 
-    const { error } = userPasswordSchema.validate(props.value);
+    const validationResult = userPasswordSchema.safeParse({
+      password: props.value,
+    });
 
-    if (error) {
-      return Result.fail<IFailedField>({ message: error.details[0].message, field: 'password' });
+    if (!validationResult.success) {
+      const error = validationResult.error.errors[0];
+
+      return Result.fail<IFailedField>({
+        message: error.message,
+        field: error.path[0] as keyof typeof userPasswordSchema,
+      });
     }
 
     return Result.ok<UserPassword>(new UserPassword(props));

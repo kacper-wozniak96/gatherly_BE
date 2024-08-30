@@ -19,22 +19,21 @@ export class CreateUserUseCase implements UseCase<CreateUserDTO, Promise<Respons
   constructor(@Inject(UserRepoSymbol) private readonly userRepo: IUserRepo) {}
 
   async execute(createUserDTO: CreateUserDTO): Promise<Response> {
-    const userUsernameOrError = UserName.create({ name: createUserDTO.username });
+    const userUsernameOrError = UserName.create({ value: createUserDTO.username });
     const userPasswordOrError = UserPassword.create({ value: createUserDTO.password });
     const userConfirmPasswordOrError = UserConfirmPassword.create({ value: createUserDTO.confirmPassword });
 
     const dtoResult = Result.combine([userUsernameOrError, userPasswordOrError, userConfirmPasswordOrError]);
 
     if (dtoResult.isFailure) {
-      return left(Result.fail<void>(dtoResult.getErrorValue()));
+      return left(new CreateUserErrors.InvalidDataError(dtoResult.getErrorValue()));
     }
 
     const userName = (userUsernameOrError as Result<UserName>).getValue();
     const userPassword = (userPasswordOrError as Result<UserPassword>).getValue();
-    // const userPassword = userPasswordOrError.getValue();
     const userConfirmPassword = userConfirmPasswordOrError.getValue();
 
-    if (userPassword.value !== userConfirmPassword.value) {
+    if (userPassword.equals(userConfirmPassword) === false) {
       return left(new CreateUserErrors.PasswordsDoNotMatchError());
     }
 

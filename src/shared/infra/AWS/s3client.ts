@@ -22,9 +22,10 @@ export class AwsS3Service implements IAwsS3Service {
 
   public async sendFile(key: string, buffer: Buffer) {
     const command = new PutObjectCommand({
-      Bucket: process.env.AWS_PUBLIC_BUCKET_NAME,
+      Bucket: process.env.AWS_BEFORE_RESIZE_BUCKET_NAME,
       Key: key,
       Body: buffer,
+      ContentType: 'image/jpeg',
     });
 
     await this.s3Client.send(command);
@@ -32,7 +33,7 @@ export class AwsS3Service implements IAwsS3Service {
 
   public async deleteFile(key: string) {
     const command = new DeleteObjectCommand({
-      Bucket: process.env.AWS_PUBLIC_BUCKET_NAME,
+      Bucket: process.env.AWS_AFTER_RESIZE_BUCKET_NAME,
       Key: key,
     });
 
@@ -41,7 +42,7 @@ export class AwsS3Service implements IAwsS3Service {
 
   public async getFileUrl(key: string): Promise<string> {
     const command = new GetObjectCommand({
-      Bucket: process.env.AWS_PUBLIC_BUCKET_NAME,
+      Bucket: process.env.AWS_AFTER_RESIZE_BUCKET_NAME,
       Key: key,
     });
 

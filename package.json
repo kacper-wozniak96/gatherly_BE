@@ -44,7 +44,6 @@
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "date-fns": "^2.30.0",
-    "joi": "^17.13.3",
     "lodash": "^4.17.21",
     "mongoose": "^7.6.0",
     "nestjs-cls": "^3.6.0",

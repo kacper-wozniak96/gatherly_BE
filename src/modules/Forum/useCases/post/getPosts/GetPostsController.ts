@@ -9,8 +9,8 @@ export class GetPostsController {
   constructor(@Inject(GetPostsUseCaseSymbol) private readonly getPostsUseCase: GetPostsUseCase) {}
 
   @Get('')
-  async execute(@Query('offset', ParseIntPipe) offset: number): Promise<GetPostsResponseDTO | void> {
-    const result = await this.getPostsUseCase.execute({ offset });
+  async execute(@Query('offset', ParseIntPipe) offset: number, @Query('search') search: string): Promise<GetPostsResponseDTO | void> {
+    const result = await this.getPostsUseCase.execute({ offset, search });
 
     if (result.isLeft()) {
       const error = result.value;

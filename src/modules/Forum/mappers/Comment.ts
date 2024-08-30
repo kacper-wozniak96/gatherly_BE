@@ -18,7 +18,7 @@ export class CommentMapper {
 
     const userOrError = User.create(
       {
-        username: UserName.create({ name: raw.User.Username }).getValue() as UserName,
+        username: UserName.create({ value: raw.User.Username }).getValue() as UserName,
         avatarS3Key: raw.User.AvatarS3Key,
       },
       new UniqueEntityID(raw.UserId),

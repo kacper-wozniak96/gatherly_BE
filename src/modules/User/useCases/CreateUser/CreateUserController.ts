@@ -23,6 +23,8 @@ export class UserCreateController {
           throw new BadRequestException(error.getErrorValue());
         case CreateUserErrors.UsernameTakenError:
           throw new BadRequestException(error.getErrorValue());
+        case CreateUserErrors.InvalidDataError:
+          throw new BadRequestException(error.getErrorValue());
         default:
           throw new InternalServerErrorException(error.getErrorValue());
       }

@@ -22,10 +22,13 @@ export class GetPostsUseCase implements UseCase<GetPostsUseCaseData, Promise<Res
   ) {}
 
   async execute(useCaseData: GetPostsUseCaseData): Promise<Response> {
-    const { offset } = useCaseData;
+    const { offset, search } = useCaseData;
 
     try {
-      const [posts, postsTotalCount] = await Promise.all([this.postRepo.getPosts(offset), this.postRepo.getPostsTotalCount()]);
+      const [posts, postsTotalCount] = await Promise.all([
+        this.postRepo.getPosts(offset, search),
+        this.postRepo.getPostsTotalCount(search),
+      ]);
 
       const postsDTO = posts.map((post) => PostMapper.toDTO(post, this.request.user.userId));
 

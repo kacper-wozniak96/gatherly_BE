@@ -11,6 +11,14 @@ export namespace UpdateUserErrors {
     }
   }
 
+  export class CannotUpdateGuestUserError extends Result<UseCaseError> {
+    constructor() {
+      super(false, {
+        message: `Cannot update guest user. Create your own account and try again`,
+      } as UseCaseError);
+    }
+  }
+
   export class UsernameTakenError extends Result<UseCaseError> {
     constructor() {
       super(false, {

@@ -1,5 +1,5 @@
 export interface UpdateUserRequestDTO {
-  username: string;
+  username?: string;
 }
 
 export interface UpdateUserDTO {

@@ -42,6 +42,10 @@ export class UpdateUserUseCase implements UseCase<UpdateUserDTO, Promise<Respons
 
     if (!user) return left(new UpdateUserErrors.UserDoesntExistError());
 
+    if (user.isGuest()) {
+      return left(new UpdateUserErrors.CannotUpdateGuestUserError());
+    }
+
     if (has(updateUserDTO, 'file')) {
       const userAvatarOrError = UserAvatar.create({ avatar: updateUserDTO.file });
 
@@ -60,7 +64,7 @@ export class UpdateUserUseCase implements UseCase<UpdateUserDTO, Promise<Respons
     }
 
     if (has(updateUserDTO, 'username')) {
-      const updatedUsernameOrError = UserName.create({ name: updateUserDTO.username });
+      const updatedUsernameOrError = UserName.create({ value: updateUserDTO.username });
 
       if (updatedUsernameOrError.isFailure) {
         const failedFields = [(updatedUsernameOrError as Result<IFailedField>).getErrorValue()];

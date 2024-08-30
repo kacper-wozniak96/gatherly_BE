@@ -53,6 +53,10 @@ export class User extends AggregateRoot<UserProps> {
     return !!this.props.avatarS3Key;
   }
 
+  isGuest(): boolean {
+    return this.props.username.value === 'guest';
+  }
+
   public static create(props: UserProps, id?: UniqueEntityID): Result<User> {
     const isNewMember = !!id;
 

@@ -64,7 +64,7 @@ export class PostRepo implements IPostRepo {
     return await this.postCommentRepo.save(comments);
   }
 
-  async getPosts(offset: number): Promise<Post[]> {
+  async getPosts(offset: number, search: string): Promise<Post[]> {
     const posts = await this.prisma.post.findMany({
       include: {
         User: true,
@@ -76,7 +76,21 @@ export class PostRepo implements IPostRepo {
           },
         },
       },
-      where: { IsDeleted: false },
+      where: {
+        AND: [
+          { IsDeleted: false },
+          {
+            OR: [
+              {
+                Title: { contains: search },
+              },
+              {
+                Text: { contains: search },
+              },
+            ],
+          },
+        ],
+      },
       skip: offset,
       take: 5,
       orderBy: { Id: 'desc' },
@@ -87,9 +101,23 @@ export class PostRepo implements IPostRepo {
     });
   }
 
-  async getPostsTotalCount(): Promise<number> {
+  async getPostsTotalCount(search: string): Promise<number> {
     return await this.prisma.post.count({
-      where: { IsDeleted: false },
+      where: {
+        AND: [
+          { IsDeleted: false },
+          {
+            OR: [
+              {
+                Title: { contains: search },
+              },
+              {
+                Text: { contains: search },
+              },
+            ],
+          },
+        ],
+      },
     });
   }
 
