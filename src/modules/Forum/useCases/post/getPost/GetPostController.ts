@@ -25,7 +25,7 @@ export class GetPostController {
     }
 
     const post = result.value.getValue();
-
+    console.log({ post });
     return post;
   }
 }

@@ -118,6 +118,16 @@ export class Post extends AggregateRoot<PostProps> {
     }
   }
 
+  public updateTitle(title: PostTitle): Result<void> {
+    this.props.title = title;
+    return Result.ok<void>();
+  }
+
+  public updateText(text: PostText): Result<void> {
+    this.props.text = text;
+    return Result.ok<void>();
+  }
+
   public isCreatedByUser(userId: UserId): boolean {
     return this.userId.equals(userId);
   }
