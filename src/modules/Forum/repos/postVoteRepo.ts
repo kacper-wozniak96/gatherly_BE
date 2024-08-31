@@ -7,4 +7,6 @@ export interface IPostVoteRepo {
   create(postVotes: PostVotes): Promise<void>;
   getVotesForPostByUserId(postId: PostId, userId: UserId): Promise<PostVote[]>;
   save(postVotes: PostVotes): Promise<void>;
+  getDownvotesCountByUser(userId: UserId): Promise<number>;
+  getUpvotesCountByUser(userId: UserId): Promise<number>;
 }

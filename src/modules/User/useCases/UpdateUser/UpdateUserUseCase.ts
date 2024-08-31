@@ -58,7 +58,7 @@ export class UpdateUserUseCase implements UseCase<UpdateUserDTO, Promise<Respons
         await this.awsS3Service.deleteFile(user.avatarS3Key);
       }
       const avatarS3Key = uuid();
-      await this.awsS3Service.sendFile(avatarS3Key, updateUserDTO.file.buffer);
+      await this.awsS3Service.sendAvatarImage(avatarS3Key, updateUserDTO.file.buffer);
 
       changes.addChange(user.updateAvatarS3Key(avatarS3Key));
     }

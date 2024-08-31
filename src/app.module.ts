@@ -48,6 +48,8 @@ import { UserRepo } from './modules/User/repos/implementations/userRepo';
 import { UserRepoSymbol } from './modules/User/repos/utils/symbols';
 import { UserCreateController } from './modules/User/useCases/CreateUser/CreateUserController';
 import { CreateUserUseCase } from './modules/User/useCases/CreateUser/CreateUserUseCase';
+import { GenerateUserActivityReportController } from './modules/User/useCases/GenerateUserActivityReport/GenerateUserActivityReportController';
+import { GenerateUserActivityReportUseCase } from './modules/User/useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCase';
 import { GetUserController } from './modules/User/useCases/getUser/GetUserController';
 import { GetUserUseCase } from './modules/User/useCases/getUser/GetUserUseCase';
 import { LoginUserController } from './modules/User/useCases/Login/LoginUserController';
@@ -56,12 +58,15 @@ import { UpdateUserController } from './modules/User/useCases/UpdateUser/UpdateU
 import { UpdateUserUseCase } from './modules/User/useCases/UpdateUser/UpdateUserUseCase';
 import {
   CreateUserUseCaseSymbol,
+  GenerateUserActivityReportUseCaseSymbol,
   GetUserUseCaseSymbol,
   LoginUserUseCaseSymbol,
   UpdateUserUseCaseSymbol,
 } from './modules/User/utils/symbols';
 import { PrismaService } from './prisma.service';
 import { AwsS3Service, AwsS3ServiceSymbol } from './shared/infra/AWS/s3client';
+import { PDFService } from './shared/infra/FileGenerator/pdfService';
+import { FileService } from './shared/infra/FileService/fileService';
 
 class Provider {
   provide: symbol;
@@ -91,6 +96,7 @@ class Provider {
     GetPostController,
     CreateCommentController,
     GetUserController,
+    GenerateUserActivityReportController,
     UpdateUserController,
     GetCommentsController,
     DeleteCommentController,
@@ -125,7 +131,10 @@ class Provider {
     new Provider(DeleteCommentUseCaseSymbol, DeleteCommentUseCase),
     new Provider(DeletePostUseCaseSymbol, DeletePostUseCase),
     new Provider(UpdatePostUseCaseSymbol, UpdatePostUseCase),
+    new Provider(GenerateUserActivityReportUseCaseSymbol, GenerateUserActivityReportUseCase),
+    PDFService,
     PostService,
+    FileService,
   ],
 })
 export class AppModule {

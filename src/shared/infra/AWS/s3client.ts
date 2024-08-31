@@ -3,9 +3,10 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable } from '@nestjs/common';
 
 export interface IAwsS3Service {
-  sendFile(key: string, buffer: Buffer): Promise<void>;
+  sendAvatarImage(key: string, buffer: Buffer): Promise<void>;
   deleteFile(key: string): Promise<void>;
   getFileUrl(key: string): Promise<string>;
+  sendReport(key: string, buffer: Buffer): Promise<void>;
 }
 
 export const AwsS3ServiceSymbol = Symbol('AWS_S3_Service');
@@ -20,7 +21,18 @@ export class AwsS3Service implements IAwsS3Service {
     region: process.env.AWS_S3_REGION,
   });
 
-  public async sendFile(key: string, buffer: Buffer) {
+  public async sendReport(key: string, buffer: Buffer) {
+    const command = new PutObjectCommand({
+      Bucket: process.env.AWS_REPORTS_BUCKET_NAME,
+      Key: key,
+      Body: buffer,
+      ContentType: 'application/pdf',
+    });
+
+    await this.s3Client.send(command);
+  }
+
+  public async sendAvatarImage(key: string, buffer: Buffer) {
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_BEFORE_RESIZE_BUCKET_NAME,
       Key: key,

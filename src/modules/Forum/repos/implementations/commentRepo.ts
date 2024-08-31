@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { UserId } from 'src/modules/User/domain/UserId';
 import { PrismaService } from 'src/prisma.service';
 import { Comment } from '../../domain/comment';
 import { CommentId } from '../../domain/commentId';
@@ -77,6 +78,14 @@ export class CommentRepo implements ICommentRepo {
     return await this.prisma.postComment.count({
       where: {
         PostId: postId,
+      },
+    });
+  }
+
+  async getCommentsCountByUser(userId: UserId): Promise<number> {
+    return await this.prisma.postComment.count({
+      where: {
+        UserId: userId.getValue().toValue() as number,
       },
     });
   }

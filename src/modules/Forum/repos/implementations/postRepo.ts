@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { UserId } from 'src/modules/User/domain/UserId';
 import { PrismaService } from 'src/prisma.service';
 import { Comments } from '../../domain/comments';
 import { Post } from '../../domain/post';
@@ -117,6 +118,14 @@ export class PostRepo implements IPostRepo {
             ],
           },
         ],
+      },
+    });
+  }
+
+  async getPostsCountCreatedByUser(userId: UserId): Promise<number> {
+    return await this.prisma.post.count({
+      where: {
+        AND: [{ IsDeleted: false }, { UserId: userId.getValue().toValue() as number }],
       },
     });
   }

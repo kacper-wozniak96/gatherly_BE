@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserId } from 'src/modules/User/domain/UserId';
 import { PrismaService } from 'src/prisma.service';
 import { PostId } from '../../domain/postId';
-import { PostVote } from '../../domain/postVote';
+import { EVoteType, PostVote } from '../../domain/postVote';
 import { PostVotes } from '../../domain/postVotes';
 import { PostVoteMapper } from '../../mappers/PostVote';
 import { IPostVoteRepo } from '../postVoteRepo';
@@ -64,5 +64,31 @@ export class PostVoteRepo implements IPostVoteRepo {
     });
 
     return postVotes.map((postVote) => PostVoteMapper.toDomain(postVote));
+  }
+
+  async getDownvotesCountByUser(UserId: UserId): Promise<number> {
+    const userId = UserId.getValue().toValue() as number;
+
+    const downvotesCount = await this.prisma.postVote.count({
+      where: {
+        UserId: userId,
+        VoteId: EVoteType.DOWNVOTE,
+      },
+    });
+
+    return downvotesCount;
+  }
+
+  async getUpvotesCountByUser(UserId: UserId): Promise<number> {
+    const userId = UserId.getValue().toValue() as number;
+
+    const upvotesCount = await this.prisma.postVote.count({
+      where: {
+        UserId: userId,
+        VoteId: EVoteType.UPVOTE,
+      },
+    });
+
+    return upvotesCount;
   }
 }

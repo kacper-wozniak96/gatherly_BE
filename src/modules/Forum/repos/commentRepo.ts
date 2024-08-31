@@ -1,3 +1,4 @@
+import { UserId } from 'src/modules/User/domain/UserId';
 import { Comment } from '../domain/comment';
 import { CommentId } from '../domain/commentId';
 import { Comments } from '../domain/comments';
@@ -8,4 +9,5 @@ export interface ICommentRepo {
   getCommentsByPostId(PostId: PostId, offset: number): Promise<Comment[]>;
   countCommentsByPostId(PostId: PostId): Promise<number>;
   getCommentByCommentId(CommendId: CommentId): Promise<Comment>;
+  getCommentsCountByUser(userId: UserId): Promise<number>;
 }
