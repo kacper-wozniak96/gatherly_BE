@@ -1,14 +1,16 @@
 import { BadRequestException, Body, Controller, Inject, InternalServerErrorException, Post } from '@nestjs/common';
 import { UserDTO } from '../../dtos/user';
 import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
-import { GenerateUserActivityReportUseCaseSymbol } from '../../utils/symbols';
+import { GenerateUserActivityReportUseCaseSymbolProvider } from '../../utils/symbols';
 import { GenerateUserActivityReportRequestDTO } from './GenerateUserActivityReportDTO';
 import { GenerateUserActivityReportErrors } from './GenerateUserActivityReportErrors';
-import { GenerateUserActivityReportUseCase } from './GenerateUserActivityReportUseCase';
+import { GenerateUserActivityReportUseCaseProvider } from './GenerateUserActivityReportUseCaseProvider';
 
 @Controller(BASE_USER_CONTROLLER_PATH)
 export class GenerateUserActivityReportController {
-  constructor(@Inject(GenerateUserActivityReportUseCaseSymbol) private readonly useCase: GenerateUserActivityReportUseCase) {}
+  constructor(
+    @Inject(GenerateUserActivityReportUseCaseSymbolProvider) private readonly useCase: GenerateUserActivityReportUseCaseProvider,
+  ) {}
 
   @Post('/activityReport')
   async execute(@Body() dto: GenerateUserActivityReportRequestDTO): Promise<UserDTO> {

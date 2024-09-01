@@ -3,7 +3,17 @@ import { Injectable } from '@nestjs/common';
 import { format } from 'date-fns';
 import * as fs from 'fs';
 import * as PDFDocument from 'pdfkit';
-import { UserActivityReportData } from 'src/modules/User/useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCase';
+
+interface UserActivityReportData {
+  reportId: string;
+  username: string;
+  userId: number;
+  email: string;
+  postsCreatedCount: number;
+  downvotesCount: number;
+  upvotesCount: number;
+  commentsCount: number;
+}
 
 @Injectable()
 export class PDFService {

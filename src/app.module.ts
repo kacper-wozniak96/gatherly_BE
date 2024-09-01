@@ -50,7 +50,8 @@ import { UserRepoSymbol } from './modules/User/repos/utils/symbols';
 import { UserCreateController } from './modules/User/useCases/CreateUser/CreateUserController';
 import { CreateUserUseCase } from './modules/User/useCases/CreateUser/CreateUserUseCase';
 import { GenerateUserActivityReportController } from './modules/User/useCases/GenerateUserActivityReport/GenerateUserActivityReportController';
-import { GenerateUserActivityReportUseCase } from './modules/User/useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCase';
+import { GenerateUserActivityReportUseCaseConsumer } from './modules/User/useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCaseConsumer';
+import { GenerateUserActivityReportUseCaseProvider } from './modules/User/useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCaseProvider';
 import { GetUserController } from './modules/User/useCases/getUser/GetUserController';
 import { GetUserUseCase } from './modules/User/useCases/getUser/GetUserUseCase';
 import { LoginUserController } from './modules/User/useCases/Login/LoginUserController';
@@ -59,12 +60,14 @@ import { UpdateUserController } from './modules/User/useCases/UpdateUser/UpdateU
 import { UpdateUserUseCase } from './modules/User/useCases/UpdateUser/UpdateUserUseCase';
 import {
   CreateUserUseCaseSymbol,
-  GenerateUserActivityReportUseCaseSymbol,
+  GenerateUserActivityReportUseCaseSymbolConsumer,
+  GenerateUserActivityReportUseCaseSymbolProvider,
   GetUserUseCaseSymbol,
   LoginUserUseCaseSymbol,
   UpdateUserUseCaseSymbol,
 } from './modules/User/utils/symbols';
 import { PrismaService } from './prisma.service';
+import { EQueues } from './shared/enums/Queues';
 import { AwsS3Service, AwsS3ServiceSymbol } from './shared/infra/AWS/s3client';
 import { PDFService } from './shared/infra/FileGenerator/pdfService';
 import { FileService } from './shared/infra/FileService/fileService';
@@ -94,7 +97,7 @@ class Provider {
       },
     }),
     BullModule.registerQueue({
-      name: 'audio',
+      name: EQueues.reports,
     }),
   ],
   controllers: [
@@ -142,7 +145,8 @@ class Provider {
     new Provider(DeleteCommentUseCaseSymbol, DeleteCommentUseCase),
     new Provider(DeletePostUseCaseSymbol, DeletePostUseCase),
     new Provider(UpdatePostUseCaseSymbol, UpdatePostUseCase),
-    new Provider(GenerateUserActivityReportUseCaseSymbol, GenerateUserActivityReportUseCase),
+    new Provider(GenerateUserActivityReportUseCaseSymbolProvider, GenerateUserActivityReportUseCaseProvider),
+    new Provider(GenerateUserActivityReportUseCaseSymbolConsumer, GenerateUserActivityReportUseCaseConsumer),
     new Provider(MailServiceSymbol, MailService),
     PDFService,
     PostService,

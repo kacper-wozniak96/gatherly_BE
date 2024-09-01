@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import { InjectQueue } from '@nestjs/bullmq';
 import { REQUEST } from '@nestjs/core';
-// import * as fs from 'fs';
+import { Queue } from 'bullmq';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { ICommentRepo } from 'src/modules/Forum/repos/commentRepo';
 import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
@@ -11,10 +12,13 @@ import { AppError } from 'src/shared/core/AppError';
 import { Either, left, Result, right } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { UseCase } from 'src/shared/core/UseCase';
+import { EJobs } from 'src/shared/enums/Jobs';
+import { EQueues } from 'src/shared/enums/Queues';
 import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
 import { PDFService } from 'src/shared/infra/FileGenerator/pdfService';
 import { FileService } from 'src/shared/infra/FileService/fileService';
 import { MailService, MailServiceSymbol } from 'src/shared/infra/MailService/mailService';
+import { IGenerateUserActivityReportJob } from 'src/shared/interfaces/Jobs/sendReport';
 import { ReportId } from '../../domain/ReportId';
 import { UserEmail } from '../../domain/UserEmail';
 import { UserId } from '../../domain/UserId';
@@ -25,19 +29,8 @@ import { GenerateUserActivityReportErrors } from './GenerateUserActivityReportEr
 
 type Response = Either<GenerateUserActivityReportErrors.UserDoesntExistError | AppError.UnexpectedError, Result<void>>;
 
-export interface UserActivityReportData {
-  reportId: string;
-  username: string;
-  userId: number;
-  email: string;
-  postsCreatedCount: number;
-  downvotesCount: number;
-  upvotesCount: number;
-  commentsCount: number;
-}
-
 @Injectable()
-export class GenerateUserActivityReportUseCase implements UseCase<GenerateUserActivityReportRequestDTO, Promise<Response>> {
+export class GenerateUserActivityReportUseCaseProvider implements UseCase<GenerateUserActivityReportRequestDTO, Promise<Response>> {
   constructor(
     @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
     @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,
@@ -48,9 +41,12 @@ export class GenerateUserActivityReportUseCase implements UseCase<GenerateUserAc
     private readonly pdfService: PDFService,
     private readonly fileService: FileService,
     @Inject(MailServiceSymbol) private readonly mailService: MailService,
+    @InjectQueue(EQueues.reports) private reportsQueue: Queue,
   ) {}
 
   async execute(dto: GenerateUserActivityReportRequestDTO): Promise<Response> {
+    console.time('GenerateUserActivityReport');
+
     const userIdOrError = UserId.create(new UniqueEntityID(this.request.user.userId));
     const userEmailOrError = UserEmail.create({ value: dto.email });
     const reportIdOrError = ReportId.create({ value: dto.reportId });
@@ -67,7 +63,7 @@ export class GenerateUserActivityReportUseCase implements UseCase<GenerateUserAc
 
     if (!user) return left(new GenerateUserActivityReportErrors.UserDoesntExistError());
 
-    const abosoluteFilePath = this.fileService.createPathToUploadsFolder(`${reportId.value}.pdf`);
+    // const abosoluteFilePath = this.fileService.createPathToUploadsFolder(`${reportId.value}.pdf`);
 
     const [postsCreatedCountByUser, downvotesCountByUser, upvotesCountByUser, commentsCountByUser] = await Promise.all([
       this.postRepo.getPostsCountCreatedByUser(userId),
@@ -76,25 +72,39 @@ export class GenerateUserActivityReportUseCase implements UseCase<GenerateUserAc
       this.commentRepo.getCommentsCountByUser(userId),
     ]);
 
-    await this.pdfService.generateUserActivityReport(abosoluteFilePath, {
+    const jobData: IGenerateUserActivityReportJob = {
       reportId: reportId.value,
-      username: user.username.value,
       userId: user.userId.getValue().toValue() as number,
       email: userEmail.value,
+      username: user.username.value,
       postsCreatedCount: postsCreatedCountByUser,
       downvotesCount: downvotesCountByUser,
       upvotesCount: upvotesCountByUser,
       commentsCount: commentsCountByUser,
-    });
+    };
 
-    const fileContent = await this.fileService.readFile(abosoluteFilePath);
+    await this.reportsQueue.add(EJobs.sendReport, jobData);
 
-    await this.awsS3Service.sendReport(reportId.value, fileContent);
+    // await this.pdfService.generateUserActivityReport(abosoluteFilePath, {
+    //   reportId: reportId.value,
+    //   username: user.username.value,
+    //   userId: user.userId.getValue().toValue() as number,
+    //   email: userEmail.value,
+    //   postsCreatedCount: postsCreatedCountByUser,
+    //   downvotesCount: downvotesCountByUser,
+    //   upvotesCount: upvotesCountByUser,
+    //   commentsCount: commentsCountByUser,
+    // });
 
-    await this.mailService.sendUserActivityReport(userEmail.value, reportId.value, fileContent);
+    // const fileContent = await this.fileService.readFile(abosoluteFilePath);
 
-    await this.fileService.deleteFile(abosoluteFilePath);
+    // await this.awsS3Service.sendReport(reportId.value, fileContent);
 
+    // await this.mailService.sendUserActivityReport(userEmail.value, reportId.value, fileContent);
+
+    // await this.fileService.deleteFile(abosoluteFilePath);
+
+    console.timeEnd('GenerateUserActivityReport');
     return right(Result.ok<void>());
   }
 }
