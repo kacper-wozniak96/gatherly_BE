@@ -14,6 +14,7 @@ import { UseCase } from 'src/shared/core/UseCase';
 import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
 import { PDFService } from 'src/shared/infra/FileGenerator/pdfService';
 import { FileService } from 'src/shared/infra/FileService/fileService';
+import { MailService, MailServiceSymbol } from 'src/shared/infra/MailService/mailService';
 import { ReportId } from '../../domain/ReportId';
 import { UserEmail } from '../../domain/UserEmail';
 import { UserId } from '../../domain/UserId';
@@ -46,6 +47,7 @@ export class GenerateUserActivityReportUseCase implements UseCase<GenerateUserAc
     @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
     private readonly pdfService: PDFService,
     private readonly fileService: FileService,
+    @Inject(MailServiceSymbol) private readonly mailService: MailService,
   ) {}
 
   async execute(dto: GenerateUserActivityReportRequestDTO): Promise<Response> {
@@ -88,6 +90,8 @@ export class GenerateUserActivityReportUseCase implements UseCase<GenerateUserAc
     const fileContent = await this.fileService.readFile(abosoluteFilePath);
 
     await this.awsS3Service.sendReport(reportId.value, fileContent);
+
+    await this.mailService.sendUserActivityReport(userEmail.value, reportId.value, fileContent);
 
     await this.fileService.deleteFile(abosoluteFilePath);
 

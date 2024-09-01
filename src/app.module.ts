@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bullmq';
 import { MiddlewareConsumer, Module, RequestMethod, Type } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule, JwtService } from '@nestjs/jwt';
@@ -67,6 +68,7 @@ import { PrismaService } from './prisma.service';
 import { AwsS3Service, AwsS3ServiceSymbol } from './shared/infra/AWS/s3client';
 import { PDFService } from './shared/infra/FileGenerator/pdfService';
 import { FileService } from './shared/infra/FileService/fileService';
+import { MailService, MailServiceSymbol } from './shared/infra/MailService/mailService';
 
 class Provider {
   provide: symbol;
@@ -84,6 +86,15 @@ class Provider {
       global: true,
       secret: 'secret',
       signOptions: { expiresIn: '30 days' },
+    }),
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_IP,
+        port: Number(process.env.REDIS_PORT),
+      },
+    }),
+    BullModule.registerQueue({
+      name: 'audio',
     }),
   ],
   controllers: [
@@ -132,6 +143,7 @@ class Provider {
     new Provider(DeletePostUseCaseSymbol, DeletePostUseCase),
     new Provider(UpdatePostUseCaseSymbol, UpdatePostUseCase),
     new Provider(GenerateUserActivityReportUseCaseSymbol, GenerateUserActivityReportUseCase),
+    new Provider(MailServiceSymbol, MailService),
     PDFService,
     PostService,
     FileService,

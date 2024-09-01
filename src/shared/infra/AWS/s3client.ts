@@ -37,7 +37,6 @@ export class AwsS3Service implements IAwsS3Service {
       Bucket: process.env.AWS_BEFORE_RESIZE_BUCKET_NAME,
       Key: key,
       Body: buffer,
-      ContentType: 'image/jpeg',
     });
 
     await this.s3Client.send(command);

@@ -1,0 +1,22 @@
+version: '3.1'
+
+networks:
+  app-network:
+    driver: bridge
+
+services:
+
+  redis:
+    image: redislabs/redismod
+    ports:
+      - '127.0.0.1:6379:6379/tcp'
+    healthcheck:
+      test: redis-cli ping
+      interval: 3s
+      timeout: 5s
+      retries: 5
+    restart: always
+    volumes:
+      - ./docker/redisinsight:/db
+      - ./docker/ajeetraina/data/redisinsight:/db
+      - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
