@@ -4,7 +4,7 @@ import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
 import { GenerateUserActivityReportUseCaseSymbolProvider } from '../../utils/symbols';
 import { GenerateUserActivityReportRequestDTO } from './GenerateUserActivityReportDTO';
 import { GenerateUserActivityReportErrors } from './GenerateUserActivityReportErrors';
-import { GenerateUserActivityReportUseCaseProvider } from './GenerateUserActivityReportUseCaseProvider';
+import { GenerateUserActivityReportUseCaseProvider } from './GenerateUserActivityReportUseCase';
 
 @Controller(BASE_USER_CONTROLLER_PATH)
 export class GenerateUserActivityReportController {

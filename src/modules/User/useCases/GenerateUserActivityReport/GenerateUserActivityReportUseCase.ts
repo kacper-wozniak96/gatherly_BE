@@ -14,10 +14,6 @@ import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { UseCase } from 'src/shared/core/UseCase';
 import { EJobs } from 'src/shared/enums/Jobs';
 import { EQueues } from 'src/shared/enums/Queues';
-import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
-import { PDFService } from 'src/shared/infra/FileGenerator/pdfService';
-import { FileService } from 'src/shared/infra/FileService/fileService';
-import { MailService, MailServiceSymbol } from 'src/shared/infra/MailService/mailService';
 import { IGenerateUserActivityReportJob } from 'src/shared/interfaces/Jobs/sendReport';
 import { ReportId } from '../../domain/ReportId';
 import { UserEmail } from '../../domain/UserEmail';
@@ -37,16 +33,10 @@ export class GenerateUserActivityReportUseCaseProvider implements UseCase<Genera
     @Inject(CommentRepoSymbol) private readonly commentRepo: ICommentRepo,
     @Inject(PostVoteRepoSymbol) private readonly postVoteRepo: IPostVoteRepo,
     @Inject(REQUEST) private readonly request: CustomRequest,
-    @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
-    private readonly pdfService: PDFService,
-    private readonly fileService: FileService,
-    @Inject(MailServiceSymbol) private readonly mailService: MailService,
     @InjectQueue(EQueues.reports) private reportsQueue: Queue,
   ) {}
 
   async execute(dto: GenerateUserActivityReportRequestDTO): Promise<Response> {
-    console.time('GenerateUserActivityReport');
-
     const userIdOrError = UserId.create(new UniqueEntityID(this.request.user.userId));
     const userEmailOrError = UserEmail.create({ value: dto.email });
     const reportIdOrError = ReportId.create({ value: dto.reportId });
@@ -62,8 +52,6 @@ export class GenerateUserActivityReportUseCaseProvider implements UseCase<Genera
     const user = await this.userRepo.getUserByUserId(userId);
 
     if (!user) return left(new GenerateUserActivityReportErrors.UserDoesntExistError());
-
-    // const abosoluteFilePath = this.fileService.createPathToUploadsFolder(`${reportId.value}.pdf`);
 
     const [postsCreatedCountByUser, downvotesCountByUser, upvotesCountByUser, commentsCountByUser] = await Promise.all([
       this.postRepo.getPostsCountCreatedByUser(userId),
@@ -85,26 +73,6 @@ export class GenerateUserActivityReportUseCaseProvider implements UseCase<Genera
 
     await this.reportsQueue.add(EJobs.sendReport, jobData);
 
-    // await this.pdfService.generateUserActivityReport(abosoluteFilePath, {
-    //   reportId: reportId.value,
-    //   username: user.username.value,
-    //   userId: user.userId.getValue().toValue() as number,
-    //   email: userEmail.value,
-    //   postsCreatedCount: postsCreatedCountByUser,
-    //   downvotesCount: downvotesCountByUser,
-    //   upvotesCount: upvotesCountByUser,
-    //   commentsCount: commentsCountByUser,
-    // });
-
-    // const fileContent = await this.fileService.readFile(abosoluteFilePath);
-
-    // await this.awsS3Service.sendReport(reportId.value, fileContent);
-
-    // await this.mailService.sendUserActivityReport(userEmail.value, reportId.value, fileContent);
-
-    // await this.fileService.deleteFile(abosoluteFilePath);
-
-    console.timeEnd('GenerateUserActivityReport');
     return right(Result.ok<void>());
   }
 }

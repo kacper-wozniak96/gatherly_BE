@@ -50,10 +50,12 @@ import { UserRepoSymbol } from './modules/User/repos/utils/symbols';
 import { UserCreateController } from './modules/User/useCases/CreateUser/CreateUserController';
 import { CreateUserUseCase } from './modules/User/useCases/CreateUser/CreateUserUseCase';
 import { GenerateUserActivityReportController } from './modules/User/useCases/GenerateUserActivityReport/GenerateUserActivityReportController';
+import { GenerateUserActivityReportUseCaseProvider } from './modules/User/useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCase';
 import { GenerateUserActivityReportUseCaseConsumer } from './modules/User/useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCaseConsumer';
-import { GenerateUserActivityReportUseCaseProvider } from './modules/User/useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCaseProvider';
 import { GetUserController } from './modules/User/useCases/getUser/GetUserController';
 import { GetUserUseCase } from './modules/User/useCases/getUser/GetUserUseCase';
+import { GetUsersController } from './modules/User/useCases/getUsers/GetUserController';
+import { GetUsersUseCase } from './modules/User/useCases/getUsers/GetUserUseCase';
 import { LoginUserController } from './modules/User/useCases/Login/LoginUserController';
 import { LoginUserUseCase } from './modules/User/useCases/Login/LoginUserUseCase';
 import { UpdateUserController } from './modules/User/useCases/UpdateUser/UpdateUserController';
@@ -62,6 +64,7 @@ import {
   CreateUserUseCaseSymbol,
   GenerateUserActivityReportUseCaseSymbolConsumer,
   GenerateUserActivityReportUseCaseSymbolProvider,
+  GetUsersUseCaseSymbol,
   GetUserUseCaseSymbol,
   LoginUserUseCaseSymbol,
   UpdateUserUseCaseSymbol,
@@ -116,6 +119,7 @@ class Provider {
     DeleteCommentController,
     DeletePostController,
     UpdatePostController,
+    GetUsersController,
   ],
   providers: [
     PrismaService,
@@ -148,6 +152,7 @@ class Provider {
     new Provider(GenerateUserActivityReportUseCaseSymbolProvider, GenerateUserActivityReportUseCaseProvider),
     new Provider(GenerateUserActivityReportUseCaseSymbolConsumer, GenerateUserActivityReportUseCaseConsumer),
     new Provider(MailServiceSymbol, MailService),
+    new Provider(GetUsersUseCaseSymbol, GetUsersUseCase),
     PDFService,
     PostService,
     FileService,

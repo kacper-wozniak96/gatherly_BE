@@ -6,4 +6,5 @@ export interface IUserRepo {
   save(member: User): Promise<void>;
   getUserByUserId(userId: UserId): Promise<User | null>;
   getUserByUsername(username: UserName): Promise<User | null>;
+  getUsers(): Promise<User[]>;
 }

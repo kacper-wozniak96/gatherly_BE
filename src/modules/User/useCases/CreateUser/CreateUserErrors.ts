@@ -22,7 +22,7 @@ export namespace CreateUserErrors {
       super(false, {
         message: [
           {
-            field: 'password',
+            field: 'confirmPassword',
             message: `Passwords do not match`,
           },
         ],
