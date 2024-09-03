@@ -1,4 +1,5 @@
 import { UserDTO } from 'src/modules/User/dtos/user';
+import { EBanType } from '../useCases/postBan/applyPostBan/ApplyPostBanDTO';
 
 export interface PostDTO {
   id: number;
@@ -19,4 +20,11 @@ export interface CommentDTO {
   postId: number;
   text: string;
   user: UserDTO;
+}
+
+export interface PostBanDTO {
+  id: number;
+  type: EBanType;
+  userId: number;
+  postId: number;
 }

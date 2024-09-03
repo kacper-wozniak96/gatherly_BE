@@ -1,7 +1,7 @@
 import { ValueObject } from 'src/shared/core/ValueObject';
 import { z } from 'zod';
 import { Result } from '../../../shared/core/Result';
-import { EBanType } from '../useCases/post/applyPostBan/ApplyPostBanDTO';
+import { EBanType } from '../useCases/postBan/applyPostBan/ApplyPostBanDTO';
 
 interface BanTypeProps {
   value: EBanType;

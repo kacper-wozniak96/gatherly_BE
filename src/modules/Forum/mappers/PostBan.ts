@@ -5,6 +5,7 @@ import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { BanType } from '../domain/banType';
 import { PostBan } from '../domain/postBan';
 import { PostId } from '../domain/postId';
+import { PostBanDTO } from '../dtos/post';
 
 export class PostBanMapper {
   public static toDomain(raw: PrismaPostBan): PostBan {
@@ -23,5 +24,12 @@ export class PostBanMapper {
 
   public static toPersistance() {}
 
-  public static toDTO() {}
+  public static toDTO(postBan: PostBan): PostBanDTO {
+    return {
+      id: postBan.id.toValue() as number,
+      postId: postBan.postId.getValue().toValue() as number,
+      userId: postBan.userId.getValue().toValue() as number,
+      type: postBan.type.value,
+    };
+  }
 }

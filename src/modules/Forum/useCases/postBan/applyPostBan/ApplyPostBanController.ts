@@ -9,8 +9,8 @@ import {
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
-import { BASE_POST_CONTROLLER_PATH } from '../utils/baseContollerPath';
-import { UpVotePostUseCaseSymbol } from '../utils/symbols';
+import { BASE_POST_CONTROLLER_PATH } from '../../post/utils/baseContollerPath';
+import { ApplyBanUseCaseSymbol } from '../../post/utils/symbols';
 import { ApplyPostBanRequestDTO } from './ApplyPostBanDTO';
 import { ApplyPostBanErrors } from './ApplyPostBanErrors';
 import { ApplyPostBanResponse } from './ApplyPostBanResponse';
@@ -18,7 +18,7 @@ import { ApplyPostBanUseCase } from './ApplyPostBanUseCase';
 
 @Controller(BASE_POST_CONTROLLER_PATH)
 export class ApplyPostBanController {
-  constructor(@Inject(UpVotePostUseCaseSymbol) private readonly applyPostBanUseCase: ApplyPostBanUseCase) {}
+  constructor(@Inject(ApplyBanUseCaseSymbol) private readonly applyPostBanUseCase: ApplyPostBanUseCase) {}
 
   @Post('/:id/applyBan')
   async execute(

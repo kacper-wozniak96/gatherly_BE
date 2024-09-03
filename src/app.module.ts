@@ -38,6 +38,7 @@ import { UpdatePostUseCase } from './modules/Forum/useCases/post/updatePost/Upda
 import { UpVotePostController } from './modules/Forum/useCases/post/upVotePost/UpVotePostController';
 import { UpVotePostUseCase } from './modules/Forum/useCases/post/upVotePost/UpVotePostUseCase';
 import {
+  ApplyBanUseCaseSymbol,
   CreatePostUseCaseSymbol,
   DeletePostUseCaseSymbol,
   DownVotePostUseCaseSymbol,
@@ -46,6 +47,13 @@ import {
   UpdatePostUseCaseSymbol,
   UpVotePostUseCaseSymbol,
 } from './modules/Forum/useCases/post/utils/symbols';
+import { ApplyPostBanController } from './modules/Forum/useCases/postBan/applyPostBan/ApplyPostBanController';
+import { ApplyPostBanUseCase } from './modules/Forum/useCases/postBan/applyPostBan/ApplyPostBanUseCase';
+import { GetPostBansForUserController } from './modules/Forum/useCases/postBan/getPostBansForUser/GetPostBansForUserController';
+import {
+  GetPostBansForUserUseCase,
+  GetPostBansForUserUseCaseSymbol,
+} from './modules/Forum/useCases/postBan/getPostBansForUser/GetPostBansForUserUseCase';
 import { LoggerMiddleware } from './modules/Logger/logger';
 import { UserRepo } from './modules/User/repos/implementations/userRepo';
 import { UserRepoSymbol } from './modules/User/repos/utils/symbols';
@@ -122,6 +130,8 @@ class Provider {
     DeletePostController,
     UpdatePostController,
     GetUsersController,
+    ApplyPostBanController,
+    GetPostBansForUserController,
   ],
   providers: [
     PrismaService,
@@ -156,6 +166,8 @@ class Provider {
     new Provider(MailServiceSymbol, MailService),
     new Provider(GetUsersUseCaseSymbol, GetUsersUseCase),
     new Provider(PostBanRepoSymbol, PostBanRepo),
+    new Provider(ApplyBanUseCaseSymbol, ApplyPostBanUseCase),
+    new Provider(GetPostBansForUserUseCaseSymbol, GetPostBansForUserUseCase),
     PDFService,
     PostService,
     FileService,
