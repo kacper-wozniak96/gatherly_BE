@@ -1,10 +1,12 @@
-import { PrismaClient, Vote } from '@prisma/client';
+import { BanType, PrismaClient, Vote } from '@prisma/client';
+import { banType } from './staticData/postBan';
 import { vote } from './staticData/voteType';
 
 const prisma = new PrismaClient();
 
 async function main() {
   await seed<Vote>(vote, 'vote', 'Id');
+  await seed<BanType>(banType, 'banType', 'Id');
 }
 
 main()

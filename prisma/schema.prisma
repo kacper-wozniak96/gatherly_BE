@@ -14,10 +14,11 @@ model User {
   Id          Int           @id @default(autoincrement())
   Username    String
   Password    String
-  AvatarS3Key String?        
+  AvatarS3Key String?
   Post        Post[]
   PostVote    PostVote[]
   PostComment PostComment[]
+  PostBan     PostBan[]
 }
 
 model Post {
@@ -31,6 +32,7 @@ model Post {
   User        User          @relation(fields: [UserId], references: [Id])
   PostVote    PostVote[]
   PostComment PostComment[]
+  PostBan     PostBan[]
 
   @@index([UserId], name: "UserId")
 }
@@ -53,6 +55,28 @@ model Vote {
   Label String @db.VarChar(50)
 
   PostVote PostVote[]
+}
+
+model BanType {
+  Id    Int    @id @default(autoincrement())
+  Label String @db.VarChar(50)
+
+  PostBan PostBan[]
+}
+
+model PostBan {
+  Id        Int @id @default(autoincrement())
+  PostId    Int
+  UserId    Int
+  BanTypeId Int
+
+  Post    Post    @relation(fields: [PostId], references: [Id])
+  User    User    @relation(fields: [UserId], references: [Id])
+  BanType BanType @relation(fields: [BanTypeId], references: [Id])
+
+  @@index([PostId], name: "PostId")
+  @@index([UserId], name: "UserId")
+  @@index([BanTypeId], name: "BanTypeId")
 }
 
 model PostComment {

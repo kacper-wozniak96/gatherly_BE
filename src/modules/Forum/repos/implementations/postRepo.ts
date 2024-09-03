@@ -7,6 +7,7 @@ import { PostId } from '../../domain/postId';
 import { PostVotes } from '../../domain/postVotes';
 import { PostMapper } from '../../mappers/Post';
 import { ICommentRepo } from '../commentRepo';
+import { IPostBanRepo, PostBanRepoSymbol } from '../postBanRepo';
 import { IPostRepo } from '../postRepo';
 import { IPostVoteRepo } from '../postVoteRepo';
 import { CommentRepoSymbol, PostVoteRepoSymbol } from '../utils/symbols';
@@ -17,6 +18,7 @@ export class PostRepo implements IPostRepo {
     private prisma: PrismaService,
     @Inject(PostVoteRepoSymbol) private readonly postVoteRepo: IPostVoteRepo,
     @Inject(CommentRepoSymbol) private readonly postCommentRepo: ICommentRepo,
+    @Inject(PostBanRepoSymbol) private readonly postBanRepo: IPostBanRepo,
   ) {}
 
   async save(Post: Post): Promise<void> {
@@ -36,6 +38,7 @@ export class PostRepo implements IPostRepo {
 
       await this.savePostVotes(Post.votes);
       await this.saveComments(Post.comments);
+      await this.postBanRepo.save(Post.bans);
 
       return;
     }

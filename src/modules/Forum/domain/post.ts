@@ -5,6 +5,8 @@ import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { Comment } from './comment';
 import { Comments } from './comments';
+import { PostBan } from './postBan';
+import { PostBans } from './postBans';
 import { PostId } from './postId';
 import { PostText } from './postText';
 import { PostTitle } from './postTitle';
@@ -15,15 +17,11 @@ export interface PostProps {
   userId: UserId;
   user: User;
   title: PostTitle;
-  // upVotesTotal?: number;
-  // downVotesTotal?: number;
-  // isUpVotedByUser?: boolean;
-  // isDownVotedByUser?: boolean;
-  // postCommentsTotal?: number;
   createdAt?: Date;
   text?: PostText;
   votes?: PostVotes;
   comments?: Comments;
+  bans?: PostBans;
   isDeleted?: boolean;
 }
 
@@ -52,6 +50,10 @@ export class Post extends AggregateRoot<PostProps> {
     return this.props.comments;
   }
 
+  get bans(): PostBans {
+    return this.props.bans;
+  }
+
   get user(): User {
     return this.props.user;
   }
@@ -59,26 +61,6 @@ export class Post extends AggregateRoot<PostProps> {
   get isDeleted(): boolean {
     return this.props.isDeleted;
   }
-
-  // get upVotesTotal(): number {
-  //   return this.props.upVotesTotal;
-  // }
-
-  // get downVotesTotal(): number {
-  //   return this.props.downVotesTotal;
-  // }
-
-  // get isUpVotedByUser(): boolean {
-  //   return this.props.isUpVotedByUser;
-  // }
-
-  // get isDownVotedByUser(): boolean {
-  //   return this.props.isDownVotedByUser;
-  // }
-
-  // get postCommentsTotal(): number {
-  //   return this.props.postCommentsTotal;
-  // }
 
   get createdAt(): Date {
     return this.props.createdAt;
@@ -132,20 +114,18 @@ export class Post extends AggregateRoot<PostProps> {
     return this.userId.equals(userId);
   }
 
-  // public constructor(props: PostProps, id?: UniqueEntityID) {
-  //   super(props, id);
-  // }
+  public addBan(ban: PostBan): Result<void> {
+    this.props.bans.add(ban);
+    return Result.ok<void>();
+  }
 
   public static create(props: PostProps, id?: UniqueEntityID): Result<Post> {
     const defaultValues: PostProps = {
       ...props,
       votes: props?.votes ? props.votes : PostVotes.create([]),
       comments: props?.comments ? props.comments : Comments.create([]),
+      bans: props?.bans ? props.bans : PostBans.create([]),
       isDeleted: props.isDeleted ? props.isDeleted : false,
-      // downVotesTotal: props?.downVotesTotal ? props.downVotesTotal : 0,
-      // upVotesTotal: props?.upVotesTotal ? props.upVotesTotal : 0,
-      // isDownVotedByUser: props?.isDownVotedByUser ? props.isDownVotedByUser : false,
-      // isUpVotedByUser: props?.isUpVotedByUser ? props.isUpVotedByUser : false,
       createdAt: props?.createdAt ? props.createdAt : new Date(),
     };
 
@@ -155,7 +135,6 @@ export class Post extends AggregateRoot<PostProps> {
     if (isNewPost) {
       // post.addDomainEvent(new PostCreated(post));
       // Create with initial upvote from whomever created the post
-      // post.addVote(PostVote.createUpvote(props.memberId, post.postId).getValue());
       post.addVote(PostVote.createUpvote(props.userId, post.postId).getValue());
     }
 

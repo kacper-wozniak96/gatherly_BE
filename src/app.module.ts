@@ -7,8 +7,10 @@ import { AuthService } from './modules/AuthModule/Auth.service';
 import { JwtStrategy } from './modules/AuthModule/strategies/jwt.strategy';
 import { PostService } from './modules/Forum/domain/services/PostService';
 import { CommentRepo } from './modules/Forum/repos/implementations/commentRepo';
+import { PostBanRepo } from './modules/Forum/repos/implementations/postBanRepo';
 import { PostRepo } from './modules/Forum/repos/implementations/postRepo';
 import { PostVoteRepo } from './modules/Forum/repos/implementations/postVoteRepo';
+import { PostBanRepoSymbol } from './modules/Forum/repos/postBanRepo';
 import { CommentRepoSymbol, PostRepoSymbol, PostVoteRepoSymbol } from './modules/Forum/repos/utils/symbols';
 import { CreateCommentUseCase } from './modules/Forum/useCases/comment/createComment/CreateComment';
 import { CreateCommentController } from './modules/Forum/useCases/comment/createComment/CreateCommentController';
@@ -153,6 +155,7 @@ class Provider {
     new Provider(GenerateUserActivityReportUseCaseSymbolConsumer, GenerateUserActivityReportUseCaseConsumer),
     new Provider(MailServiceSymbol, MailService),
     new Provider(GetUsersUseCaseSymbol, GetUsersUseCase),
+    new Provider(PostBanRepoSymbol, PostBanRepo),
     PDFService,
     PostService,
     FileService,
