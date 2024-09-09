@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { google } from 'googleapis';
 import * as nodemailer from 'nodemailer';
 
 export interface IMailService {
@@ -7,22 +8,32 @@ export interface IMailService {
 
 export const MailServiceSymbol = Symbol('Mail_Service');
 
+const OAuth2 = google.auth.OAuth2;
+
 @Injectable()
 export class MailService implements IMailService {
   constructor() {}
 
   private async createTransporter() {
+    const oauth2Client = new OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, 'https://developers.google.com/oauthplayground');
+
+    oauth2Client.setCredentials({
+      refresh_token: process.env.REFRESH_TOKEN,
+    });
+
+    const accessToken = await oauth2Client.getAccessToken();
+
+    console.log({ accessToken });
+
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
+      service: 'gmail',
       auth: {
         type: 'OAuth2',
         user: process.env.GMAIL_USER,
         clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
         refreshToken: process.env.REFRESH_TOKEN,
-        accessToken: process.env.ACCESS_TOKEN,
+        accessToken: accessToken.toString(),
       },
     });
 
@@ -45,7 +56,10 @@ export class MailService implements IMailService {
         },
       ],
     };
-
-    await transporter.sendMail(mailOptions);
+    try {
+      await transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.log('Error sending email: ', error);
+    }
   }
 }
