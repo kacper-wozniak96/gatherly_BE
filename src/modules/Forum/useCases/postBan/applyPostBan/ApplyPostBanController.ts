@@ -20,12 +20,13 @@ import { ApplyPostBanUseCase } from './ApplyPostBanUseCase';
 export class ApplyPostBanController {
   constructor(@Inject(ApplyBanUseCaseSymbol) private readonly applyPostBanUseCase: ApplyPostBanUseCase) {}
 
-  @Post('/:id/applyBan')
+  @Post('/:id/bans/user/:bannedUserId')
   async execute(
     @Param('id', ParseIntPipe) postId: number,
+    @Param('bannedUserId', ParseIntPipe) bannedUserId: number,
     @Body() applyPostBanDTO: ApplyPostBanRequestDTO,
   ): Promise<ApplyPostBanResponse | void> {
-    const result = await this.applyPostBanUseCase.execute({ postId, dto: applyPostBanDTO });
+    const result = await this.applyPostBanUseCase.execute({ postId, dto: applyPostBanDTO, bannedUserId });
 
     if (result.isLeft()) {
       const error = result.value;

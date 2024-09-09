@@ -27,7 +27,9 @@ export class PostBanRepo implements IPostBanRepo {
 
   async save(postBans: PostBans): Promise<void> {
     const newPostBans = postBans.getNewItems();
+    const deletedPostBans = postBans.getRemovedItems();
 
+    await this.deleteMany(deletedPostBans);
     await this.createMany(newPostBans);
   }
 
@@ -40,6 +42,16 @@ export class PostBanRepo implements IPostBanRepo {
           BanTypeId: postBan.type.value,
         };
       }),
+    });
+  }
+
+  private async deleteMany(postBans: PostBan[]): Promise<void> {
+    await this.prisma.postBan.deleteMany({
+      where: {
+        Id: {
+          in: postBans.map((postBan) => postBan.id.toValue() as number),
+        },
+      },
     });
   }
 }

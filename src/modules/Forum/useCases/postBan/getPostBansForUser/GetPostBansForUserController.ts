@@ -8,9 +8,9 @@ import {
   ParseIntPipe,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PostBanDTO } from 'src/modules/Forum/dtos/post';
+import { PostUserBanDTO } from 'src/modules/Forum/dtos/post';
 import { BASE_POST_CONTROLLER_PATH } from '../../post/utils/baseContollerPath';
-import { GetPostBansErrors } from './GetPostBansErrors';
+import { GetPostBansErrors } from './GetPostBansForUserErrors';
 import { GetPostBansForUserUseCase, GetPostBansForUserUseCaseSymbol } from './GetPostBansForUserUseCase';
 
 @Controller(BASE_POST_CONTROLLER_PATH)
@@ -18,7 +18,7 @@ export class GetPostBansForUserController {
   constructor(@Inject(GetPostBansForUserUseCaseSymbol) private readonly useCase: GetPostBansForUserUseCase) {}
 
   @Get('/:postId/bans/user/:userId')
-  async execute(@Param('postId', ParseIntPipe) postId: number, @Param('userId', ParseIntPipe) userId: number): Promise<PostBanDTO[]> {
+  async execute(@Param('postId', ParseIntPipe) postId: number, @Param('userId', ParseIntPipe) userId: number): Promise<PostUserBanDTO[]> {
     const result = await this.useCase.execute({ postId, userId });
 
     if (result.isLeft()) {

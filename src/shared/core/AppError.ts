@@ -6,13 +6,7 @@ export namespace AppError {
     public constructor() {
       super(false, {
         message: `An unexpected error occurred.`,
-      } as UseCaseError);
-      // console.log(`[AppError]: An unexpected error occurred`);
-      // console.error(err);
-    }
-
-    public static create(): UnexpectedError {
-      return new UnexpectedError();
+      });
     }
   }
 }

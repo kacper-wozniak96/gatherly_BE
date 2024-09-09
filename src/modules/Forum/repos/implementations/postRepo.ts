@@ -3,6 +3,7 @@ import { UserId } from 'src/modules/User/domain/UserId';
 import { PrismaService } from 'src/prisma.service';
 import { Comments } from '../../domain/comments';
 import { Post } from '../../domain/post';
+import { PostBans } from '../../domain/postBans';
 import { PostId } from '../../domain/postId';
 import { PostVotes } from '../../domain/postVotes';
 import { PostMapper } from '../../mappers/Post';
@@ -38,7 +39,7 @@ export class PostRepo implements IPostRepo {
 
       await this.savePostVotes(Post.votes);
       await this.saveComments(Post.comments);
-      await this.postBanRepo.save(Post.bans);
+      await this.savePostBans(Post.bans);
 
       return;
     }
@@ -66,6 +67,10 @@ export class PostRepo implements IPostRepo {
 
   private async saveComments(comments: Comments) {
     return await this.postCommentRepo.save(comments);
+  }
+
+  private async savePostBans(postBans: PostBans) {
+    return await this.postBanRepo.save(postBans);
   }
 
   async getPosts(offset: number, search: string): Promise<Post[]> {

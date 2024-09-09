@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { PostId } from 'src/modules/Forum/domain/postId';
-import { PostBanDTO } from 'src/modules/Forum/dtos/post';
+import { PostUserBanDTO } from 'src/modules/Forum/dtos/post';
 import { PostBanMapper } from 'src/modules/Forum/mappers/PostBan';
 import { PostRepo } from 'src/modules/Forum/repos/implementations/postRepo';
 import { IPostBanRepo, PostBanRepoSymbol } from 'src/modules/Forum/repos/postBanRepo';
@@ -12,18 +12,19 @@ import { UserId } from 'src/modules/User/domain/UserId';
 import { UserRepo } from 'src/modules/User/repos/implementations/userRepo';
 import { UserRepoSymbol } from 'src/modules/User/repos/utils/symbols';
 import { AppError } from 'src/shared/core/AppError';
-import { Either, left, Result, right } from 'src/shared/core/Result';
+import { Either, left, right } from 'src/shared/core/Either';
+import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { UseCase } from 'src/shared/core/UseCase';
-import { GetPostBansErrors } from './GetPostBansErrors';
 import { GetPostBansForUserUseCaseData } from './GetPostBansForUserDTO';
+import { GetPostBansErrors } from './GetPostBansForUserErrors';
 
 type Response = Either<
   | AppError.UnexpectedError
   | GetPostBansErrors.UserDoesntExistError
   | GetPostBansErrors.PostDoesntExistError
   | GetPostBansErrors.UserDoesntOwnPostError,
-  Result<PostBanDTO[]>
+  Result<PostUserBanDTO[]>
 >;
 
 export const GetPostBansForUserUseCaseSymbol = Symbol('GetPostBansForUserUseCase');
@@ -66,6 +67,6 @@ export class GetPostBansForUserUseCase implements UseCase<GetPostBansForUserUseC
 
     const userPostBansDTO = userPostBans.map((ban) => PostBanMapper.toDTO(ban));
 
-    return right(Result.ok<PostBanDTO[]>(userPostBansDTO));
+    return right(Result.ok<PostUserBanDTO[]>(userPostBansDTO));
   }
 }

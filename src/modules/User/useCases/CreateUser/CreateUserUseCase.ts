@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { AppError } from 'src/shared/core/AppError';
-import { Either, left, Result, right } from 'src/shared/core/Result';
+import { Either, left, right } from 'src/shared/core/Either';
+import { Result } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';
 import { User } from '../../domain/User';
 import { UserConfirmPassword } from '../../domain/UserConfirmPassword';

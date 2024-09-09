@@ -2,14 +2,15 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
 import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
-import { Result, right } from 'src/shared/core/Result';
+import { right } from 'src/shared/core/Either';
 import { UseCase } from 'src/shared/core/UseCase';
 
 import { REQUEST } from '@nestjs/core';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { PostMapper } from 'src/modules/Forum/mappers/Post';
 import { AppError } from 'src/shared/core/AppError';
-import { Either, left } from 'src/shared/core/Result';
+import { Either, left } from 'src/shared/core/Either';
+import { Result } from 'src/shared/core/Result';
 import { GetPostsResponseDTO, GetPostsUseCaseData } from './GetPostsDTO';
 
 type Response = Either<AppError.UnexpectedError, Result<GetPostsResponseDTO>>;

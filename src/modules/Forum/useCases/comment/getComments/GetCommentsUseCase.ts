@@ -1,14 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { CommentRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
-import { Result, right } from 'src/shared/core/Result';
+import { right } from 'src/shared/core/Either';
 import { UseCase } from 'src/shared/core/UseCase';
 
 import { PostId } from 'src/modules/Forum/domain/postId';
 import { CommentMapper } from 'src/modules/Forum/mappers/Comment';
 import { ICommentRepo } from 'src/modules/Forum/repos/commentRepo';
 import { AppError } from 'src/shared/core/AppError';
-import { Either, left } from 'src/shared/core/Result';
+import { Either, left } from 'src/shared/core/Either';
+import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
 import { GetCommentsRequestDTO, GetCommentsResponseDTO } from './GetCommentsDTO';

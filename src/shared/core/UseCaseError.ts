@@ -33,12 +33,12 @@ import { IFailedField } from 'src/utils/FailedField';
 
 interface IUseCaseError {
   message: string | IFailedField[];
-  isFormInvalid: boolean;
+  isFormInvalid?: boolean;
 }
 
 export abstract class UseCaseError implements IUseCaseError {
   public readonly message: string | IFailedField[];
-  public readonly isFormInvalid: boolean;
+  public readonly isFormInvalid?: boolean;
 
   constructor(message: string | IFailedField[], isFormInvalid = false) {
     this.message = message;

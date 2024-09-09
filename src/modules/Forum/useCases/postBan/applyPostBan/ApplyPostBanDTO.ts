@@ -1,10 +1,10 @@
 export interface ApplyPostBanRequestDTO {
-  postTypeOfBan: EBanType;
-  bannedUserId: number;
+  bansChanges: Record<EBanType, boolean>;
 }
 
 export interface ApplyPostBanUseCaseData {
   postId: number;
+  bannedUserId: number;
   dto: ApplyPostBanRequestDTO;
 }
 

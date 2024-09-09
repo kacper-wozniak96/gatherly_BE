@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
 import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
-import { Result, right } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';
 
 import { REQUEST } from '@nestjs/core';
@@ -11,7 +10,8 @@ import { PostId } from 'src/modules/Forum/domain/postId';
 import { PostDTO } from 'src/modules/Forum/dtos/post';
 import { PostMapper } from 'src/modules/Forum/mappers/Post';
 import { AppError } from 'src/shared/core/AppError';
-import { Either, left } from 'src/shared/core/Result';
+import { Either, left, right } from 'src/shared/core/Either';
+import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
 import { GetPostDTO } from './GetPostDTO';

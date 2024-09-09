@@ -22,7 +22,7 @@ export interface CommentDTO {
   user: UserDTO;
 }
 
-export interface PostBanDTO {
+export interface PostUserBanDTO {
   id: number;
   type: EBanType;
   userId: number;

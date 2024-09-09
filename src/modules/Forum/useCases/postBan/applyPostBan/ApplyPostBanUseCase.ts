@@ -3,7 +3,6 @@ import { UniqueEntityID } from '../../../../../shared/core/UniqueEntityID';
 
 import { REQUEST } from '@nestjs/core';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
-import { BanType } from 'src/modules/Forum/domain/banType';
 import { Post } from 'src/modules/Forum/domain/post';
 import { PostId } from 'src/modules/Forum/domain/postId';
 import { PostService } from 'src/modules/Forum/domain/services/PostService';
@@ -15,9 +14,11 @@ import { UserId } from 'src/modules/User/domain/UserId';
 import { IUserRepo } from 'src/modules/User/repos/userRepo';
 import { UserRepoSymbol } from 'src/modules/User/repos/utils/symbols';
 import { AppError } from 'src/shared/core/AppError';
-import { left, Result, right } from 'src/shared/core/Result';
+import { left, right } from 'src/shared/core/Either';
+import { Result } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';
-import { ApplyPostBanUseCaseData } from './ApplyPostBanDTO';
+import { has } from 'src/utils/has';
+import { ApplyPostBanUseCaseData, EBanType } from './ApplyPostBanDTO';
 import { ApplyPostBanErrors } from './ApplyPostBanErrors';
 import { ApplyPostBanResponse } from './ApplyPostBanResponse';
 
@@ -37,11 +38,11 @@ export class ApplyPostBanUseCase implements UseCase<ApplyPostBanUseCaseData, Pro
     let post: Post;
 
     const userIdOrError = UserId.create(new UniqueEntityID(this.request.user.userId));
-    const bannedUserIdOrError = UserId.create(new UniqueEntityID(applyPostBanUseCaseData.dto.bannedUserId));
+    const bannedUserIdOrError = UserId.create(new UniqueEntityID(applyPostBanUseCaseData.bannedUserId));
     const postIdOrError = PostId.create(new UniqueEntityID(applyPostBanUseCaseData.postId));
-    const banTypeOrError = BanType.create({ value: applyPostBanUseCaseData.dto.postTypeOfBan });
+    // const banTypeOrError = BanType.create({ value: applyPostBanUseCaseData.dto.postTypeOfBan });
 
-    const dtoResult = Result.combine([userIdOrError, postIdOrError, bannedUserIdOrError, banTypeOrError]);
+    const dtoResult = Result.combine([userIdOrError, postIdOrError, bannedUserIdOrError]);
 
     if (dtoResult.isFailure) {
       return left(new AppError.UnexpectedError());
@@ -50,7 +51,7 @@ export class ApplyPostBanUseCase implements UseCase<ApplyPostBanUseCaseData, Pro
     const userId = userIdOrError.getValue();
     const postId = postIdOrError.getValue();
     const bannedUserId = bannedUserIdOrError.getValue();
-    const banType = banTypeOrError.getValue();
+    // const banType = banTypeOrError.getValue();
 
     user = await this.userRepo.getUserByUserId(userId);
 
@@ -68,10 +69,50 @@ export class ApplyPostBanUseCase implements UseCase<ApplyPostBanUseCaseData, Pro
 
     const existingBansOnUser = await this.postBanRepo.getUserPostBans(post.postId, bannedUserId);
 
-    const result = this.postService.applyPostBan(post, existingBansOnUser, banType, bannedUserId);
+    const bansChanges = applyPostBanUseCaseData.dto.bansChanges;
 
-    if (result.isLeft()) {
-      return left(new AppError.UnexpectedError());
+    if (has(bansChanges, EBanType.addingComments)) {
+      const result = this.postService.handleUserPostBanChange(
+        post,
+        existingBansOnUser,
+        bannedUserId,
+        EBanType.addingComments,
+        bansChanges[EBanType.addingComments],
+      );
+
+      if (result.isLeft()) {
+        return left(result.value);
+      }
+    }
+
+    if (has(bansChanges, EBanType.downVotingAndUpVoting)) {
+      const result = this.postService.handleUserPostBanChange(
+        post,
+        existingBansOnUser,
+        bannedUserId,
+        EBanType.downVotingAndUpVoting,
+        bansChanges[EBanType.downVotingAndUpVoting],
+      );
+
+      if (result.isLeft()) {
+        return left(result.value);
+      }
+    }
+
+    console.log({ hasKey: has(bansChanges, EBanType.viewingPost) });
+
+    if (has(bansChanges, EBanType.viewingPost)) {
+      const result = this.postService.handleUserPostBanChange(
+        post,
+        existingBansOnUser,
+        bannedUserId,
+        EBanType.viewingPost,
+        bansChanges[EBanType.viewingPost],
+      );
+
+      if (result.isLeft()) {
+        return left(result.value);
+      }
     }
 
     await this.postRepo.save(post);

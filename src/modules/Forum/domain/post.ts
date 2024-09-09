@@ -119,6 +119,11 @@ export class Post extends AggregateRoot<PostProps> {
     return Result.ok<void>();
   }
 
+  public removeBan(ban: PostBan): Result<void> {
+    this.props.bans.remove(ban);
+    return Result.ok<void>();
+  }
+
   public static create(props: PostProps, id?: UniqueEntityID): Result<Post> {
     const defaultValues: PostProps = {
       ...props,
