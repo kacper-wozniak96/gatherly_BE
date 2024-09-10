@@ -7,7 +7,8 @@ import { UserRepoSymbol } from 'src/modules/User/repos/utils/symbols';
 import { UpdatePostUseCaseData } from '../../../post/updatePost/UpdatePostDTO';
 import { UpdatePostErrors } from '../../../post/updatePost/UpdatePostErrors';
 import { UpdatePostUseCase } from '../../../post/updatePost/UpdatePostUseCase';
-import { createStubPost, createStubUser } from '../../stubs/post.stub';
+import { createStubPost } from '../../stubs/post.stub';
+import { createStubUser } from '../../stubs/user.stub';
 
 describe('UpdatePostUseCase', () => {
   let useCase: UpdatePostUseCase;

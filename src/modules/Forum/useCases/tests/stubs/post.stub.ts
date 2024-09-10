@@ -38,16 +38,3 @@ export const createStubPost = (): Post => {
 
   return Post.create(postProps, postId.getValue()).getValue();
 };
-
-export const createStubUser = (): User => {
-  const userId = UserId.create(new UniqueEntityID()).getValue();
-  const userName = UserName.create({ value: 'test-user' }).getValue() as UserName;
-
-  const userProps = {
-    username: userName,
-    avatarS3Key: 'test-avatar-key',
-    avatarsignedURl: 'test-avatar-url',
-  };
-
-  return User.create(userProps, userId.getValue()).getValue();
-};
