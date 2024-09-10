@@ -56,10 +56,7 @@ export class MailService implements IMailService {
         },
       ],
     };
-    try {
-      await transporter.sendMail(mailOptions);
-    } catch (error) {
-      console.log('Error sending email: ', error);
-    }
+
+    await transporter.sendMail(mailOptions);
   }
 }
