@@ -5,7 +5,11 @@ export interface LoginUserDTO {
   password: string;
 }
 
-export interface LoginUserResponseDTO {
+export interface LoginUserResponse {
   accessToken: string;
+  user: UserDTO;
+}
+
+export interface LoginUserResponseDTO {
   user: UserDTO;
 }

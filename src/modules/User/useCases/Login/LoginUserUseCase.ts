@@ -11,12 +11,12 @@ import { UserPassword } from '../../domain/UserPassword';
 import { UserMapper } from '../../mappers/User';
 import { IUserRepo } from '../../repos/userRepo';
 import { UserRepoSymbol } from '../../repos/utils/symbols';
-import { LoginUserDTO, LoginUserResponseDTO } from './LoginUserDTO';
+import { LoginUserDTO, LoginUserResponse } from './LoginUserDTO';
 import { LoginUseCaseErrors } from './LoginUserErrors';
 
 type Response = Either<
   LoginUseCaseErrors.PasswordDoesntMatchError | LoginUseCaseErrors.UserNameDoesntExistError | AppError.UnexpectedError,
-  Result<LoginUserResponseDTO>
+  Result<LoginUserResponse>
 >;
 
 @Injectable()
@@ -62,7 +62,7 @@ export class LoginUserUseCase implements UseCase<LoginUserDTO, Promise<Response>
     const accessToken = await this.authService.signJWT(user.id.toValue() as number);
 
     return right(
-      Result.ok<LoginUserResponseDTO>({
+      Result.ok<LoginUserResponse>({
         accessToken,
         user: UserMapper.toDTO(user),
       }),

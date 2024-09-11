@@ -68,6 +68,7 @@ import { GetUsersController } from './modules/User/useCases/getUsers/GetUserCont
 import { GetUsersUseCase } from './modules/User/useCases/getUsers/GetUserUseCase';
 import { LoginUserController } from './modules/User/useCases/Login/LoginUserController';
 import { LoginUserUseCase } from './modules/User/useCases/Login/LoginUserUseCase';
+import { LogoutUserController } from './modules/User/useCases/Logout/LogoutUserController';
 import { UpdateUserController } from './modules/User/useCases/UpdateUser/UpdateUserController';
 import { UpdateUserUseCase } from './modules/User/useCases/UpdateUser/UpdateUserUseCase';
 import {
@@ -114,6 +115,7 @@ class Provider {
     }),
   ],
   controllers: [
+    LogoutUserController,
     CreatePostController,
     UserCreateController,
     LoginUserController,

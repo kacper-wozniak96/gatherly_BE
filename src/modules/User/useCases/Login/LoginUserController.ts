@@ -1,8 +1,10 @@
-import { BadRequestException, Body, Controller, Inject, InternalServerErrorException, NotFoundException, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Inject, InternalServerErrorException, NotFoundException, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { Public } from 'src/modules/AuthModule/Auth.guard';
 import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
+import { accessTokenCookieName } from '../../utils/cookies';
 import { LoginUserUseCaseSymbol } from '../../utils/symbols';
-import { LoginUserDTO, LoginUserResponseDTO } from './LoginUserDTO';
+import { LoginUserDTO, LoginUserResponse, LoginUserResponseDTO } from './LoginUserDTO';
 import { LoginUseCaseErrors } from './LoginUserErrors';
 import { LoginUserUseCase } from './LoginUserUseCase';
 
@@ -12,7 +14,7 @@ export class LoginUserController {
 
   @Public()
   @Post('/login')
-  async execute(@Body() loginUserDTO: LoginUserDTO): Promise<LoginUserResponseDTO | void> {
+  async execute(@Body() loginUserDTO: LoginUserDTO, @Res({ passthrough: true }) response: Response): Promise<LoginUserResponseDTO | void> {
     const result = await this.useCase.execute(loginUserDTO);
 
     if (result.isLeft()) {
@@ -30,7 +32,8 @@ export class LoginUserController {
       }
     }
 
-    const responseDTO: LoginUserResponseDTO = result.value.getValue();
-    return responseDTO;
+    const resultSuccess: LoginUserResponse = result.value.getValue();
+    response.cookie(accessTokenCookieName, resultSuccess.accessToken, { httpOnly: true });
+    return { user: resultSuccess.user };
   }
 }
