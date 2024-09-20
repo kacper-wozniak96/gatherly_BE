@@ -1,30 +1,44 @@
-import { BadRequestException, Body, Controller, Inject, InternalServerErrorException, NotFoundException, Post } from '@nestjs/common';
-import { BASE_COMMENT_CONTROLLER_PATH } from '../utils/baseContollerPath';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Inject,
+  InternalServerErrorException,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
+import { UseCase } from 'src/shared/core/UseCase';
+import { BASE_POST_CONTROLLER_PATH } from '../../post/utils/baseContollerPath';
 import { CreateCommentUseCaseSymbol } from '../utils/symbols';
-import { CreateCommentUseCase } from './CreateComment';
-import { CreateCommentRequestDTO, CreateCommentResponseDTO } from './CreateCommentDTO';
 import { CreateCommentErrors } from './CreateCommentErrors';
+import { CreateCommentRequestDTO, RequestData, ResponseData } from './types';
 
-@Controller(BASE_COMMENT_CONTROLLER_PATH)
+@Controller(BASE_POST_CONTROLLER_PATH)
 export class CreateCommentController {
-  constructor(@Inject(CreateCommentUseCaseSymbol) private readonly createCommentUseCase: CreateCommentUseCase) {}
+  constructor(@Inject(CreateCommentUseCaseSymbol) private readonly useCase: UseCase<RequestData, Promise<ResponseData>>) {}
 
-  @Post('')
-  async execute(@Body() createCommentDTO: CreateCommentRequestDTO): Promise<CreateCommentResponseDTO | void> {
-    const result = await this.createCommentUseCase.execute(createCommentDTO);
+  @Post('/:postId/comment')
+  async execute(@Param('postId', ParseIntPipe) postId: number, @Body() dto: CreateCommentRequestDTO): Promise<void> {
+    const result = await this.useCase.execute({
+      postId,
+      dto,
+    });
 
     if (result.isLeft()) {
       const error = result.value;
 
+      const errorValue = error.getErrorValue();
+
       switch (error.constructor) {
         case CreateCommentErrors.UserDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
         case CreateCommentErrors.PostDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
+          throw new NotFoundException(errorValue);
         case CreateCommentErrors.InvalidDataError:
-          throw new BadRequestException(error.getErrorValue());
+          throw new BadRequestException(errorValue);
         default:
-          throw new InternalServerErrorException(error.getErrorValue());
+          throw new InternalServerErrorException(errorValue);
       }
     }
 

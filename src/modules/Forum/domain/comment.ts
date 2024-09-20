@@ -10,9 +10,9 @@ import { PostId } from './postId';
 
 export interface CommentProps {
   userId: UserId;
-  user: User;
   text: CommentText;
   postId: PostId;
+  user?: User;
 }
 
 export class Comment extends Entity<CommentProps> {

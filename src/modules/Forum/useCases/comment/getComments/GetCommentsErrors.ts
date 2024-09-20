@@ -6,7 +6,7 @@ export namespace GetCommentsErrors {
     constructor() {
       super(false, {
         message: `Post with provided postId doesn't exist`,
-      } as UseCaseError);
+      });
     }
   }
 }

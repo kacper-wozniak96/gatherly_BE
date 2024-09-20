@@ -34,7 +34,7 @@ export class CreateUserUseCase implements UseCase<CreateUserDTO, Promise<Respons
     const userPassword = (userPasswordOrError as Result<UserPassword>).getValue();
     const userConfirmPassword = userConfirmPasswordOrError.getValue();
 
-    if (userPassword.equals(userConfirmPassword) === false) {
+    if (!userPassword.equals(userConfirmPassword)) {
       return left(new CreateUserErrors.PasswordsDoNotMatchError());
     }
 

@@ -1,58 +1,49 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { CommentRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
-import { right } from 'src/shared/core/Either';
+import { CommentRepoSymbol, PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
+import { left, right } from 'src/shared/core/Either';
 import { UseCase } from 'src/shared/core/UseCase';
 
-import { PostId } from 'src/modules/Forum/domain/postId';
 import { CommentMapper } from 'src/modules/Forum/mappers/Comment';
 import { ICommentRepo } from 'src/modules/Forum/repos/commentRepo';
-import { AppError } from 'src/shared/core/AppError';
-import { Either, left } from 'src/shared/core/Either';
+import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
 import { Result } from 'src/shared/core/Result';
-import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
-import { GetCommentsRequestDTO, GetCommentsResponseDTO } from './GetCommentsDTO';
-
-type Response = Either<AppError.UnexpectedError, Result<GetCommentsResponseDTO>>;
+import { GetCommentsErrors } from './GetCommentsErrors';
+import { GetCommentsResponseDTO, RequestData, ResponseData } from './types';
 
 @Injectable()
-export class GetCommentsUseCase implements UseCase<GetCommentsRequestDTO, Promise<Response>> {
+export class GetCommentsUseCase implements UseCase<RequestData, Promise<ResponseData>> {
   constructor(
     @Inject(CommentRepoSymbol) private readonly commentRepo: ICommentRepo,
     @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
+    @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,
   ) {}
 
-  async execute(dto: GetCommentsRequestDTO): Promise<Response> {
-    const PostIdOrError = PostId.create(new UniqueEntityID(dto.postId));
+  async execute(requestData: RequestData): Promise<ResponseData> {
+    const post = await this.postRepo.getPostByPostId(requestData.postId);
 
-    if (PostIdOrError.isFailure) {
-      return left(new AppError.UnexpectedError());
+    if (!post) {
+      return left(new GetCommentsErrors.PostDoesntExistError());
     }
 
-    const postId = PostIdOrError.getValue();
+    const [comments, commentsTotalCount] = await Promise.all([
+      this.commentRepo.getCommentsByPostId(requestData.postId, requestData.offset),
+      this.commentRepo.countCommentsByPostId(requestData.postId),
+    ]);
 
-    try {
-      const [comments, commentsTotalCount] = await Promise.all([
-        this.commentRepo.getCommentsByPostId(postId, dto.offset),
-        this.commentRepo.countCommentsByPostId(postId),
-      ]);
+    await Promise.all(
+      comments.map(async (comment) => {
+        if (comment.user.hasSetAvatar()) {
+          const signedURL = await this.awsS3Service.getFileUrl(comment.user.avatarS3Key);
 
-      await Promise.all(
-        comments.map(async (comment) => {
-          if (comment.user.hasSetAvatar()) {
-            const signedURL = await this.awsS3Service.getFileUrl(comment.user.avatarS3Key);
+          comment.user.updateUserAvatarSignedUrl(signedURL);
+        }
+      }),
+    );
 
-            comment.user.updateUserAvatarSignedUrl(signedURL);
-          }
-        }),
-      );
+    const commmentsDTO = comments.map((comment) => CommentMapper.toDTO(comment));
 
-      const commmentsDTO = comments.map((comment) => CommentMapper.toDTO(comment));
-
-      return right(Result.ok<GetCommentsResponseDTO>({ comments: commmentsDTO, commentsTotalCount }));
-    } catch (error) {
-      return left(new AppError.UnexpectedError());
-    }
+    return right(Result.ok<GetCommentsResponseDTO>({ comments: commmentsDTO, commentsTotalCount }));
   }
 }

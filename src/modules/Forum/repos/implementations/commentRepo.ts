@@ -39,8 +39,8 @@ export class CommentRepo implements ICommentRepo {
     });
   }
 
-  async getCommentsByPostId(PostId: PostId, offset: number): Promise<Comment[]> {
-    const postId = PostId.getValue().toValue() as number;
+  async getCommentsByPostId(postId: PostId | number, offset: number): Promise<Comment[]> {
+    postId = postId instanceof PostId ? (postId.getValue().toValue() as number) : postId;
 
     const comments = await this.prisma.postComment.findMany({
       where: {
@@ -57,8 +57,8 @@ export class CommentRepo implements ICommentRepo {
     return comments.map((comment) => CommentMapper.toDomain(comment));
   }
 
-  async getCommentByCommentId(CommentId: CommentId): Promise<Comment> {
-    const commentId = CommentId.getValue().toValue() as number;
+  async getCommentByCommentId(commentId: CommentId | number): Promise<Comment> {
+    commentId = commentId instanceof CommentId ? (commentId.getValue().toValue() as number) : commentId;
 
     const comment = await this.prisma.postComment.findUnique({
       where: {
@@ -72,8 +72,8 @@ export class CommentRepo implements ICommentRepo {
     return CommentMapper.toDomain(comment);
   }
 
-  async countCommentsByPostId(PostId: PostId): Promise<number> {
-    const postId = PostId.getValue().toValue() as number;
+  async countCommentsByPostId(postId: PostId | number): Promise<number> {
+    postId = postId instanceof PostId ? (postId.getValue().toValue() as number) : postId;
 
     return await this.prisma.postComment.count({
       where: {

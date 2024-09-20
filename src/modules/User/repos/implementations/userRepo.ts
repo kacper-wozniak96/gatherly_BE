@@ -38,9 +38,11 @@ export class UserRepo implements IUserRepo {
     });
   }
 
-  async getUserByUserId(userId: UserId): Promise<User | null> {
+  async getUserByUserId(userId: UserId | number): Promise<User | null> {
+    userId = userId instanceof UserId ? (userId.getValue().toValue() as number) : userId;
+
     const user = await this.prisma.user.findUnique({
-      where: { Id: userId.getValue().toValue() as number },
+      where: { Id: userId },
     });
 
     if (!user) return null;

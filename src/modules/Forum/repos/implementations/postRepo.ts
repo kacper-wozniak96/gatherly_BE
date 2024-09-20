@@ -138,8 +138,8 @@ export class PostRepo implements IPostRepo {
     });
   }
 
-  async getPostByPostId(PostId: PostId): Promise<Post | null> {
-    const postId = PostId.getValue().toValue() as number;
+  async getPostByPostId(postId: PostId | number): Promise<Post | null> {
+    postId = postId instanceof PostId ? (postId.getValue().toValue() as number) : postId;
 
     const post = await this.prisma.post.findUnique({
       where: { Id: postId },
