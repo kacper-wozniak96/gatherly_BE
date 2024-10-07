@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UniqueEntityID } from './../../../../../shared/core/UniqueEntityID';
 
 import { REQUEST } from '@nestjs/core';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
@@ -8,50 +7,44 @@ import { PostText } from 'src/modules/Forum/domain/postText';
 import { PostTitle } from 'src/modules/Forum/domain/postTitle';
 import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
 import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
-import { UserId } from 'src/modules/User/domain/UserId';
 import { IUserRepo } from 'src/modules/User/repos/userRepo';
 import { UserRepoSymbol } from 'src/modules/User/repos/utils/symbols';
 import { AppError } from 'src/shared/core/AppError';
-import { Either, left, right } from 'src/shared/core/Either';
+import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';
-import { CreatePostDTO } from './CreatePostDTO';
 import { CreatePostErrors } from './CreatePostErrors';
-
-type Response = Either<CreatePostErrors.UserDoesntExistError | AppError.UnexpectedError | Result<void>, Result<void>>;
+import { RequestData, ResponseData } from './types';
 
 @Injectable()
-export class CreatePostUseCase implements UseCase<CreatePostDTO, Promise<Response>> {
+export class CreatePostUseCase implements UseCase<RequestData, Promise<ResponseData>> {
   constructor(
     @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,
     @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
     @Inject(REQUEST) private readonly request: CustomRequest,
   ) {}
 
-  async execute(createPostDTO: CreatePostDTO): Promise<Response> {
-    const userIdOrError = UserId.create(new UniqueEntityID(this.request.user.userId));
-    const postTitleOrError = PostTitle.create({ value: createPostDTO.title });
-    const postTextOrError = PostText.create({ value: createPostDTO.text });
+  async execute(requestData: RequestData): Promise<ResponseData> {
+    const postTitleOrError = PostTitle.create({ value: requestData.dto.title });
+    const postTextOrError = PostText.create({ value: requestData.dto.text });
 
-    const dtoResult = Result.combine([userIdOrError, postTitleOrError, postTextOrError]);
+    const dtoResult = Result.combine([postTitleOrError, postTextOrError]);
 
     if (dtoResult.isFailure) {
       return left(new CreatePostErrors.InvalidDataError(dtoResult.getErrorValue()));
     }
 
-    const userId = userIdOrError.getValue();
     const postTitle = postTitleOrError.getValue() as PostTitle;
     const postText = postTextOrError.getValue() as PostText;
 
-    const user = await this.userRepo.getUserByUserId(userId);
+    const user = await this.userRepo.getUserByUserId(this.request.user.userId);
 
     if (!user) return left(new CreatePostErrors.UserDoesntExistError());
 
     const postOrError = Post.create({
-      userId: userId,
+      userId: user.userId,
       title: postTitle,
       text: postText,
-      user,
     });
 
     if (postOrError.isFailure) {

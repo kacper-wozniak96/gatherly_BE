@@ -1,8 +1,8 @@
 import { Controller, Delete, Inject, InternalServerErrorException, NotFoundException, Param, ParseIntPipe } from '@nestjs/common';
 import { BASE_POST_CONTROLLER_PATH } from '../utils/baseContollerPath';
 import { DeletePostUseCaseSymbol } from '../utils/symbols';
-import { DeletePostUseCase } from './DeletePost';
 import { DeletePostErrors } from './DeletePostErrors';
+import { DeletePostUseCase } from './DeletePostUseCase';
 
 @Controller(BASE_POST_CONTROLLER_PATH)
 export class DeletePostController {

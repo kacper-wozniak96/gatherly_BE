@@ -9,19 +9,19 @@ import {
   ParseIntPipe,
   Patch,
 } from '@nestjs/common';
+import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_POST_CONTROLLER_PATH } from '../utils/baseContollerPath';
 import { UpdatePostUseCaseSymbol } from '../utils/symbols';
-import { UpdatePostRequestDTO } from './UpdatePostDTO';
 import { UpdatePostErrors } from './UpdatePostErrors';
-import { UpdatePostUseCase } from './UpdatePostUseCase';
+import { RequestData, ResponseData, UpdatePostRequestDTO } from './types';
 
 @Controller(BASE_POST_CONTROLLER_PATH)
 export class UpdatePostController {
-  constructor(@Inject(UpdatePostUseCaseSymbol) private readonly useCase: UpdatePostUseCase) {}
+  constructor(@Inject(UpdatePostUseCaseSymbol) private readonly useCase: UseCase<RequestData, Promise<ResponseData>>) {}
 
   @Patch('/:id')
-  async updatePost(@Param('id', ParseIntPipe) postId: number, @Body() updatePostDTO: UpdatePostRequestDTO): Promise<void> {
-    const result = await this.useCase.execute({ ...updatePostDTO, postId });
+  async updatePost(@Param('id', ParseIntPipe) postId: number, @Body() dto: UpdatePostRequestDTO): Promise<void> {
+    const result = await this.useCase.execute({ dto, postId });
 
     if (result.isLeft()) {
       const error = result.value;

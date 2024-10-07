@@ -15,7 +15,7 @@ import { PostVotes } from './postVotes';
 
 export interface PostProps {
   userId: UserId;
-  user: User;
+  user?: User;
   title: PostTitle;
   createdAt?: Date;
   text?: PostText;

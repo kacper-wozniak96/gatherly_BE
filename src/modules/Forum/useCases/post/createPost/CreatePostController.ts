@@ -1,28 +1,30 @@
 import { BadRequestException, Body, Controller, Inject, InternalServerErrorException, NotFoundException, Post } from '@nestjs/common';
+import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_POST_CONTROLLER_PATH } from '../utils/baseContollerPath';
 import { CreatePostUseCaseSymbol } from '../utils/symbols';
-import { CreatePostUseCase } from './CreatePost';
-import { CreatePostDTO } from './CreatePostDTO';
 import { CreatePostErrors } from './CreatePostErrors';
+import { CreatePostRequestDTO, RequestData, ResponseData } from './types';
 
 @Controller(BASE_POST_CONTROLLER_PATH)
 export class CreatePostController {
-  constructor(@Inject(CreatePostUseCaseSymbol) private readonly createPostUseCase: CreatePostUseCase) {}
+  constructor(@Inject(CreatePostUseCaseSymbol) private readonly useCase: UseCase<RequestData, Promise<ResponseData>>) {}
 
   @Post('')
-  async execute(@Body() createPostDTO: CreatePostDTO): Promise<void | void> {
-    const result = await this.createPostUseCase.execute(createPostDTO);
+  async execute(@Body() dto: CreatePostRequestDTO): Promise<void> {
+    const result = await this.useCase.execute({ dto });
 
     if (result.isLeft()) {
       const error = result.value;
 
+      const errorValue = error.getErrorValue();
+
       switch (error.constructor) {
         case CreatePostErrors.UserDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
+          throw new NotFoundException(errorValue);
         case CreatePostErrors.InvalidDataError:
-          throw new BadRequestException(error.getErrorValue());
+          throw new BadRequestException(errorValue);
         default:
-          throw new InternalServerErrorException(error.getErrorValue());
+          throw new InternalServerErrorException(errorValue);
       }
     }
 

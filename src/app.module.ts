@@ -12,10 +12,10 @@ import { PostRepo } from './modules/Forum/repos/implementations/postRepo';
 import { PostVoteRepo } from './modules/Forum/repos/implementations/postVoteRepo';
 import { PostBanRepoSymbol } from './modules/Forum/repos/postBanRepo';
 import { CommentRepoSymbol, PostRepoSymbol, PostVoteRepoSymbol } from './modules/Forum/repos/utils/symbols';
-import { CreateCommentUseCase } from './modules/Forum/useCases/comment/createComment/CreateComment';
 import { CreateCommentController } from './modules/Forum/useCases/comment/createComment/CreateCommentController';
-import { DeleteCommentUseCase } from './modules/Forum/useCases/comment/deleteComment/DeleteComment';
+import { CreateCommentUseCase } from './modules/Forum/useCases/comment/createComment/CreateCommentUseCase';
 import { DeleteCommentController } from './modules/Forum/useCases/comment/deleteComment/DeleteCommentController';
+import { DeleteCommentUseCase } from './modules/Forum/useCases/comment/deleteComment/DeleteCommentUseCase';
 import { GetCommentsController } from './modules/Forum/useCases/comment/getComments/GetCommentsController';
 import { GetCommentsUseCase } from './modules/Forum/useCases/comment/getComments/GetCommentsUseCase';
 import {
@@ -23,10 +23,10 @@ import {
   DeleteCommentUseCaseSymbol,
   GetCommentsUseCaseSymbol,
 } from './modules/Forum/useCases/comment/utils/symbols';
-import { CreatePostUseCase } from './modules/Forum/useCases/post/createPost/CreatePost';
 import { CreatePostController } from './modules/Forum/useCases/post/createPost/CreatePostController';
-import { DeletePostUseCase } from './modules/Forum/useCases/post/deletePost/DeletePost';
+import { CreatePostUseCase } from './modules/Forum/useCases/post/createPost/CreatePostUseCase';
 import { DeletePostController } from './modules/Forum/useCases/post/deletePost/DeletePostController';
+import { DeletePostUseCase } from './modules/Forum/useCases/post/deletePost/DeletePostUseCase';
 import { DownVotePostController } from './modules/Forum/useCases/post/downVotePost/DownVotePostController';
 import { DownVotePostUseCase } from './modules/Forum/useCases/post/downVotePost/DownVotePostUseCase';
 import { GetPostController } from './modules/Forum/useCases/post/getPost/GetPostController';
@@ -50,10 +50,8 @@ import {
 import { ApplyPostBanController } from './modules/Forum/useCases/postBan/applyPostBan/ApplyPostBanController';
 import { ApplyPostBanUseCase } from './modules/Forum/useCases/postBan/applyPostBan/ApplyPostBanUseCase';
 import { GetPostBansForUserController } from './modules/Forum/useCases/postBan/getPostBansForUser/GetPostBansForUserController';
-import {
-  GetPostBansForUserUseCase,
-  GetPostBansForUserUseCaseSymbol,
-} from './modules/Forum/useCases/postBan/getPostBansForUser/GetPostBansForUserUseCase';
+import { GetPostBansForUserUseCase } from './modules/Forum/useCases/postBan/getPostBansForUser/GetPostBansForUserUseCase';
+import { GetPostBansForUserUseCaseSymbol } from './modules/Forum/useCases/postBan/utils/symbols';
 import { LoggerMiddleware } from './modules/Logger/logger';
 import { UserRepo } from './modules/User/repos/implementations/userRepo';
 import { UserRepoSymbol } from './modules/User/repos/utils/symbols';

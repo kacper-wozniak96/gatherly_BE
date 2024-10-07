@@ -9,21 +9,19 @@ import { REQUEST } from '@nestjs/core';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { PostMapper } from 'src/modules/Forum/mappers/Post';
 import { AppError } from 'src/shared/core/AppError';
-import { Either, left } from 'src/shared/core/Either';
+import { left } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
-import { GetPostsResponseDTO, GetPostsUseCaseData } from './GetPostsDTO';
-
-type Response = Either<AppError.UnexpectedError, Result<GetPostsResponseDTO>>;
+import { GetPostsResponseDTO, RequestData, ResponseData } from './types';
 
 @Injectable()
-export class GetPostsUseCase implements UseCase<GetPostsUseCaseData, Promise<Response>> {
+export class GetPostsUseCase implements UseCase<RequestData, Promise<ResponseData>> {
   constructor(
     @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,
     @Inject(REQUEST) private readonly request: CustomRequest,
   ) {}
 
-  async execute(useCaseData: GetPostsUseCaseData): Promise<Response> {
-    const { offset, search } = useCaseData;
+  async execute(requestData: RequestData): Promise<ResponseData> {
+    const { offset, search } = requestData;
 
     try {
       const [posts, postsTotalCount] = await Promise.all([

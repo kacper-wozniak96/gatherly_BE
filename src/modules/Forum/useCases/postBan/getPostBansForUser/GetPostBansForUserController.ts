@@ -9,17 +9,22 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PostUserBanDTO } from 'src/modules/Forum/dtos/post';
+import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_POST_CONTROLLER_PATH } from '../../post/utils/baseContollerPath';
+import { GetPostBansForUserUseCaseSymbol } from '../utils/symbols';
 import { GetPostBansErrors } from './GetPostBansForUserErrors';
-import { GetPostBansForUserUseCase, GetPostBansForUserUseCaseSymbol } from './GetPostBansForUserUseCase';
+import { RequestData, ResponseData } from './types';
 
 @Controller(BASE_POST_CONTROLLER_PATH)
 export class GetPostBansForUserController {
-  constructor(@Inject(GetPostBansForUserUseCaseSymbol) private readonly useCase: GetPostBansForUserUseCase) {}
+  constructor(@Inject(GetPostBansForUserUseCaseSymbol) private readonly useCase: UseCase<RequestData, Promise<ResponseData>>) {}
 
   @Get('/:postId/bans/user/:userId')
-  async execute(@Param('postId', ParseIntPipe) postId: number, @Param('userId', ParseIntPipe) userId: number): Promise<PostUserBanDTO[]> {
-    const result = await this.useCase.execute({ postId, userId });
+  async execute(
+    @Param('postId', ParseIntPipe) postId: number,
+    @Param('userId', ParseIntPipe) searchedUserId: number,
+  ): Promise<PostUserBanDTO[]> {
+    const result = await this.useCase.execute({ postId, searchedUserId });
 
     if (result.isLeft()) {
       const error = result.value;

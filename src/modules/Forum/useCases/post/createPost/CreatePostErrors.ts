@@ -7,7 +7,7 @@ export namespace CreatePostErrors {
     constructor() {
       super(false, {
         message: `A forum member doesn't exist for this account.`,
-      } as UseCaseError);
+      });
     }
   }
   export class InvalidDataError extends Result<UseCaseError> {
@@ -15,7 +15,7 @@ export namespace CreatePostErrors {
       super(false, {
         message: failedFields,
         isFormInvalid: true,
-      } as UseCaseError);
+      });
     }
   }
 }

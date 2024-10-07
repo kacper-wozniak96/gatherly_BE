@@ -9,23 +9,22 @@ import {
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
+import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_POST_CONTROLLER_PATH } from '../../post/utils/baseContollerPath';
 import { ApplyBanUseCaseSymbol } from '../../post/utils/symbols';
-import { ApplyPostBanRequestDTO } from './ApplyPostBanDTO';
 import { ApplyPostBanErrors } from './ApplyPostBanErrors';
-import { ApplyPostBanResponse } from './ApplyPostBanResponse';
-import { ApplyPostBanUseCase } from './ApplyPostBanUseCase';
+import { ApplyPostBanRequestDTO, RequestData, ResponseData } from './types';
 
 @Controller(BASE_POST_CONTROLLER_PATH)
 export class ApplyPostBanController {
-  constructor(@Inject(ApplyBanUseCaseSymbol) private readonly applyPostBanUseCase: ApplyPostBanUseCase) {}
+  constructor(@Inject(ApplyBanUseCaseSymbol) private readonly applyPostBanUseCase: UseCase<RequestData, Promise<ResponseData>>) {}
 
   @Post('/:id/bans/user/:bannedUserId')
   async execute(
     @Param('id', ParseIntPipe) postId: number,
     @Param('bannedUserId', ParseIntPipe) bannedUserId: number,
     @Body() applyPostBanDTO: ApplyPostBanRequestDTO,
-  ): Promise<ApplyPostBanResponse | void> {
+  ): Promise<void> {
     const result = await this.applyPostBanUseCase.execute({ postId, dto: applyPostBanDTO, bannedUserId });
 
     if (result.isLeft()) {
