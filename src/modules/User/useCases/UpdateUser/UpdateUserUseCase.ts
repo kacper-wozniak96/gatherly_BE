@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { AppError } from 'src/shared/core/AppError';
-import { Either, left, right } from 'src/shared/core/Either';
+import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { UseCase } from 'src/shared/core/UseCase';
@@ -15,25 +15,20 @@ import { UserId } from '../../domain/UserId';
 import { UserName } from '../../domain/UserName';
 import { IUserRepo } from '../../repos/userRepo';
 import { UserRepoSymbol } from '../../repos/utils/symbols';
-import { UpdateUserDTO } from './UpdateUserDTO';
+import { RequestData, ResponseData } from './types';
 import { UpdateUserErrors } from './UpdateUserErrors';
 
-type Response = Either<
-  UpdateUserErrors.UserDoesntExistError | UpdateUserErrors.InvalidDataError | AppError.UnexpectedError | Result<any>,
-  Result<void>
->;
-
 @Injectable()
-export class UpdateUserUseCase implements UseCase<UpdateUserDTO, Promise<Response>> {
+export class UpdateUserUseCase implements UseCase<RequestData, Promise<ResponseData>> {
   constructor(
     @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
     @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
   ) {}
 
-  async execute(updateUserDTO: UpdateUserDTO): Promise<Response> {
+  async execute(requestData: RequestData): Promise<ResponseData> {
     const changes = new Changes();
 
-    const userIdOrError = UserId.create(new UniqueEntityID(updateUserDTO.userId));
+    const userIdOrError = UserId.create(new UniqueEntityID(requestData.userId));
 
     if (userIdOrError.isFailure) return left(new AppError.UnexpectedError());
 
@@ -47,8 +42,8 @@ export class UpdateUserUseCase implements UseCase<UpdateUserDTO, Promise<Respons
       return left(new UpdateUserErrors.CannotUpdateGuestUserError());
     }
 
-    if (has(updateUserDTO, 'file')) {
-      const userAvatarOrError = UserAvatar.create({ avatar: updateUserDTO.file });
+    if (has(requestData, 'file')) {
+      const userAvatarOrError = UserAvatar.create({ avatar: requestData.file });
 
       if (userAvatarOrError.isFailure) {
         const failedFields = [(userAvatarOrError as Result<IFailedField>).getErrorValue()];
@@ -59,13 +54,13 @@ export class UpdateUserUseCase implements UseCase<UpdateUserDTO, Promise<Respons
         await this.awsS3Service.deleteFile(user.avatarS3Key);
       }
       const avatarS3Key = uuid();
-      await this.awsS3Service.sendAvatarImage(avatarS3Key, updateUserDTO.file.buffer);
+      await this.awsS3Service.sendAvatarImage(avatarS3Key, requestData.file.buffer);
 
       changes.addChange(user.updateAvatarS3Key(avatarS3Key));
     }
 
-    if (has(updateUserDTO, 'username')) {
-      const updatedUsernameOrError = UserName.create({ value: updateUserDTO.username });
+    if (has(requestData.dto, 'username')) {
+      const updatedUsernameOrError = UserName.create({ value: requestData.dto.username });
 
       if (updatedUsernameOrError.isFailure) {
         const failedFields = [(updatedUsernameOrError as Result<IFailedField>).getErrorValue()];

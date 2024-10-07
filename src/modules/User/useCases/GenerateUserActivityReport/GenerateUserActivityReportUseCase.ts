@@ -9,25 +9,21 @@ import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
 import { IPostVoteRepo } from 'src/modules/Forum/repos/postVoteRepo';
 import { CommentRepoSymbol, PostRepoSymbol, PostVoteRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
 import { AppError } from 'src/shared/core/AppError';
-import { Either, left, right } from 'src/shared/core/Either';
+import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
-import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { UseCase } from 'src/shared/core/UseCase';
 import { EJobs } from 'src/shared/enums/Jobs';
 import { EQueues } from 'src/shared/enums/Queues';
 import { IGenerateUserActivityReportJob } from 'src/shared/interfaces/Jobs/sendReport';
 import { ReportId } from '../../domain/ReportId';
 import { UserEmail } from '../../domain/UserEmail';
-import { UserId } from '../../domain/UserId';
 import { IUserRepo } from '../../repos/userRepo';
 import { UserRepoSymbol } from '../../repos/utils/symbols';
-import { GenerateUserActivityReportRequestDTO } from './GenerateUserActivityReportDTO';
 import { GenerateUserActivityReportErrors } from './GenerateUserActivityReportErrors';
-
-type Response = Either<GenerateUserActivityReportErrors.UserDoesntExistError | AppError.UnexpectedError, Result<void>>;
+import { RequestData, ResponseData } from './types';
 
 @Injectable()
-export class GenerateUserActivityReportUseCaseProvider implements UseCase<GenerateUserActivityReportRequestDTO, Promise<Response>> {
+export class GenerateUserActivityReportUseCaseProvider implements UseCase<RequestData, Promise<ResponseData>> {
   constructor(
     @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
     @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,
@@ -37,28 +33,26 @@ export class GenerateUserActivityReportUseCaseProvider implements UseCase<Genera
     @InjectQueue(EQueues.reports) private reportsQueue: Queue,
   ) {}
 
-  async execute(dto: GenerateUserActivityReportRequestDTO): Promise<Response> {
-    const userIdOrError = UserId.create(new UniqueEntityID(this.request.user.userId));
-    const userEmailOrError = UserEmail.create({ value: dto.email });
-    const reportIdOrError = ReportId.create({ value: dto.reportId });
+  async execute(requestData: RequestData): Promise<ResponseData> {
+    const userEmailOrError = UserEmail.create({ value: requestData.dto.email });
+    const reportIdOrError = ReportId.create({ value: requestData.dto.reportId });
 
-    const dtoResult = Result.combine([userIdOrError, userEmailOrError, reportIdOrError]);
+    const dtoResult = Result.combine([userEmailOrError, reportIdOrError]);
 
     if (dtoResult.isFailure) return left(new AppError.UnexpectedError());
 
-    const userId = userIdOrError.getValue();
     const userEmail = userEmailOrError.getValue() as UserEmail;
     const reportId = reportIdOrError.getValue() as ReportId;
 
-    const user = await this.userRepo.getUserByUserId(userId);
+    const user = await this.userRepo.getUserByUserId(this.request.user.userId);
 
     if (!user) return left(new GenerateUserActivityReportErrors.UserDoesntExistError());
 
     const [postsCreatedCountByUser, downvotesCountByUser, upvotesCountByUser, commentsCountByUser] = await Promise.all([
-      this.postRepo.getPostsCountCreatedByUser(userId),
-      this.postVoteRepo.getDownvotesCountByUser(userId),
-      this.postVoteRepo.getUpvotesCountByUser(userId),
-      this.commentRepo.getCommentsCountByUser(userId),
+      this.postRepo.getPostsCountCreatedByUser(user.userId),
+      this.postVoteRepo.getDownvotesCountByUser(user.userId),
+      this.postVoteRepo.getUpvotesCountByUser(user.userId),
+      this.commentRepo.getCommentsCountByUser(user.userId),
     ]);
 
     const jobData: IGenerateUserActivityReportJob = {

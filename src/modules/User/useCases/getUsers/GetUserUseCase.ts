@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { AppError } from 'src/shared/core/AppError';
-import { Either, left, right } from 'src/shared/core/Either';
+import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';
 import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
@@ -9,17 +9,16 @@ import { UserDTO } from '../../dtos/user';
 import { UserMapper } from '../../mappers/User';
 import { IUserRepo } from '../../repos/userRepo';
 import { UserRepoSymbol } from '../../repos/utils/symbols';
-
-type Response = Either<AppError.UnexpectedError, Result<UserDTO[]>>;
+import { ResponseData } from './types';
 
 @Injectable()
-export class GetUsersUseCase implements UseCase<void, Promise<Response>> {
+export class GetUsersUseCase implements UseCase<void, Promise<ResponseData>> {
   constructor(
     @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
     @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
   ) {}
 
-  async execute(): Promise<Response> {
+  async execute(): Promise<ResponseData> {
     try {
       const users = await this.userRepo.getUsers();
 

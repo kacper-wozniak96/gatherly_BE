@@ -12,24 +12,24 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
 import { UpdateUserUseCaseSymbol } from '../../utils/symbols';
-import { UpdateUserRequestDTO } from './UpdateUserDTO';
 import { UpdateUserErrors } from './UpdateUserErrors';
-import { UpdateUserUseCase } from './UpdateUserUseCase';
+import { RequestData, ResponseData, UpdateUserRequestDTO } from './types';
 
 @Controller(BASE_USER_CONTROLLER_PATH)
 export class UpdateUserController {
-  constructor(@Inject(UpdateUserUseCaseSymbol) private readonly useCase: UpdateUserUseCase) {}
+  constructor(@Inject(UpdateUserUseCaseSymbol) private readonly useCase: UseCase<RequestData, Promise<ResponseData>>) {}
 
   @Post('/:id')
   @UseInterceptors(FileInterceptor('file'))
   async updateUser(
     @Param('id', ParseIntPipe) userId: number,
-    @Body() updateUserDTO: UpdateUserRequestDTO,
+    @Body() dto: UpdateUserRequestDTO,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<void> {
-    const result = await this.useCase.execute({ ...updateUserDTO, userId, file });
+    const result = await this.useCase.execute({ dto, userId, file });
 
     if (result.isLeft()) {
       const error = result.value;

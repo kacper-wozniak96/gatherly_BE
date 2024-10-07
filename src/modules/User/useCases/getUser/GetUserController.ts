@@ -1,13 +1,14 @@
 import { BadRequestException, Controller, Get, Inject, InternalServerErrorException, Param, ParseIntPipe } from '@nestjs/common';
+import { UseCase } from 'src/shared/core/UseCase';
 import { UserDTO } from '../../dtos/user';
 import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
 import { GetUserUseCaseSymbol } from '../../utils/symbols';
 import { GetUserErrors } from './GetUserErrors';
-import { GetUserUseCase } from './GetUserUseCase';
+import { RequestData, ResponseData } from './types';
 
 @Controller(BASE_USER_CONTROLLER_PATH)
 export class GetUserController {
-  constructor(@Inject(GetUserUseCaseSymbol) private readonly useCase: GetUserUseCase) {}
+  constructor(@Inject(GetUserUseCaseSymbol) private readonly useCase: UseCase<RequestData, Promise<ResponseData>>) {}
 
   @Get('/:id')
   async execute(@Param('id', ParseIntPipe) userId: number): Promise<UserDTO> {
