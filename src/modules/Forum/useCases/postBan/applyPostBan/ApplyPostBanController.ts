@@ -9,11 +9,12 @@ import {
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ApplyPostBanRequestDTO } from 'gatherly-types';
 import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_POST_CONTROLLER_PATH } from '../../post/utils/baseContollerPath';
 import { ApplyBanUseCaseSymbol } from '../../post/utils/symbols';
 import { ApplyPostBanErrors } from './ApplyPostBanErrors';
-import { ApplyPostBanRequestDTO, RequestData, ResponseData } from './types';
+import { RequestData, ResponseData } from './types';
 
 @Controller(BASE_POST_CONTROLLER_PATH)
 export class ApplyPostBanController {

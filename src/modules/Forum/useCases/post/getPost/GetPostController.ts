@@ -1,5 +1,5 @@
 import { Controller, Get, Inject, InternalServerErrorException, NotFoundException, Param, ParseIntPipe } from '@nestjs/common';
-import { PostDTO } from 'src/modules/Forum/dtos/post';
+import { PostDTO } from 'gatherly-types';
 import { BASE_POST_CONTROLLER_PATH } from '../utils/baseContollerPath';
 import { GetPostUseCaseSymbol } from '../utils/symbols';
 import { GetPostErrors } from './GetPostErrors';

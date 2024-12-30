@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { REQUEST } from '@nestjs/core';
+import { PostBanDTO } from 'gatherly-types';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
-import { PostUserBanDTO } from 'src/modules/Forum/dtos/post';
 import { PostBanMapper } from 'src/modules/Forum/mappers/PostBan';
 import { PostRepo } from 'src/modules/Forum/repos/implementations/postRepo';
 import { IPostBanRepo, PostBanRepoSymbol } from 'src/modules/Forum/repos/postBanRepo';
@@ -43,6 +43,6 @@ export class GetPostBansForUserUseCase implements UseCase<RequestData, Promise<R
 
     const userPostBansDTO = searchedUserPostBans.map((ban) => PostBanMapper.toDTO(ban));
 
-    return right(Result.ok<PostUserBanDTO[]>(userPostBansDTO));
+    return right(Result.ok<PostBanDTO[]>(userPostBansDTO));
   }
 }

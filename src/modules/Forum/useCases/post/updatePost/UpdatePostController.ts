@@ -9,11 +9,12 @@ import {
   ParseIntPipe,
   Patch,
 } from '@nestjs/common';
+import { UpdatePostRequestDTO } from 'gatherly-types';
 import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_POST_CONTROLLER_PATH } from '../utils/baseContollerPath';
 import { UpdatePostUseCaseSymbol } from '../utils/symbols';
 import { UpdatePostErrors } from './UpdatePostErrors';
-import { RequestData, ResponseData, UpdatePostRequestDTO } from './types';
+import { RequestData, ResponseData } from './types';
 
 @Controller(BASE_POST_CONTROLLER_PATH)
 export class UpdatePostController {

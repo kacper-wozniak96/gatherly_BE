@@ -1,6 +1,6 @@
 import { Controller, Get, Inject, InternalServerErrorException } from '@nestjs/common';
+import { UserDTO } from 'gatherly-types';
 import { UseCase } from 'src/shared/core/UseCase';
-import { UserDTO } from '../../dtos/user';
 import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
 import { GetUsersUseCaseSymbol } from '../../utils/symbols';
 import { ResponseData } from './types';

@@ -8,7 +8,7 @@ import {
   ParseIntPipe,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PostUserBanDTO } from 'src/modules/Forum/dtos/post';
+import { PostBanDTO } from 'gatherly-types';
 import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_POST_CONTROLLER_PATH } from '../../post/utils/baseContollerPath';
 import { GetPostBansForUserUseCaseSymbol } from '../utils/symbols';
@@ -23,7 +23,7 @@ export class GetPostBansForUserController {
   async execute(
     @Param('postId', ParseIntPipe) postId: number,
     @Param('userId', ParseIntPipe) searchedUserId: number,
-  ): Promise<PostUserBanDTO[]> {
+  ): Promise<PostBanDTO[]> {
     const result = await this.useCase.execute({ postId, searchedUserId });
 
     if (result.isLeft()) {

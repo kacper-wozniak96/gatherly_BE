@@ -1,10 +1,11 @@
 import { BadRequestException, Body, Controller, Inject, InternalServerErrorException, Post } from '@nestjs/common';
+import { CreateUserRequestDTO } from 'gatherly-types';
 import { Public } from 'src/modules/AuthModule/Auth.guard';
 import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
 import { CreateUserUseCaseSymbol } from '../../utils/symbols';
 import { CreateUserErrors } from './CreateUserErrors';
-import { CreateUserDTO, RequestData, ResponseData } from './types';
+import { RequestData, ResponseData } from './types';
 
 @Controller(BASE_USER_CONTROLLER_PATH)
 export class UserCreateController {
@@ -12,21 +13,23 @@ export class UserCreateController {
 
   @Public()
   @Post()
-  async createUser(@Body() dto: CreateUserDTO): Promise<void> {
+  async createUser(@Body() dto: CreateUserRequestDTO): Promise<void> {
     const result = await this.useCase.execute({ dto });
 
     if (result.isLeft()) {
       const error = result.value;
 
+      const errorValue = error.getErrorValue();
+
       switch (error.constructor) {
         case CreateUserErrors.PasswordsDoNotMatchError:
-          throw new BadRequestException(error.getErrorValue());
+          throw new BadRequestException(errorValue);
         case CreateUserErrors.UsernameTakenError:
-          throw new BadRequestException(error.getErrorValue());
+          throw new BadRequestException(errorValue);
         case CreateUserErrors.InvalidDataError:
-          throw new BadRequestException(error.getErrorValue());
+          throw new BadRequestException(errorValue);
         default:
-          throw new InternalServerErrorException(error.getErrorValue());
+          throw new InternalServerErrorException(errorValue);
       }
     }
 

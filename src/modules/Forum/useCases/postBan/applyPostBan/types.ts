@@ -1,3 +1,4 @@
+import { ApplyPostBanRequestDTO } from 'gatherly-types';
 import { AppError } from 'src/shared/core/AppError';
 import { Either } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
@@ -13,13 +14,3 @@ export type RequestData = {
   bannedUserId: number;
   dto: ApplyPostBanRequestDTO;
 };
-
-export interface ApplyPostBanRequestDTO {
-  bansChanges: Record<EBanType, boolean>;
-}
-
-export enum EBanType {
-  viewingPost = 1,
-  addingComments,
-  downVotingAndUpVoting,
-}

@@ -5,8 +5,8 @@ import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
 import { UseCase } from 'src/shared/core/UseCase';
 
 import { REQUEST } from '@nestjs/core';
+import { PostDTO } from 'gatherly-types';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
-import { PostDTO } from 'src/modules/Forum/dtos/post';
 import { PostMapper } from 'src/modules/Forum/mappers/Post';
 import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';

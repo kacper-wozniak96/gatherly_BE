@@ -1,5 +1,5 @@
+import { EBanType } from 'gatherly-types';
 import { UserDTO } from 'src/modules/User/dtos/user';
-import { EBanType } from '../useCases/postBan/applyPostBan/types';
 
 export interface PostDTO {
   id: number;

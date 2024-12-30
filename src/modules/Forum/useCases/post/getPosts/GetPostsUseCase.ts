@@ -6,12 +6,13 @@ import { right } from 'src/shared/core/Either';
 import { UseCase } from 'src/shared/core/UseCase';
 
 import { REQUEST } from '@nestjs/core';
+import { GetPostsResponseDTO } from 'gatherly-types';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { PostMapper } from 'src/modules/Forum/mappers/Post';
 import { AppError } from 'src/shared/core/AppError';
 import { left } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
-import { GetPostsResponseDTO, RequestData, ResponseData } from './types';
+import { RequestData, ResponseData } from './types';
 
 @Injectable()
 export class GetPostsUseCase implements UseCase<RequestData, Promise<ResponseData>> {

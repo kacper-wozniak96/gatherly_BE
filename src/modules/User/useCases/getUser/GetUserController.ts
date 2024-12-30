@@ -1,6 +1,6 @@
 import { BadRequestException, Controller, Get, Inject, InternalServerErrorException, Param, ParseIntPipe } from '@nestjs/common';
+import { UserDTO } from 'gatherly-types';
 import { UseCase } from 'src/shared/core/UseCase';
-import { UserDTO } from '../../dtos/user';
 import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
 import { GetUserUseCaseSymbol } from '../../utils/symbols';
 import { GetUserErrors } from './GetUserErrors';
@@ -17,11 +17,13 @@ export class GetUserController {
     if (result.isLeft()) {
       const error = result.value;
 
+      const errorValue = error.getErrorValue();
+
       switch (error.constructor) {
         case GetUserErrors.UserDoesntExistError:
-          throw new BadRequestException(error.getErrorValue());
+          throw new BadRequestException(errorValue);
         default:
-          throw new InternalServerErrorException(error.getErrorValue());
+          throw new InternalServerErrorException(errorValue);
       }
     }
 

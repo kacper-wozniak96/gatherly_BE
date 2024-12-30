@@ -1,3 +1,4 @@
+import { UpdateUserRequestDTO } from 'gatherly-types';
 import { AppError } from 'src/shared/core/AppError';
 import { Either } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
@@ -13,7 +14,3 @@ export type RequestData = {
   userId: number;
   file: Express.Multer.File;
 };
-
-export interface UpdateUserRequestDTO {
-  username?: string;
-}

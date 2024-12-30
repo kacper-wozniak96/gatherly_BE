@@ -1,3 +1,4 @@
+import { GenerateUserActivityReportRequestDTO } from 'gatherly-types';
 import { AppError } from 'src/shared/core/AppError';
 import { Either } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
@@ -8,8 +9,3 @@ export type ResponseData = Either<GenerateUserActivityReportErrors.UserDoesntExi
 export type RequestData = {
   dto: GenerateUserActivityReportRequestDTO;
 };
-
-export interface GenerateUserActivityReportRequestDTO {
-  email: string;
-  reportId: string;
-}

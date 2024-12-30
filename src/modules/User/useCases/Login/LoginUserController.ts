@@ -1,12 +1,13 @@
 import { BadRequestException, Body, Controller, Inject, InternalServerErrorException, NotFoundException, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
+import { LoginUserRequestDTO, LoginUserResponseDTO } from 'gatherly-types';
 import { Public } from 'src/modules/AuthModule/Auth.guard';
 import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
 import { accessTokenCookieName } from '../../utils/cookies';
 import { LoginUserUseCaseSymbol } from '../../utils/symbols';
 import { LoginUseCaseErrors } from './LoginUserErrors';
-import { LoginUserRequestDTO, LoginUserResponse, LoginUserResponseDTO, RequestData, ResponseData } from './types';
+import { LoginUserResponse, RequestData, ResponseData } from './types';
 
 @Controller(BASE_USER_CONTROLLER_PATH)
 export class LoginUserController {
@@ -20,15 +21,17 @@ export class LoginUserController {
     if (result.isLeft()) {
       const error = result.value;
 
+      const errorValue = error.getErrorValue();
+
       switch (error.constructor) {
         case LoginUseCaseErrors.UserNameDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
+          throw new NotFoundException(errorValue);
         case LoginUseCaseErrors.PasswordDoesntMatchError:
-          throw new BadRequestException(error.getErrorValue());
+          throw new BadRequestException(errorValue);
         case LoginUseCaseErrors.InvalidDataError:
-          throw new BadRequestException(error.getErrorValue());
+          throw new BadRequestException(errorValue);
         default:
-          throw new InternalServerErrorException(error.getErrorValue());
+          throw new InternalServerErrorException(errorValue);
       }
     }
 

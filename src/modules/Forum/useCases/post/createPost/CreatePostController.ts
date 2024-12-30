@@ -1,9 +1,10 @@
 import { BadRequestException, Body, Controller, Inject, InternalServerErrorException, NotFoundException, Post } from '@nestjs/common';
+import { CreatePostRequestDTO } from 'gatherly-types';
 import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_POST_CONTROLLER_PATH } from '../utils/baseContollerPath';
 import { CreatePostUseCaseSymbol } from '../utils/symbols';
 import { CreatePostErrors } from './CreatePostErrors';
-import { CreatePostRequestDTO, RequestData, ResponseData } from './types';
+import { RequestData, ResponseData } from './types';
 
 @Controller(BASE_POST_CONTROLLER_PATH)
 export class CreatePostController {

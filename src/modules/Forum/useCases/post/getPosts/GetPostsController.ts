@@ -1,8 +1,9 @@
 import { Controller, Get, Inject, InternalServerErrorException, ParseIntPipe, Query } from '@nestjs/common';
+import { GetPostsResponseDTO } from 'gatherly-types';
 import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_POST_CONTROLLER_PATH } from '../utils/baseContollerPath';
 import { GetPostsUseCaseSymbol } from '../utils/symbols';
-import { GetPostsResponseDTO, RequestData, ResponseData } from './types';
+import { RequestData, ResponseData } from './types';
 
 @Controller(BASE_POST_CONTROLLER_PATH)
 export class GetPostsController {

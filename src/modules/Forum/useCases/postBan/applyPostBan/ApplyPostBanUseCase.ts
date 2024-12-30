@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { REQUEST } from '@nestjs/core';
+import { EBanType } from 'gatherly-types';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { PostService } from 'src/modules/Forum/domain/services/PostService';
 import { IPostBanRepo, PostBanRepoSymbol } from 'src/modules/Forum/repos/postBanRepo';
@@ -13,7 +14,7 @@ import { Result } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';
 import { has } from 'src/utils/has';
 import { ApplyPostBanErrors } from './ApplyPostBanErrors';
-import { EBanType, RequestData, ResponseData } from './types';
+import { RequestData, ResponseData } from './types';
 
 @Injectable()
 export class ApplyPostBanUseCase implements UseCase<RequestData, Promise<ResponseData>> {
