@@ -27,6 +27,12 @@ export class CreateCommentUseCase implements UseCase<RequestData, Promise<Respon
     const commentTextOrError = CommentText.create({ value: requestData.dto.comment });
 
     const dtoResult = Result.combine([commentTextOrError]);
+    // const dtoResult = Result.combine([
+    //   Result.fail<IFailedField>({
+    //     message: 'siemano',
+    //     field: 'comment',
+    //   }),
+    // ]);
 
     if (dtoResult.isFailure) {
       return left(new CreateCommentErrors.InvalidDataError(dtoResult.getErrorValue()));

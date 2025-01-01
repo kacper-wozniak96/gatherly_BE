@@ -60,8 +60,16 @@ export class UserRepo implements IUserRepo {
     return UserMapper.toDomain(user);
   }
 
-  async getUsers(): Promise<User[]> {
-    const users = await this.prisma.user.findMany();
+  async getUsers(search: string): Promise<User[]> {
+    const users = await this.prisma.user.findMany({
+      where: {
+        Username: {
+          contains: search,
+        },
+      },
+      skip: 0,
+      take: 5,
+    });
 
     return users.map((user) => UserMapper.toDomain(user));
   }

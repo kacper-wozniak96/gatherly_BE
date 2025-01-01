@@ -2,7 +2,11 @@ import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { ValueObject } from 'src/shared/core/ValueObject';
 import { Result } from '../../../shared/core/Result';
 
-export class CommentId extends ValueObject<{ value: UniqueEntityID }> {
+interface CommentIdProps {
+  value: UniqueEntityID;
+}
+
+export class CommentId extends ValueObject<CommentIdProps> {
   getStringValue(): string {
     return this.props.value.toString();
   }

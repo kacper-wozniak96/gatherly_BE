@@ -31,17 +31,19 @@ export class ApplyPostBanController {
     if (result.isLeft()) {
       const error = result.value;
 
+      const errorValue = error.getErrorValue();
+
       switch (error.constructor) {
         case ApplyPostBanErrors.UserDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
+          throw new NotFoundException(errorValue);
         case ApplyPostBanErrors.BannedUserDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
+          throw new NotFoundException(errorValue);
         case ApplyPostBanErrors.PostNotCreatedByUserError:
-          throw new UnauthorizedException(error.getErrorValue());
+          throw new UnauthorizedException(errorValue);
         case ApplyPostBanErrors.PostDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
+          throw new NotFoundException(errorValue);
         default:
-          throw new InternalServerErrorException(error.getErrorValue());
+          throw new InternalServerErrorException(errorValue);
       }
     }
 

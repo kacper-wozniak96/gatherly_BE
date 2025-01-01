@@ -90,9 +90,16 @@ export class PostService {
     type: EBanType,
     banValue: boolean,
   ): ApplyPostBanResponse {
-    const banType = BanType.create({ value: type }).getValue();
+    const banTypeOrError = BanType.create({ value: type });
+
+    if (banTypeOrError.isFailure) {
+      return left(Result.fail<any>(banTypeOrError.getErrorValue()));
+    }
+
+    const banType = banTypeOrError.getValue();
+
     const alreadyAppliedBan = existingBansOnUser.find((postBan) => postBan.type.equals(banType));
-    console.log({ alreadyAppliedBan });
+
     const banOrError = PostBan.create({ postId: post.postId, userId: bannedUserId, type: banType }, alreadyAppliedBan?.id);
 
     if (banOrError.isFailure) return left(Result.fail<any>(banOrError.getErrorValue()));
