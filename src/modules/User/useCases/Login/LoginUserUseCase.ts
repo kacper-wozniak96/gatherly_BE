@@ -39,10 +39,12 @@ export class LoginUserUseCase implements UseCase<RequestData, Promise<ResponseDa
       return left(new LoginUseCaseErrors.UserNameDoesntExistError());
     }
 
-    const passwordValid = await user.props.password.comparePassword(password.value);
+    if (!user.isGuest()) {
+      const passwordValid = await user.props.password.comparePassword(password.value);
 
-    if (!passwordValid) {
-      return left(new LoginUseCaseErrors.PasswordDoesntMatchError());
+      if (!passwordValid) {
+        return left(new LoginUseCaseErrors.PasswordDoesntMatchError());
+      }
     }
 
     const accessToken = await this.authService.signJWT(user.id.toValue() as number);
