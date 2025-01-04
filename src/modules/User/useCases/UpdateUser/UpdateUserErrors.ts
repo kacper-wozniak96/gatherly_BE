@@ -1,12 +1,14 @@
-import { usernameSchema } from 'gatherly-types';
+import { passwordSchema, usernameSchema } from 'gatherly-types';
 import { Result } from 'src/shared/core/Result';
 import { UseCaseError } from 'src/shared/core/UseCaseError';
-import { IFailedField } from 'src/utils/FailedField';
+import { FailedField, IFailedField } from 'src/utils/FailedField';
 import { z } from 'zod';
 
 type usernameType = z.infer<typeof usernameSchema>;
+type passwordType = z.infer<typeof passwordSchema>;
 
 const usernameField: keyof usernameType = 'username';
+const passwordField: keyof passwordType = 'password';
 
 export namespace UpdateUserErrors {
   export class UserDoesntExistError extends Result<UseCaseError> {
@@ -41,6 +43,17 @@ export namespace UpdateUserErrors {
 
   export class InvalidDataError extends Result<UseCaseError> {
     constructor(failedFields: IFailedField[]) {
+      super(false, {
+        message: failedFields,
+        isFormInvalid: true,
+      });
+    }
+  }
+
+  export class PasswordsDoNotMatchError extends Result<UseCaseError> {
+    constructor() {
+      const failedFields = [new FailedField(passwordField, `Passwords do not match`)];
+
       super(false, {
         message: failedFields,
         isFormInvalid: true,

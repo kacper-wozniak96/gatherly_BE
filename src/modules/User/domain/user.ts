@@ -34,8 +34,17 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.avatarsignedURl;
   }
 
+  get password(): UserPassword {
+    return this.props.password;
+  }
+
   updateUsername(username: UserName): Result<void> {
     this.props.username = username;
+    return Result.ok<void>();
+  }
+
+  updatePassword(password: UserPassword): Result<void> {
+    this.props.password = password;
     return Result.ok<void>();
   }
 

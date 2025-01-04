@@ -15,14 +15,19 @@ export class UserRepo implements IUserRepo {
 
     const exists = Number.isInteger(userId);
 
-    console.log({ user: user.username.value });
-
     if (exists) {
+      let userPassword = '';
+
+      if (user.password) {
+        userPassword = await user.password.hashPassword();
+      }
+
       await this.prisma.user.update({
         where: { Id: user.userId.getValue().toValue() as number },
         data: {
           Username: user?.username?.value,
           AvatarS3Key: user?.avatarS3Key,
+          Password: userPassword,
         },
       });
 

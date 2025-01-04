@@ -11,8 +11,10 @@ import { IFailedField } from 'src/utils/FailedField';
 import { has } from 'src/utils/has';
 import { uuid } from 'uuidv4';
 import { UserAvatar } from '../../domain/UserAvatar';
+import { UserConfirmPassword } from '../../domain/UserConfirmPassword';
 import { UserId } from '../../domain/UserId';
 import { UserName } from '../../domain/UserName';
+import { UserPassword } from '../../domain/UserPassword';
 import { IUserRepo } from '../../repos/userRepo';
 import { UserRepoSymbol } from '../../repos/utils/symbols';
 import { RequestData, ResponseData } from './types';
@@ -76,6 +78,27 @@ export class UpdateUserUseCase implements UseCase<RequestData, Promise<ResponseD
       }
 
       changes.addChange(user.updateUsername(newUserName));
+    }
+
+    if (has(requestData.dto, 'password')) {
+      const userPasswordOrError = UserPassword.create({ value: requestData.dto.password });
+      const userConfirmPasswordOrError = UserConfirmPassword.create({ value: requestData.dto.confirmPassword });
+
+      const dtoResult = Result.combine([userPasswordOrError, userConfirmPasswordOrError]);
+      const failedFields = dtoResult.getErrorValue();
+
+      if (dtoResult.isFailure) {
+        return left(new UpdateUserErrors.InvalidDataError(failedFields));
+      }
+
+      const userPassword = userPasswordOrError.getValue() as UserPassword;
+      const userConfirmPassword = userConfirmPasswordOrError.getValue();
+
+      if (!userPassword.equals(userConfirmPassword)) {
+        return left(new UpdateUserErrors.PasswordsDoNotMatchError());
+      }
+
+      changes.addChange(user.updatePassword(userPassword));
     }
 
     if (changes.getCombinedChangesResult().isFailure) return left(new AppError.UnexpectedError());

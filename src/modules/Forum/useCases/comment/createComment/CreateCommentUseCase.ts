@@ -1,9 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { REQUEST } from '@nestjs/core';
+import { EBanType } from 'gatherly-types';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { Comment } from 'src/modules/Forum/domain/comment';
 import { CommentText } from 'src/modules/Forum/domain/commentText';
+import { PostBan } from 'src/modules/Forum/domain/postBan';
+import { IPostBanRepo, PostBanRepoSymbol } from 'src/modules/Forum/repos/postBanRepo';
 import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
 import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
 import { IUserRepo } from 'src/modules/User/repos/userRepo';
@@ -20,10 +23,25 @@ export class CreateCommentUseCase implements UseCase<RequestData, Promise<Respon
   constructor(
     @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,
     @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
+    @Inject(PostBanRepoSymbol) private readonly postBanRepo: IPostBanRepo,
     @Inject(REQUEST) private readonly request: CustomRequest,
   ) {}
 
   async execute(requestData: RequestData): Promise<ResponseData> {
+    const user = await this.userRepo.getUserByUserId(this.request.user.userId);
+
+    if (!user) return left(new CreateCommentErrors.UserDoesntExistError());
+
+    const post = await this.postRepo.getPostByPostId(requestData.postId);
+
+    if (!post) return left(new CreateCommentErrors.PostDoesntExistError());
+
+    const existingBansOnUser = await this.postBanRepo.getUserPostBans(post.postId, this.request.user.userId);
+
+    const isUserBanned = PostBan.isUserBanned(existingBansOnUser, EBanType.addingComments);
+
+    if (isUserBanned) return left(new CreateCommentErrors.UserBannedFromAddingCommentsError());
+
     const commentTextOrError = CommentText.create({ value: requestData.dto.comment });
 
     const dtoResult = Result.combine([commentTextOrError]);
@@ -33,14 +51,6 @@ export class CreateCommentUseCase implements UseCase<RequestData, Promise<Respon
     }
 
     const commentText = commentTextOrError.getValue() as CommentText;
-
-    const user = await this.userRepo.getUserByUserId(this.request.user.userId);
-
-    if (!user) return left(new CreateCommentErrors.UserDoesntExistError());
-
-    const post = await this.postRepo.getPostByPostId(requestData.postId);
-
-    if (!post) return left(new CreateCommentErrors.PostDoesntExistError());
 
     const commentOrError = Comment.create({
       userId: user.userId,

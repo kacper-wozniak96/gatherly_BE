@@ -46,6 +46,8 @@ export class UpdateUserController {
           throw new BadRequestException(errorValue);
         case UpdateUserErrors.CannotUpdateGuestUserError:
           throw new BadRequestException(errorValue);
+        case UpdateUserErrors.PasswordsDoNotMatchError:
+          throw new BadRequestException(errorValue);
         default:
           throw new InternalServerErrorException(errorValue);
       }

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   Inject,
   InternalServerErrorException,
   NotFoundException,
@@ -38,6 +39,8 @@ export class CreateCommentController {
           throw new NotFoundException(errorValue);
         case CreateCommentErrors.InvalidDataError:
           throw new BadRequestException(errorValue);
+        case CreateCommentErrors.UserBannedFromAddingCommentsError:
+          throw new ForbiddenException(errorValue);
         default:
           throw new InternalServerErrorException(errorValue);
       }

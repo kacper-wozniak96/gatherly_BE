@@ -25,4 +25,11 @@ export namespace CreateCommentErrors {
       } as UseCaseError);
     }
   }
+  export class UserBannedFromAddingCommentsError extends Result<UseCaseError> {
+    constructor() {
+      super(false, {
+        message: `User is banned adding comments to this post`,
+      });
+    }
+  }
 }

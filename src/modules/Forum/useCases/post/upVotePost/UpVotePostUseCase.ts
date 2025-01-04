@@ -11,6 +11,7 @@ import { IPostVoteRepo } from 'src/modules/Forum/repos/postVoteRepo';
 import { PostRepoSymbol, PostVoteRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
 import { IUserRepo } from 'src/modules/User/repos/userRepo';
 import { UserRepoSymbol } from 'src/modules/User/repos/utils/symbols';
+import { AppError } from 'src/shared/core/AppError';
 import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';
@@ -48,7 +49,8 @@ export class UpVotePostUseCase implements UseCase<RequestData, Promise<ResponseD
     const upvotePostResult = this.postService.upvotePost(post, user, existingVotesOnPostByMember);
 
     if (upvotePostResult.isLeft()) {
-      return left(upvotePostResult.value);
+      // return left(upvotePostResult.value);
+      return left(new AppError.UnexpectedError());
     }
 
     await this.postRepo.save(post);
