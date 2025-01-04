@@ -1,3 +1,4 @@
+import { EBanType } from 'gatherly-types';
 import { UserId } from 'src/modules/User/domain/UserId';
 import { Entity } from 'src/shared/core/Entity';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
@@ -30,6 +31,10 @@ export class PostBan extends Entity<PostBanProps> {
 
   get type(): BanType {
     return this.props.type;
+  }
+
+  public static isUserBanned(postBans: PostBan[], banType: EBanType): boolean {
+    return postBans.some((ban) => ban.type.value === banType);
   }
 
   public static create(props: PostBanProps, id?: UniqueEntityID): Result<PostBan> {

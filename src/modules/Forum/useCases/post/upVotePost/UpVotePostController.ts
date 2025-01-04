@@ -1,4 +1,13 @@
-import { Controller, Inject, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Post } from '@nestjs/common';
+import {
+  Controller,
+  ForbiddenException,
+  Inject,
+  InternalServerErrorException,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_POST_CONTROLLER_PATH } from '../utils/baseContollerPath';
 import { UpVotePostUseCaseSymbol } from '../utils/symbols';
@@ -16,13 +25,17 @@ export class UpVotePostController {
     if (result.isLeft()) {
       const error = result.value;
 
+      const errorValue = error.getErrorValue();
+
       switch (error.constructor) {
         case UpVotePostErrors.UserDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
+          throw new NotFoundException(errorValue);
         case UpVotePostErrors.PostDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
+          throw new NotFoundException(errorValue);
+        case UpVotePostErrors.UserBannedFromVotingError:
+          throw new ForbiddenException(errorValue);
         default:
-          throw new InternalServerErrorException(error.getErrorValue());
+          throw new InternalServerErrorException(errorValue);
       }
     }
 

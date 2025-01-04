@@ -23,4 +23,12 @@ export namespace DownVotePostErrors {
       } as UseCaseError);
     }
   }
+
+  export class UserBannedFromVotingError extends Result<UseCaseError> {
+    constructor() {
+      super(false, {
+        message: `User is banned from voting on this post`,
+      });
+    }
+  }
 }

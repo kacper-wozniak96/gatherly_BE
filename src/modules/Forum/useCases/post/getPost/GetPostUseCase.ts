@@ -5,9 +5,11 @@ import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
 import { UseCase } from 'src/shared/core/UseCase';
 
 import { REQUEST } from '@nestjs/core';
-import { PostDTO } from 'gatherly-types';
+import { EBanType, PostDTO } from 'gatherly-types';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
+import { PostBan } from 'src/modules/Forum/domain/postBan';
 import { PostMapper } from 'src/modules/Forum/mappers/Post';
+import { IPostBanRepo, PostBanRepoSymbol } from 'src/modules/Forum/repos/postBanRepo';
 import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
@@ -19,6 +21,7 @@ export class GetPostUseCase implements UseCase<RequestData, Promise<ResponseData
   constructor(
     @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,
     @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
+    @Inject(PostBanRepoSymbol) private readonly postBanRepo: IPostBanRepo,
     @Inject(REQUEST) private readonly request: CustomRequest,
   ) {}
 
@@ -26,6 +29,12 @@ export class GetPostUseCase implements UseCase<RequestData, Promise<ResponseData
     const post = await this.postRepo.getPostByPostId(requestData.postId);
 
     if (!post) return left(new GetPostErrors.PostDoesntExistError());
+
+    const existingBansOnUser = await this.postBanRepo.getUserPostBans(post.postId, this.request.user.userId);
+
+    const isUserBanned = PostBan.isUserBanned(existingBansOnUser, EBanType.viewingPost);
+
+    if (isUserBanned) return left(new GetPostErrors.UserBannedFromViewingPostError());
 
     if (post.user.hasSetAvatar()) {
       const userAvatarUrl = await this.awsS3Service.getFileUrl(post.user.avatarS3Key);

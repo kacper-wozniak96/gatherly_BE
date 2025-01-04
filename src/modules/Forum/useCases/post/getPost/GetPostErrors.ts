@@ -6,7 +6,15 @@ export namespace GetPostErrors {
     constructor() {
       super(false, {
         message: `Post doesn't exist`,
-      } as UseCaseError);
+      });
+    }
+  }
+
+  export class UserBannedFromViewingPostError extends Result<UseCaseError> {
+    constructor() {
+      super(false, {
+        message: `User is banned from viewing this post`,
+      });
     }
   }
 }

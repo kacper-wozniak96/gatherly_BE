@@ -11,14 +11,14 @@ import { IPostBanRepo } from '../postBanRepo';
 export class PostBanRepo implements IPostBanRepo {
   constructor(private prisma: PrismaService) {}
 
-  async getUserPostBans(postId: PostId, userId: UserId): Promise<PostBan[]> {
-    const postIdValue = postId.getValue().toValue() as number;
-    const userIdValue = userId.getValue().toValue() as number;
+  async getUserPostBans(postId: PostId | number, userId: UserId | number): Promise<PostBan[]> {
+    userId = userId instanceof UserId ? Number(userId.getValue().toValue()) : userId;
+    postId = postId instanceof PostId ? Number(postId.getValue().toValue()) : postId;
 
     const postBans = await this.prisma.postBan.findMany({
       where: {
-        PostId: postIdValue,
-        UserId: userIdValue,
+        PostId: postId,
+        UserId: userId,
       },
     });
 

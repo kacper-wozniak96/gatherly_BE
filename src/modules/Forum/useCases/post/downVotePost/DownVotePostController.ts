@@ -1,4 +1,13 @@
-import { Controller, Inject, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Post } from '@nestjs/common';
+import {
+  Controller,
+  ForbiddenException,
+  Inject,
+  InternalServerErrorException,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { BASE_POST_CONTROLLER_PATH } from '../utils/baseContollerPath';
 import { DownVotePostUseCaseSymbol } from '../utils/symbols';
 import { DownVotePostErrors } from './DownVotePostErrors';
@@ -16,13 +25,17 @@ export class DownVotePostController {
     if (result.isLeft()) {
       const error = result.value;
 
+      const errorValue = error.getErrorValue();
+
       switch (error.constructor) {
         case DownVotePostErrors.UserDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
+          throw new NotFoundException(errorValue);
         case DownVotePostErrors.PostDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
+          throw new NotFoundException(errorValue);
+        case DownVotePostErrors.UserBannedFromVotingError:
+          throw new ForbiddenException(errorValue);
         default:
-          throw new InternalServerErrorException(error.getErrorValue());
+          throw new InternalServerErrorException(errorValue);
       }
     }
 

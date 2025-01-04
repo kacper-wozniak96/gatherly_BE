@@ -4,7 +4,7 @@ import { PostBans } from '../domain/postBans';
 import { PostId } from '../domain/postId';
 
 export interface IPostBanRepo {
-  getUserPostBans(postId: PostId, userId: UserId): Promise<PostBan[]>;
+  getUserPostBans(postId: PostId | number, userId: UserId | number): Promise<PostBan[]>;
   save(postBans: PostBans): Promise<void>;
 }
 
