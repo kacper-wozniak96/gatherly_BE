@@ -5,8 +5,10 @@ import { UserId } from 'src/modules/User/domain/UserId';
 import { left, right } from 'src/shared/core/Either';
 import { Result } from '../../../../shared/core/Result';
 import { ResponseData as UpVotePostResponse } from '../../useCases/post/upVotePost/types';
+import { ApplyPostBanErrors } from '../../useCases/postBan/applyPostBan/ApplyPostBanErrors';
 import { ResponseData as ApplyPostBanResponse } from '../../useCases/postBan/applyPostBan/types';
 import { BanType } from '../banType';
+import { BanValue } from '../banValue';
 import { Post } from '../post';
 import { PostBan } from '../postBan';
 import { PostVote } from '../postVote';
@@ -91,18 +93,21 @@ export class PostService {
     banValue: boolean,
   ): ApplyPostBanResponse {
     const banTypeOrError = BanType.create({ value: type });
+    const banValueOrError = BanValue.create({ value: banValue });
 
-    if (banTypeOrError.isFailure) {
-      return left(Result.fail<any>(banTypeOrError.getErrorValue()));
+    const result = Result.combine([banTypeOrError, banValueOrError]);
+
+    if (result.isFailure) {
+      left(new ApplyPostBanErrors.InvalidDataError());
     }
 
     const banType = banTypeOrError.getValue();
 
-    const alreadyAppliedBan = existingBansOnUser.find((postBan) => postBan.type.equals(banType));
+    const alreadyAppliedBan = existingBansOnUser.find((postBan) => postBan.type.equals(banType as BanType));
 
-    const banOrError = PostBan.create({ postId: post.postId, userId: bannedUserId, type: banType }, alreadyAppliedBan?.id);
+    const banOrError = PostBan.create({ postId: post.postId, userId: bannedUserId, type: banType as BanType }, alreadyAppliedBan?.id);
 
-    if (banOrError.isFailure) return left(Result.fail<any>(banOrError.getErrorValue()));
+    if (banOrError.isFailure) return left(new ApplyPostBanErrors.InvalidDataError());
 
     const ban = banOrError.getValue();
 

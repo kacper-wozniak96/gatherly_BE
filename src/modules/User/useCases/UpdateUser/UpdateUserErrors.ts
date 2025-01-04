@@ -1,13 +1,19 @@
+import { usernameSchema } from 'gatherly-types';
 import { Result } from 'src/shared/core/Result';
 import { UseCaseError } from 'src/shared/core/UseCaseError';
 import { IFailedField } from 'src/utils/FailedField';
+import { z } from 'zod';
+
+type usernameType = z.infer<typeof usernameSchema>;
+
+const usernameField: keyof usernameType = 'username';
 
 export namespace UpdateUserErrors {
   export class UserDoesntExistError extends Result<UseCaseError> {
     constructor() {
       super(false, {
         message: `A forum member doesn't exist for this account.`,
-      } as UseCaseError);
+      });
     }
   }
 
@@ -15,7 +21,7 @@ export namespace UpdateUserErrors {
     constructor() {
       super(false, {
         message: `Cannot update guest user. Create your own account and try again`,
-      } as UseCaseError);
+      });
     }
   }
 
@@ -24,12 +30,12 @@ export namespace UpdateUserErrors {
       super(false, {
         message: [
           {
-            field: 'username',
+            field: usernameField,
             message: 'Username already taken',
           },
         ],
         isFormInvalid: true,
-      } as UseCaseError);
+      });
     }
   }
 
@@ -38,7 +44,7 @@ export namespace UpdateUserErrors {
       super(false, {
         message: failedFields,
         isFormInvalid: true,
-      } as UseCaseError);
+      });
     }
   }
 }

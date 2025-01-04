@@ -3,12 +3,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { REQUEST } from '@nestjs/core';
 import { Queue } from 'bullmq';
+import { IFailedField } from 'gatherly-types';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { ICommentRepo } from 'src/modules/Forum/repos/commentRepo';
 import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
 import { IPostVoteRepo } from 'src/modules/Forum/repos/postVoteRepo';
 import { CommentRepoSymbol, PostRepoSymbol, PostVoteRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
-import { AppError } from 'src/shared/core/AppError';
 import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';
@@ -37,9 +37,10 @@ export class GenerateUserActivityReportUseCaseProvider implements UseCase<Reques
     const userEmailOrError = UserEmail.create({ value: requestData.dto.email });
     const reportIdOrError = ReportId.create({ value: requestData.dto.reportId });
 
-    const dtoResult = Result.combine([userEmailOrError, reportIdOrError]);
+    const dtoResult: Result<IFailedField[]> = Result.combine([userEmailOrError, reportIdOrError]);
+    const failedFields = dtoResult.getErrorValue();
 
-    if (dtoResult.isFailure) return left(new AppError.UnexpectedError());
+    if (dtoResult.isFailure) return left(new GenerateUserActivityReportErrors.InvalidDataError(failedFields));
 
     const userEmail = userEmailOrError.getValue() as UserEmail;
     const reportId = reportIdOrError.getValue() as ReportId;

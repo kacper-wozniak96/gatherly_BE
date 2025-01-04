@@ -49,7 +49,7 @@ export class Result<T> {
     const failedResults = results.filter((result) => result.isFailure);
 
     if (failedResults.length) {
-      const errors = failedResults.map((result) => result.error);
+      const errors = failedResults.map((result) => result.getErrorValue());
 
       return Result.fail(errors);
     }

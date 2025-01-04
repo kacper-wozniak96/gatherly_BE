@@ -1,9 +1,12 @@
-import { Guard } from 'src/shared/core/Guard';
 import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { ValueObject } from 'src/shared/core/ValueObject';
 
-export class PostId extends ValueObject<{ value: UniqueEntityID }> {
+interface PostIdProps {
+  value: UniqueEntityID;
+}
+
+export class PostId extends ValueObject<PostIdProps> {
   getStringValue(): string {
     return this.props.value.toString();
   }
@@ -17,11 +20,6 @@ export class PostId extends ValueObject<{ value: UniqueEntityID }> {
   }
 
   public static create(value: UniqueEntityID): Result<PostId> {
-    const guardResult = Guard.againstNullOrUndefined(value, 'value');
-    if (guardResult.isFailure) {
-      return Result.fail<any>(guardResult.getErrorValue());
-    }
-
     return Result.ok<PostId>(new PostId(value));
   }
 }

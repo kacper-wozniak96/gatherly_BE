@@ -3,6 +3,7 @@
 // //   field: string;
 // // }
 
+import { IUseCaseError } from 'gatherly-types';
 import { IFailedField } from 'src/utils/FailedField';
 
 // // export abstract class UseCaseError implements IError {
@@ -31,17 +32,20 @@ import { IFailedField } from 'src/utils/FailedField';
 //   }
 // }
 
-interface IUseCaseError {
-  message: string | IFailedField[];
-  isFormInvalid?: boolean;
-}
+// interface IUseCaseError {
+//   message: string | IFailedField[];
+//   isFormInvalid?: boolean;
+//   isForSnackbar?: boolean;
+// }
 
 export abstract class UseCaseError implements IUseCaseError {
   public readonly message: string | IFailedField[];
   public readonly isFormInvalid?: boolean;
+  public readonly isForSnackbar?: boolean;
 
-  constructor(message: string | IFailedField[], isFormInvalid = false) {
+  constructor(message: string | IFailedField[], isFormInvalid = false, isForSnackbar = false) {
     this.message = message;
     this.isFormInvalid = isFormInvalid;
+    this.isForSnackbar = isForSnackbar;
   }
 }

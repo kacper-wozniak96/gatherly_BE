@@ -27,18 +27,18 @@ export class CreateUserUseCase implements UseCase<RequestData, Promise<ResponseD
       return left(new CreateUserErrors.InvalidDataError(dtoResult.getErrorValue()));
     }
 
-    const userName = (userUsernameOrError as Result<UserName>).getValue();
-    const userPassword = (userPasswordOrError as Result<UserPassword>).getValue();
+    const userName = userUsernameOrError.getValue() as UserName;
+    const userPassword = userPasswordOrError.getValue() as UserPassword;
     const userConfirmPassword = userConfirmPasswordOrError.getValue();
-
-    if (!userPassword.equals(userConfirmPassword)) {
-      return left(new CreateUserErrors.PasswordsDoNotMatchError());
-    }
 
     const userWithTheSameUserName = await this.userRepo.getUserByUsername(userName);
 
     if (userWithTheSameUserName) {
       return left(new CreateUserErrors.UsernameTakenError());
+    }
+
+    if (!userPassword.equals(userConfirmPassword)) {
+      return left(new CreateUserErrors.PasswordsDoNotMatchError());
     }
 
     const userOrError = User.create({

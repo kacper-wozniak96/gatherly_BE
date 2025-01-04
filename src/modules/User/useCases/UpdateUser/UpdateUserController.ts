@@ -12,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UpdateUserRequestDTO } from 'gatherly-types';
+import { avatarFileKeyOnUserUpdate, UpdateUserRequestDTO } from 'gatherly-types';
 import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_USER_CONTROLLER_PATH } from '../../utils/baseContollerPath';
 import { UpdateUserUseCaseSymbol } from '../../utils/symbols';
@@ -24,7 +24,7 @@ export class UpdateUserController {
   constructor(@Inject(UpdateUserUseCaseSymbol) private readonly useCase: UseCase<RequestData, Promise<ResponseData>>) {}
 
   @Post('/:id')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor(avatarFileKeyOnUserUpdate))
   async updateUser(
     @Param('id', ParseIntPipe) userId: number,
     @Body() dto: UpdateUserRequestDTO,

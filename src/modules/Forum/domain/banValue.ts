@@ -1,29 +1,26 @@
-import { EBanType } from 'gatherly-types';
 import { ValueObject } from 'src/shared/core/ValueObject';
 import { IFailedField } from 'src/utils/FailedField';
 import { z } from 'zod';
 import { Result } from '../../../shared/core/Result';
 
-interface BanTypeProps {
-  value: EBanType;
+interface BanValueProps {
+  value: boolean;
 }
 
-const banSchema = z.nativeEnum(EBanType);
-
 const schema = z.object({
-  value: banSchema,
+  value: z.boolean(),
 });
 
-export class BanType extends ValueObject<BanTypeProps> {
-  private constructor(props: BanTypeProps) {
+export class BanValue extends ValueObject<BanValueProps> {
+  private constructor(props: BanValueProps) {
     super(props);
   }
 
-  get value(): EBanType {
+  get value(): boolean {
     return this.props.value;
   }
 
-  public static create(props: BanTypeProps): Result<BanType> | Result<IFailedField> {
+  public static create(props: BanValueProps): Result<BanValue> | Result<IFailedField> {
     type TValue = z.infer<typeof schema>;
     const validationResult = this.validate<TValue>(schema, {
       value: props.value,
@@ -33,6 +30,6 @@ export class BanType extends ValueObject<BanTypeProps> {
       return validationResult.failedResult;
     }
 
-    return Result.ok<BanType>(new BanType(props));
+    return Result.ok<BanValue>(new BanValue(props));
   }
 }

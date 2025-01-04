@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { google } from 'googleapis';
 import * as nodemailer from 'nodemailer';
 
 export interface IMailService {
@@ -8,32 +7,18 @@ export interface IMailService {
 
 export const MailServiceSymbol = Symbol('Mail_Service');
 
-const OAuth2 = google.auth.OAuth2;
-
 @Injectable()
 export class MailService implements IMailService {
   constructor() {}
 
   private async createTransporter() {
-    const oauth2Client = new OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, 'https://developers.google.com/oauthplayground');
-
-    oauth2Client.setCredentials({
-      refresh_token: process.env.REFRESH_TOKEN,
-    });
-
-    const accessToken = await oauth2Client.getAccessToken();
-
-    console.log({ accessToken });
-
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: process.env.GMAIL_HOST,
+      port: 587,
+      secure: false,
       auth: {
-        type: 'OAuth2',
         user: process.env.GMAIL_USER,
-        clientId: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        refreshToken: process.env.REFRESH_TOKEN,
-        accessToken: accessToken.toString(),
+        pass: process.env.GMAIL_PASS,
       },
     });
 
@@ -44,11 +29,11 @@ export class MailService implements IMailService {
     const transporter = await this.createTransporter();
 
     const mailOptions = {
-      from: process.env.GMAIL_USER, // Sender address
-      to, // List of recipients
-      subject: 'User Activity Report', // Subject line
-      text: 'Hello, here is your recent activity report.', // Plain text body
-      html: '<p>Hello,</p><p>Here is your <strong>recent activity report</strong>.</p>', // HTML body
+      from: process.env.GMAIL_USER,
+      to,
+      subject: 'User Activity Report',
+      text: 'Hello, here is your recent activity report.',
+      html: '<p>Hello,</p><p>Here is your <strong>recent activity report</strong>.</p>',
       attachments: [
         {
           filename: `${reportId}.pdf`,

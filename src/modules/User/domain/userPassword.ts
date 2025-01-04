@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt';
+import { passwordSchema } from 'gatherly-types';
 import { ValueObject } from 'src/shared/core/ValueObject';
 import { IFailedField } from 'src/utils/FailedField';
 import { z } from 'zod';
@@ -9,15 +10,15 @@ interface UserPasswordProps {
   hashed?: boolean;
 }
 
-const userPasswordSchema = z.object({
-  password: z
-    .string({
-      required_error: 'Password is required',
-      invalid_type_error: 'Password must be a string',
-    })
-    .min(1, { message: 'Password must be at least 1 character long' })
-    .max(30, { message: 'Password must be at most 30 characters long' }),
-});
+// const userPasswordSchema = z.object({
+//   password: z
+//     .string({
+//       required_error: 'Password is required',
+//       invalid_type_error: 'Password must be a string',
+//     })
+//     .min(1, { message: 'Password must be at least 1 character long' })
+//     .max(30, { message: 'Password must be at most 30 characters long' }),
+// });
 
 export class UserPassword extends ValueObject<UserPasswordProps> {
   get value(): string {
@@ -33,17 +34,13 @@ export class UserPassword extends ValueObject<UserPasswordProps> {
       return Result.ok<UserPassword>(new UserPassword(props));
     }
 
-    const validationResult = userPasswordSchema.safeParse({
+    type TValue = z.infer<typeof passwordSchema>;
+    const validationResult = this.validate<TValue>(passwordSchema, {
       password: props.value,
     });
 
-    if (!validationResult.success) {
-      const error = validationResult.error.errors[0];
-
-      return Result.fail<IFailedField>({
-        message: error.message,
-        field: error.path[0] as keyof typeof userPasswordSchema,
-      });
+    if (!validationResult.isValid) {
+      return validationResult.failedResult;
     }
 
     return Result.ok<UserPassword>(new UserPassword(props));

@@ -1,3 +1,4 @@
+import { postTitleSchema } from 'gatherly-types';
 import { ValueObject } from 'src/shared/core/ValueObject';
 import { IFailedField } from 'src/utils/FailedField';
 import { z } from 'zod';
@@ -6,18 +7,6 @@ import { Result } from '../../../shared/core/Result';
 interface PostTitleProps {
   value: string;
 }
-
-const postTitleZodSchema = z
-  .string({
-    required_error: 'Title is required',
-    invalid_type_error: 'Title must be a string',
-  })
-  .min(3, { message: 'Title must be at least 3 characters long' })
-  .max(30, { message: 'Title must be at most 30 characters long' });
-
-const newChema = z.object({
-  title: postTitleZodSchema,
-});
 
 export class PostTitle extends ValueObject<PostTitleProps> {
   private constructor(props: PostTitleProps) {
@@ -29,15 +18,13 @@ export class PostTitle extends ValueObject<PostTitleProps> {
   }
 
   public static create(props: PostTitleProps): Result<PostTitle | IFailedField> {
-    const validationResult = newChema.safeParse({ title: props.value });
+    type TValue = z.infer<typeof postTitleSchema>;
+    const validationResult = this.validate<TValue>(postTitleSchema, {
+      title: props.value,
+    });
 
-    if (!validationResult.success) {
-      const error = validationResult.error.errors[0];
-
-      return Result.fail<IFailedField>({
-        message: error.message,
-        field: error.path[0] as keyof typeof newChema,
-      });
+    if (!validationResult.isValid) {
+      return validationResult.failedResult;
     }
 
     return Result.ok<PostTitle>(new PostTitle(props));

@@ -50,7 +50,7 @@ export class PostRepo implements IPostRepo {
         Text: Post.text.value,
         User: { connect: { Id: Post.userId.getValue().toValue() as number } },
         PostVote: {
-          create: Post.votes.getItems().map((vote) => {
+          create: Post.votes.getNewItems().map((vote) => {
             return {
               UserId: vote.userId.getValue().toValue() as number,
               VoteId: vote.type,
@@ -142,7 +142,7 @@ export class PostRepo implements IPostRepo {
     postId = postId instanceof PostId ? (postId.getValue().toValue() as number) : postId;
 
     const post = await this.prisma.post.findUnique({
-      where: { Id: postId },
+      where: { Id: postId, IsDeleted: false },
       include: {
         User: true,
         PostVote: true,

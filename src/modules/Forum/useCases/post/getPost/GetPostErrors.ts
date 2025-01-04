@@ -5,7 +5,7 @@ export namespace GetPostErrors {
   export class PostDoesntExistError extends Result<UseCaseError> {
     constructor() {
       super(false, {
-        message: `Post with provided postId doesn't exist`,
+        message: `Post doesn't exist`,
       } as UseCaseError);
     }
   }

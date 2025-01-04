@@ -1,6 +1,7 @@
+import { reportIdSchema } from 'gatherly-types';
 import { ValueObject } from 'src/shared/core/ValueObject';
 import { IFailedField } from 'src/utils/FailedField';
-import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
+import { z } from 'zod';
 import { Result } from '../../../shared/core/Result';
 
 interface ReportIdProps {
@@ -17,18 +18,15 @@ export class ReportId extends ValueObject<ReportIdProps> {
   }
 
   public static create(props: ReportIdProps): Result<ReportId | IFailedField> {
-    if (!uuidValidate(props.value)) {
-      return Result.fail<IFailedField>({
-        message: 'Invalid UUID format',
-        field: 'value',
-      });
+    type TValue = z.infer<typeof reportIdSchema>;
+    const validationResult = this.validate<TValue>(reportIdSchema, {
+      reportId: props.value,
+    });
+
+    if (!validationResult.isValid) {
+      return validationResult.failedResult;
     }
 
     return Result.ok<ReportId>(new ReportId(props));
-  }
-
-  public static generate(): ReportId {
-    const id = uuidv4();
-    return new ReportId({ value: id });
   }
 }

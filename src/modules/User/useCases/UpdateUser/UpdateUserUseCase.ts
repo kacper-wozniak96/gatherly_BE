@@ -53,6 +53,7 @@ export class UpdateUserUseCase implements UseCase<RequestData, Promise<ResponseD
       if (user.hasSetAvatar()) {
         await this.awsS3Service.deleteFile(user.avatarS3Key);
       }
+
       const avatarS3Key = uuid();
       await this.awsS3Service.sendAvatarImage(avatarS3Key, requestData.file.buffer);
 

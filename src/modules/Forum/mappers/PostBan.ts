@@ -17,7 +17,7 @@ export class PostBanMapper {
       {
         postId: postIdOrError.getValue(),
         userId: userIdOrError.getValue(),
-        type: banTypeOrError.getValue(),
+        type: banTypeOrError.getValue() as BanType,
       },
       new UniqueEntityID(raw.Id),
     );

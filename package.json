@@ -47,7 +47,7 @@
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "date-fns": "^2.30.0",
-    "gatherly-types": "^1.0.20",
+    "gatherly-types": "^1.0.28",
     "googleapis": "^143.0.0",
     "lodash": "^4.17.21",
     "mongoose": "^7.6.0",

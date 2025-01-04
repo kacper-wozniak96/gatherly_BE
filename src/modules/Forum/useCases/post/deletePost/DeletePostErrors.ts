@@ -7,14 +7,15 @@ export namespace DeletePostErrors {
     constructor() {
       super(false, {
         message: `User does not exist`,
-      } as UseCaseError);
+      });
     }
   }
   export class PostDoesntExistError extends Result<UseCaseError> {
     constructor() {
       super(false, {
         message: `Post does not exist`,
-      } as UseCaseError);
+        isForSnackbar: true,
+      });
     }
   }
 
@@ -22,7 +23,7 @@ export namespace DeletePostErrors {
     constructor() {
       super(false, {
         message: `Post created by another user`,
-      } as UseCaseError);
+      });
     }
   }
 
@@ -31,7 +32,7 @@ export namespace DeletePostErrors {
       super(false, {
         message: failedFields,
         isFormInvalid: false,
-      } as UseCaseError);
+      });
     }
   }
 }

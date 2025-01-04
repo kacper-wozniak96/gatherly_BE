@@ -12,5 +12,5 @@ export type ResponseData = Either<
 export type RequestData = {
   dto: UpdateUserRequestDTO;
   userId: number;
-  file: Express.Multer.File;
+  file?: Express.Multer.File;
 };
