@@ -1,0 +1,100 @@
+-- CreateTable
+CREATE TABLE `User` (
+    `Id` INTEGER NOT NULL AUTO_INCREMENT,
+    `Username` VARCHAR(191) NOT NULL,
+    `Password` VARCHAR(191) NOT NULL,
+    `AvatarS3Key` VARCHAR(191) NULL,
+
+    PRIMARY KEY (`Id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Post` (
+    `Id` INTEGER NOT NULL AUTO_INCREMENT,
+    `UserId` INTEGER NOT NULL,
+    `Title` VARCHAR(200) NOT NULL,
+    `Text` VARCHAR(5000) NOT NULL,
+    `CreatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `IsDeleted` BOOLEAN NOT NULL DEFAULT false,
+
+    INDEX `UserId`(`UserId`),
+    PRIMARY KEY (`Id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `PostVote` (
+    `Id` INTEGER NOT NULL AUTO_INCREMENT,
+    `PostId` INTEGER NOT NULL,
+    `UserId` INTEGER NOT NULL,
+    `VoteId` INTEGER NOT NULL,
+
+    INDEX `PostId`(`PostId`),
+    PRIMARY KEY (`Id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Vote` (
+    `Id` INTEGER NOT NULL AUTO_INCREMENT,
+    `Label` VARCHAR(50) NOT NULL,
+
+    PRIMARY KEY (`Id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `BanType` (
+    `Id` INTEGER NOT NULL AUTO_INCREMENT,
+    `Label` VARCHAR(50) NOT NULL,
+
+    PRIMARY KEY (`Id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `PostBan` (
+    `Id` INTEGER NOT NULL AUTO_INCREMENT,
+    `PostId` INTEGER NOT NULL,
+    `UserId` INTEGER NOT NULL,
+    `BanTypeId` INTEGER NOT NULL,
+
+    INDEX `PostId`(`PostId`),
+    INDEX `UserId`(`UserId`),
+    INDEX `BanTypeId`(`BanTypeId`),
+    PRIMARY KEY (`Id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `PostComment` (
+    `Id` INTEGER NOT NULL AUTO_INCREMENT,
+    `PostId` INTEGER NOT NULL,
+    `UserId` INTEGER NOT NULL,
+    `Text` VARCHAR(5000) NOT NULL,
+
+    INDEX `Id`(`Id`),
+    PRIMARY KEY (`Id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `Post` ADD CONSTRAINT `Post_UserId_fkey` FOREIGN KEY (`UserId`) REFERENCES `User`(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PostVote` ADD CONSTRAINT `PostVote_PostId_fkey` FOREIGN KEY (`PostId`) REFERENCES `Post`(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PostVote` ADD CONSTRAINT `PostVote_UserId_fkey` FOREIGN KEY (`UserId`) REFERENCES `User`(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PostVote` ADD CONSTRAINT `PostVote_VoteId_fkey` FOREIGN KEY (`VoteId`) REFERENCES `Vote`(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PostBan` ADD CONSTRAINT `PostBan_PostId_fkey` FOREIGN KEY (`PostId`) REFERENCES `Post`(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PostBan` ADD CONSTRAINT `PostBan_UserId_fkey` FOREIGN KEY (`UserId`) REFERENCES `User`(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PostBan` ADD CONSTRAINT `PostBan_BanTypeId_fkey` FOREIGN KEY (`BanTypeId`) REFERENCES `BanType`(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PostComment` ADD CONSTRAINT `PostComment_PostId_fkey` FOREIGN KEY (`PostId`) REFERENCES `Post`(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PostComment` ADD CONSTRAINT `PostComment_UserId_fkey` FOREIGN KEY (`UserId`) REFERENCES `User`(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE;

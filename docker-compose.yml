@@ -20,3 +20,24 @@ services:
       - ./docker/redisinsight:/db
       - ./docker/ajeetraina/data/redisinsight:/db
       - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - app-network
+
+  db:
+    image: mysql/mysql-server:8.0.21
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_0900_ai_ci', '--default-authentication-plugin=mysql_native_password']
+    restart: always
+
+    environment:
+      MYSQL_DATABASE: 'gatherly'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'root'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'pass'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'pass'
+      # Root host
+      MYSQL_ROOT_HOST: "0.0.0.0"
+
+    ports:
+      - 3307:3306
