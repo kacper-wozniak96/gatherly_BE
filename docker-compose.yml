@@ -1,0 +1,74 @@
+version: '3.1'
+
+networks:
+  app-network:
+    driver: bridge
+
+services:
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: gatherly-backend
+  #   environment:
+  #     - DATABASE_URL=mysql://root:pass@mysql:3306/gatherly
+  #     - JWT_SECRET=A6H8U8vUhxTRqaJ2Bm/ly5TsXVJ3xUmo
+  #     - ORIGIN=http://127.0.0.1:5173
+  #     - AWS_BEFORE_RESIZE_BUCKET_NAME=gatherly-avatars
+  #     - AWS_AFTER_RESIZE_BUCKET_NAME=gatherly-destination-bucket
+  #     - AWS_REPORTS_BUCKET_NAME="gatherly-reports
+  #     - AWS_S3_ACCESS_KEY_ID=AKIA4RCAOI2PVVQHNWR2
+  #     - AWS_S3_SECRET_ACCESS_KEY=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
+  #     - AWS_S3_REGION=eu-north-1
+  #     - REDIS_PASSWORD=pass
+  #     - REDIS_IP=localhost
+  #     - REDIS_PORT=6379
+  #     - CLIENT_ID=392897643666-gansqd27oa778ieduo7bp8dmnlqq6atk.apps.googleusercontent.com
+  #     - CLIENT_SECRET=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
+  #     - REFRESH_TOKEN=1//04AMNEO5-TOxzCgYIARAAGAQSNwF-L9Irh4lg6ZTmKtOjdmc5sEOZM-bqWeY8Xyd1plSx4hxDQ6zEWnyMzie81uHw33jvViHx-XY
+  #     - GMAIL_USER=kacper.wozniak966@gmail.com
+  #     - GMAIL_PASS=piyx ikwz pzld sntx
+  #     - GMAIL_HOST=smtp.gmail.com
+  #   ports:
+  #     - '3000:3000'
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - app-network
+    # entrypoint: ["sh", "-c", "until nc -z mysql 3306; do echo waiting for mysql; sleep 3; done; npx prisma migrate deploy; npm run start:prod"]
+
+  db:
+    image: mysql/mysql-server:8.0.21
+    restart: always
+    container_name: mysql
+    environment:
+      - MYSQL_DATABASE=gatherly
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=pass
+      - MYSQL_ROOT_PASSWORD=pass
+      - MYSQL_ROOT_HOST=0.0.0.0
+    ports:
+      - '3306:3306'
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppass"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  redis:
+    image: redislabs/redismod
+    ports:
+      - '127.0.0.1:6379:6379/tcp'
+    healthcheck:
+      test: redis-cli ping
+      interval: 3s
+      timeout: 5s
+      retries: 5
+    restart: always
+    volumes:
+      - ./docker/redisinsight:/db
+      - ./docker/ajeetraina/data/redisinsight:/db
+      - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
