@@ -1,5 +1,6 @@
 import { BullModule } from '@nestjs/bullmq';
 import { MiddlewareConsumer, Module, RequestMethod, Type } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from './modules/AuthModule/Auth.guard';
@@ -103,6 +104,7 @@ class Provider {
       secret: 'secret',
       signOptions: { expiresIn: '30 days' },
     }),
+    ConfigModule.forRoot(),
     // BullModule.forRoot({
     //   connection: {
     //     host: process.env.REDIS_IP,
