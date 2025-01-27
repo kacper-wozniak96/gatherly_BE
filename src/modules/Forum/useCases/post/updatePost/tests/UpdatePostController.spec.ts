@@ -1,14 +1,14 @@
 import { BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { UpdatePostRequestDTO } from 'gatherly-types';
 import { AppError } from 'src/shared/core/AppError';
 import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { IFailedField } from 'src/utils/FailedField';
-import { UpdatePostUseCaseSymbol } from '../../../post/utils/symbols';
-import { UpdatePostController } from '../../../post/updatePost/UpdatePostController';
-import { UpdatePostRequestDTO } from '../../../post/updatePost/UpdatePostDTO';
-import { UpdatePostErrors } from '../../../post/updatePost/UpdatePostErrors';
-import { UpdatePostUseCase } from '../../../post/updatePost/UpdatePostUseCase';
+import { UpdatePostUseCaseSymbol } from '../../utils/symbols';
+import { UpdatePostController } from '../UpdatePostController';
+import { UpdatePostErrors } from '../UpdatePostErrors';
+import { UpdatePostUseCase } from '../UpdatePostUseCase';
 
 describe('UpdatePostController', () => {
   let controller: UpdatePostController;
@@ -29,6 +29,10 @@ describe('UpdatePostController', () => {
 
     controller = module.get<UpdatePostController>(UpdatePostController);
     useCase = module.get<UpdatePostUseCase>(UpdatePostUseCaseSymbol);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should update post successfully', async () => {

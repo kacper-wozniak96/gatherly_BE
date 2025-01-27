@@ -36,8 +36,14 @@ export class UpdatePostUseCase implements UseCase<RequestData, Promise<ResponseD
 
     if (!user) return left(new UpdatePostErrors.UserDoesntExistError());
 
+    if (!post.userId.equals(user.userId)) return left(new UpdatePostErrors.UserIsNotPostAuthorError());
+
     if (has(requestData.dto, 'title')) {
+      console.log({ requestData });
+
       const updatedTitleOrError = PostTitle.create({ value: requestData.dto.title });
+
+      console.log({ updatedTitleOrError });
 
       if (updatedTitleOrError.isFailure) {
         const failedFields = [updatedTitleOrError.getErrorValue() as IFailedField];

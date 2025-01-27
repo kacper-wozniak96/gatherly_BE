@@ -15,7 +15,10 @@ export class LoginUserController {
 
   @Public()
   @Post('/login')
-  async execute(@Body() dto: LoginUserRequestDTO, @Res({ passthrough: true }) response: Response): Promise<LoginUserResponseDTO | void> {
+  async execute(
+    @Body() dto: LoginUserRequestDTO,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<(LoginUserResponseDTO & { accessToken: string }) | void> {
     const result = await this.useCase.execute({ dto });
 
     if (result.isLeft()) {
@@ -37,6 +40,6 @@ export class LoginUserController {
 
     const resultSuccess: LoginUserResponse = result.value.getValue();
     response.cookie(accessTokenCookieName, resultSuccess.accessToken, { httpOnly: true });
-    return { user: resultSuccess.user };
+    return { user: resultSuccess.user, accessToken: resultSuccess.accessToken };
   }
 }

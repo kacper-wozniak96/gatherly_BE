@@ -10,9 +10,9 @@ import { UserId } from 'src/modules/User/domain/UserId';
 import { UserName } from 'src/modules/User/domain/UserName';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 
-export const createStubPost = (): Post => {
+export const createStubPost = (userIdAuthor?: UniqueEntityID): Post => {
   const postId = PostId.create(new UniqueEntityID()).getValue();
-  const userId = UserId.create(new UniqueEntityID()).getValue();
+  const userId = UserId.create(userIdAuthor ? userIdAuthor : new UniqueEntityID(1)).getValue();
 
   const userName = UserName.create({ value: 'test-user' }).getValue() as UserName;
 

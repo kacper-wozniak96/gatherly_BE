@@ -7,7 +7,7 @@ export namespace UpdatePostErrors {
     constructor() {
       super(false, {
         message: `The post doesn't exist.`,
-      } as UseCaseError);
+      });
     }
   }
 
@@ -15,7 +15,7 @@ export namespace UpdatePostErrors {
     constructor() {
       super(false, {
         message: `User with this ID doesn't exist.`,
-      } as UseCaseError);
+      });
     }
   }
 
@@ -24,7 +24,15 @@ export namespace UpdatePostErrors {
       super(false, {
         message: failedFields,
         isFormInvalid: true,
-      } as UseCaseError);
+      });
+    }
+  }
+
+  export class UserIsNotPostAuthorError extends Result<UseCaseError> {
+    constructor() {
+      super(false, {
+        message: `You can't update this post.`,
+      });
     }
   }
 }

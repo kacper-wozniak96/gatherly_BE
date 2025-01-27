@@ -1,4 +1,13 @@
-import { Controller, Delete, Inject, InternalServerErrorException, NotFoundException, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  ForbiddenException,
+  Inject,
+  InternalServerErrorException,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { BASE_POST_CONTROLLER_PATH } from '../utils/baseContollerPath';
 import { DeletePostUseCaseSymbol } from '../utils/symbols';
 import { DeletePostErrors } from './DeletePostErrors';
@@ -15,11 +24,17 @@ export class DeletePostController {
     if (result.isLeft()) {
       const error = result.value;
 
+      const errorValue = error.getErrorValue();
+
       switch (error.constructor) {
         case DeletePostErrors.PostDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
+          throw new NotFoundException(errorValue);
+        case DeletePostErrors.UserDoesntExistError:
+          throw new NotFoundException(errorValue);
+        case DeletePostErrors.UserDoesntOwnPostError:
+          throw new ForbiddenException(errorValue);
         default:
-          throw new InternalServerErrorException(error.getErrorValue());
+          throw new InternalServerErrorException(errorValue);
       }
     }
 

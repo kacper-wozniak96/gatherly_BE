@@ -6,7 +6,7 @@ import { Result } from '../../../shared/core/Result';
 import { BanType } from './banType';
 import { PostId } from './postId';
 
-interface PostBanProps {
+export interface PostBanProps {
   postId: PostId;
   userId: UserId;
   type: BanType;

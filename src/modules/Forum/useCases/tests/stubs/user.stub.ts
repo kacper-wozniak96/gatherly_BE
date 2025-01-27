@@ -4,7 +4,7 @@ import { UserName } from 'src/modules/User/domain/UserName';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 
 export const createStubUser = (): User => {
-  const userId = UserId.create(new UniqueEntityID()).getValue();
+  const userId = UserId.create(new UniqueEntityID(1)).getValue();
   const userName = UserName.create({ value: 'test-user' }).getValue() as UserName;
 
   const userProps = {

@@ -27,15 +27,17 @@ export class UpdatePostController {
     if (result.isLeft()) {
       const error = result.value;
 
+      const errorValue = error.getErrorValue();
+
       switch (error.constructor) {
         case UpdatePostErrors.PostDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
+          throw new NotFoundException(errorValue);
         case UpdatePostErrors.UserDoesntExistError:
-          throw new NotFoundException(error.getErrorValue());
+          throw new NotFoundException(errorValue);
         case UpdatePostErrors.InvalidDataError:
-          throw new BadRequestException(error.getErrorValue());
+          throw new BadRequestException(errorValue);
         default:
-          throw new InternalServerErrorException(error.getErrorValue());
+          throw new InternalServerErrorException(errorValue);
       }
     }
 
