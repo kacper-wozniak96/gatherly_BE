@@ -9,8 +9,6 @@ import { REQUEST } from '@nestjs/core';
 import { GetPostsResponseDTO } from 'gatherly-types';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { PostMapper } from 'src/modules/Forum/mappers/Post';
-import { AppError } from 'src/shared/core/AppError';
-import { left } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { RequestData, ResponseData } from './types';
 
@@ -24,17 +22,12 @@ export class GetPostsUseCase implements UseCase<RequestData, Promise<ResponseDat
   async execute(requestData: RequestData): Promise<ResponseData> {
     const { offset, search } = requestData;
 
-    try {
-      const [posts, postsTotalCount] = await Promise.all([
-        this.postRepo.getPosts(offset, search),
-        this.postRepo.getPostsTotalCount(search),
-      ]);
+    const [posts, postsTotalCount] = await Promise.all([this.postRepo.getPosts(offset, search), this.postRepo.getPostsTotalCount(search)]);
 
-      const postsDTO = posts.map((post) => PostMapper.toDTO(post, this.request.user.userId));
+    console.log({ userId: this.request.user.userId });
 
-      return right(Result.ok<GetPostsResponseDTO>({ posts: postsDTO, postsTotalCount }));
-    } catch (error) {
-      return left(new AppError.UnexpectedError());
-    }
+    const postsDTO = posts.map((post) => PostMapper.toDTO(post, this.request.user.userId));
+
+    return right(Result.ok<GetPostsResponseDTO>({ posts: postsDTO, postsTotalCount }));
   }
 }

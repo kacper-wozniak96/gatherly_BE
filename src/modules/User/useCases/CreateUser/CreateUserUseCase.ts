@@ -37,7 +37,9 @@ export class CreateUserUseCase implements UseCase<RequestData, Promise<ResponseD
       return left(new CreateUserErrors.UsernameTakenError());
     }
 
-    if (!userPassword.equals(userConfirmPassword)) {
+    const passwordEquals = userPassword.comparePassword(userConfirmPassword.value);
+
+    if (!passwordEquals) {
       return left(new CreateUserErrors.PasswordsDoNotMatchError());
     }
 

@@ -29,8 +29,7 @@ export class LoginUserUseCase implements UseCase<RequestData, Promise<ResponseDa
       return left(new LoginUseCaseErrors.InvalidDataError());
     }
 
-    const username = (usernameOrError as Result<UserName>).getValue();
-    const password = (passwordOrError as Result<UserPassword>).getValue();
+    const username = usernameOrError.getValue() as UserName;
 
     const user = await this.userRepo.getUserByUsername(username);
     const userFound = !!user;
@@ -40,7 +39,7 @@ export class LoginUserUseCase implements UseCase<RequestData, Promise<ResponseDa
     }
 
     if (!user.isGuest()) {
-      const passwordValid = await user.props.password.comparePassword(password.value);
+      const passwordValid = user.props.password.comparePassword(requestData.dto.password);
 
       if (!passwordValid) {
         return left(new LoginUseCaseErrors.PasswordDoesntMatchError());

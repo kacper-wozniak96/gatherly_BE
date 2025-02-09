@@ -44,6 +44,8 @@ export class UpdateUserUseCase implements UseCase<RequestData, Promise<ResponseD
       return left(new UpdateUserErrors.CannotUpdateGuestUserError());
     }
 
+    console.log({ requestData });
+
     if (has(requestData, 'file')) {
       const userAvatarOrError = UserAvatar.create({ avatar: requestData.file });
 
@@ -94,7 +96,9 @@ export class UpdateUserUseCase implements UseCase<RequestData, Promise<ResponseD
       const userPassword = userPasswordOrError.getValue() as UserPassword;
       const userConfirmPassword = userConfirmPasswordOrError.getValue();
 
-      if (!userPassword.equals(userConfirmPassword)) {
+      const doPasswordsMatch = userPassword.comparePassword(userConfirmPassword.value);
+
+      if (!doPasswordsMatch) {
         return left(new UpdateUserErrors.PasswordsDoNotMatchError());
       }
 

@@ -105,15 +105,15 @@ class Provider {
       signOptions: { expiresIn: '30 days' },
     }),
     ConfigModule.forRoot(),
-    // BullModule.forRoot({
-    //   connection: {
-    //     host: process.env.REDIS_IP,
-    //     port: Number(process.env.REDIS_PORT),
-    //   },
-    // }),
-    // BullModule.registerQueue({
-    //   name: EQueues.reports,
-    // }),
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_IP,
+        port: Number(process.env.REDIS_PORT),
+      },
+    }),
+    BullModule.registerQueue({
+      name: EQueues.reports,
+    }),
   ],
   controllers: [
     TestController,
@@ -127,7 +127,7 @@ class Provider {
     GetPostController,
     CreateCommentController,
     GetUserController,
-    // GenerateUserActivityReportController,
+    GenerateUserActivityReportController,
     UpdateUserController,
     GetCommentsController,
     DeleteCommentController,
@@ -165,8 +165,8 @@ class Provider {
     new Provider(DeleteCommentUseCaseSymbol, DeleteCommentUseCase),
     new Provider(DeletePostUseCaseSymbol, DeletePostUseCase),
     new Provider(UpdatePostUseCaseSymbol, UpdatePostUseCase),
-    // new Provider(GenerateUserActivityReportUseCaseSymbolProvider, GenerateUserActivityReportUseCaseProvider),
-    // new Provider(GenerateUserActivityReportUseCaseSymbolConsumer, GenerateUserActivityReportUseCaseConsumer),
+    new Provider(GenerateUserActivityReportUseCaseSymbolProvider, GenerateUserActivityReportUseCaseProvider),
+    new Provider(GenerateUserActivityReportUseCaseSymbolConsumer, GenerateUserActivityReportUseCaseConsumer),
     new Provider(MailServiceSymbol, MailService),
     new Provider(GetUsersUseCaseSymbol, GetUsersUseCase),
     new Provider(PostBanRepoSymbol, PostBanRepo),

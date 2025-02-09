@@ -43,14 +43,16 @@ export class UserPassword extends ValueObject<UserPasswordProps> {
       return validationResult.failedResult;
     }
 
-    return Result.ok<UserPassword>(new UserPassword(props));
+    const hashedPassword = bcrypt.hashSync(props.value, 10);
+
+    return Result.ok<UserPassword>(new UserPassword({ value: hashedPassword, hashed: true }));
   }
 
-  public async hashPassword(): Promise<string> {
-    return await bcrypt.hash(this.props.value, 10);
-  }
+  // public async hashPassword(): Promise<string> {
+  //   return await bcrypt.hash(this.props.value, 10);
+  // }
 
-  public async comparePassword(plainTextPassword: string): Promise<boolean> {
-    return await bcrypt.compare(plainTextPassword, this.props.value);
+  public comparePassword(plainTextPassword: string): boolean {
+    return bcrypt.compareSync(plainTextPassword, this.value);
   }
 }

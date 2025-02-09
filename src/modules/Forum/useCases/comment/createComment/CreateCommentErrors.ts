@@ -7,14 +7,14 @@ export namespace CreateCommentErrors {
     constructor() {
       super(false, {
         message: `A forum member doesn't exist for this account.`,
-      } as UseCaseError);
+      });
     }
   }
   export class PostDoesntExistError extends Result<UseCaseError> {
     constructor() {
       super(false, {
         message: `Post with provided postId doesn't exist`,
-      } as UseCaseError);
+      });
     }
   }
   export class InvalidDataError extends Result<UseCaseError> {
@@ -22,7 +22,7 @@ export namespace CreateCommentErrors {
       super(false, {
         message: failedFields,
         isFormInvalid: true,
-      } as UseCaseError);
+      });
     }
   }
   export class UserBannedFromAddingCommentsError extends Result<UseCaseError> {
