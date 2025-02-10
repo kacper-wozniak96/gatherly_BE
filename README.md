@@ -28,4 +28,4 @@ Testing
 Cloud & Infrastructure
 <ul> <li><strong>AWS</strong>: <ul> <li><strong>S3</strong>: Stores media files (e.g., images uploaded by users).</li> <li><strong>IAM</strong>: Manages access control for AWS resources.</li> <li><strong>EC2</strong>: Hosts the application in a scalable environment.</li> <li><strong>Lambda</strong>: Handles serverless functions for specific tasks.</li> </ul> </li> </ul>
 
-<h2>🚧 <strong>Project Status</strong></h2> <p> The Gatherly <strong>Frontend</strong> and <strong>Backend</strong> are currently under active development. New features, improvements, and bug fixes are being implemented regularly. Contributions, feedback, and suggestions are welcome! Feel free to open an issue or submit a pull request if you'd like to contribute. </p>
+<h2>🚧 <strong>Project Status</strong></h2> <p> The Gatherly <strong>Frontend</strong> and <strong>Backend</strong> are currently under active development. New features, improvements, and bug fixes are being implemented regularly.</p>
