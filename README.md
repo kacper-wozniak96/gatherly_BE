@@ -28,28 +28,3 @@ Testing
 Cloud & Infrastructure
 <ul> <li><strong>AWS</strong>: <ul> <li><strong>S3</strong>: Stores media files (e.g., images uploaded by users).</li> <li><strong>IAM</strong>: Manages access control for AWS resources.</li> <li><strong>EC2</strong>: Hosts the application in a scalable environment.</li> <li><strong>Lambda</strong>: Handles serverless functions for specific tasks.</li> </ul> </li> </ul>
 
-
-🚀 How to Run the App
-Follow these steps to set up and run the Gatherly backend locally using Docker Compose for MySQL and Redis.
-
-<h3>📋 <strong>Prerequisites</strong></h3> <p>Before you begin, ensure you have the following installed on your local machine:</p> <ul> <li><a href="https://nodejs.org/" target="_blank">Node.js</a> (v16 or higher recommended)</li> <li><a href="https://www.npmjs.com/" target="_blank">npm</a> or <a href="https://yarnpkg.com/" target="_blank">Yarn</a></li> <li><a href="https://www.docker.com/get-started/" target="_blank">Docker</a></li> <li><a href="https://docs.docker.com/compose/install/" target="_blank">Docker Compose</a></li> </ul>
-<h3>🔧 <strong>Step 1: Clone the Repository</strong></h3> <p>Clone the Gatherly backend repository to your local machine:</p> <pre><code>git clone https://github.com/kacper-wozniak96/gatherly_BE.git cd gatherly_BE </code></pre>
-<h3>📦 <strong>Step 2: Install Dependencies</strong></h3> <p>Install the required dependencies using npm or Yarn:</p> <pre><code>npm install # or yarn install </code></pre>
-<h3>⚙️ <strong>Step 3: Set Up Environment Variables</strong></h3> <p>Create a <code>.env</code> file in the root of your project and add the necessary environment variables. You can use the <code>.env.example</code> file as a template:</p> <pre><code>cp .env.example .env </code></pre> <p>Edit the <code>.env</code> file to include your specific configuration, such as database credentials and Redis settings. For example:</p> <pre><code># Database Configuration DB_HOST=localhost DB_PORT=3306 DB_USERNAME=root DB_PASSWORD=yourpassword DB_DATABASE=gatherly
-Redis Configuration
-REDIS_HOST=localhost
-REDIS_PORT=6379
-
-JWT Configuration
-JWT_SECRET=your_jwt_secret_key
-JWT_EXPIRATION=1h
-</code></pre>
-
-<h3>🐳 <strong>Step 4: Start Docker Containers</strong></h3> <p>Use Docker Compose to start the MySQL and Redis containers:</p> <pre><code>docker-compose up -d </code></pre> <p>This command will start the MySQL and Redis services in detached mode.</p>
-<h3>📂 <strong>Step 5: Run Prisma Migrations</strong></h3> <p>Run Prisma migrations to set up the database schema:</p> <pre><code>npx prisma migrate dev </code></pre> <p>This will apply the necessary migrations to your MySQL database.</p>
-<h3>🚀 <strong>Step 6: Start the Application</strong></h3> <p>Start the NestJS application in development mode:</p> <pre><code>npm run start:dev # or yarn start:dev </code></pre> <p>The application should now be running on <code>http://localhost:3000</code>.</p>
-<h3>🌐 <strong>Step 7: Access the Application</strong></h3> <p>You can access the application by navigating to <a href="http://localhost:3000" target="_blank">http://localhost:3000</a> in your web browser.</p>
-<h3>🛑 <strong>Stopping the Application</strong></h3> <p>To stop the application and the Docker containers, use the following commands:</p> <pre><code># Stop the NestJS application (if running in the terminal) Ctrl + C
-Stop and remove the Docker containers
-docker-compose down
-</code></pre>
