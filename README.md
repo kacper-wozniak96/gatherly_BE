@@ -1,7 +1,7 @@
 ![home-3ec0b8a0](https://github.com/user-attachments/assets/577cb1d5-3efd-40fd-bef0-343d88b64c1d)
 
 <h1 align="center">Gatherly Backend</h1><p align="center"> <strong>Gatherly</strong> is a feature-rich forum application designed to foster engaging discussions through posts and comments. Users can express their opinions by upvoting or downvoting posts, while advanced moderation features ensure a controlled and respectful environment. This repository contains the backend implementation of Gatherly, built with modern technologies to ensure scalability, security, and performance. </p>
-🚀 Key Features
+🚀 Key Features<br>
 👤 User Management
 <ul> <li><strong>Sign Up</strong>: Users can create an account to participate in the forum.</li> <li><strong>Sign In</strong>: Registered users can log in to access their accounts.</li> <li><strong>Logout</strong>: Users can securely log out of their accounts.</li> </ul>
 📝 Post Management
