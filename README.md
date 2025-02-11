@@ -5,7 +5,7 @@
 <br>
 <br>
 👤 User Management
-<ul> <li><strong>Sign Up</strong>: Users can create an account to participate in the forum.</li> <li><strong>Sign In</strong>: Registered users can log in to access their accounts.</li> <li><strong>Logout</strong>: Users can securely log out of their accounts.</li> </ul>
+<ul> <li><strong>Sign Up</strong>: Users can create an account to participate in the forum.</li> <li><strong>Sign In</strong>: Registered users can log in to access their accounts.</li> <li><strong>Logout</strong>: Users can securely log out of their accounts.</li> <li><strong>Update</strong>: Users can update their username, avatar and change password</li></ul>
 📝 Post Management
 <ul> <li><strong>Create Post</strong>: Users can create new posts to start discussions.</li> <li><strong>Update Post</strong>: Authors can edit their posts to update content.</li> <li><strong>Delete Post</strong>: Authors can remove their posts from the forum.</li> </ul>
 ⬆️⬇️ Voting System
