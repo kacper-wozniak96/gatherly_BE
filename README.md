@@ -18,13 +18,13 @@
 Core Stack
 <ul> <li><strong>TypeScript</strong>: Primary programming language for type-safe development.</li> <li><strong>NestJS</strong>: A progressive Node.js framework for building efficient and scalable server-side applications.</li> <li><strong>Prisma</strong>: Modern ORM for database management and migrations.</li> <li><strong>JWT (JSON Web Tokens)</strong>: Used for secure user authentication and authorization.</li> <li><strong>Nodemailer</strong>: Handles email notifications (e.g., account verification, password reset).</li> </ul>
 Database & Caching
-<ul> <li><strong>MySQL</strong>: Relational database for storing user data, posts, comments, and votes.</li> <li><strong>Redis</strong>: Used for caching frequently accessed data and managing background tasks.</li> </ul>
+<ul> <li><strong>MySQL</strong>: Relational database for storing user data, posts, comments, and votes.</li> <li><strong>Redis</strong>: Used for managing background tasks.</li> </ul>
 Background Jobs & Queue Management
 <ul> <li><strong>BullMQ</strong>: Handles background jobs and task queues (e.g., email notifications, async processing).</li> </ul>
 Validation & Schema Management
 <ul> <li><strong>Zod</strong>: Used for runtime validation and schema definition.</li> </ul>
 Testing
-<ul> <li><strong>Jest</strong>: Testing framework for unit and integration tests.</li> </ul>
+<ul> <li><strong>Jest</strong>: Testing framework for unit tests.</li> </ul>
 Cloud & Infrastructure
 <ul> <li><strong>AWS</strong>: <ul> <li><strong>S3</strong>: Stores media files (e.g., images uploaded by users).</li> <li><strong>IAM</strong>: Manages access control for AWS resources.</li> <li><strong>EC2</strong>: Hosts the application in a scalable environment.</li> <li><strong>Lambda</strong>: Handles serverless functions for specific tasks.</li> </ul> </li> </ul>
 
