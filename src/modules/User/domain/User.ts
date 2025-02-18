@@ -72,7 +72,6 @@ export class User extends AggregateRoot<UserProps> {
     const member = new User(props, id);
 
     if (isNewMember) {
-      // Do something
     }
 
     return Result.ok<User>(member);

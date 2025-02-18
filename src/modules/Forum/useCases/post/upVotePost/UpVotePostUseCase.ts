@@ -49,7 +49,6 @@ export class UpVotePostUseCase implements UseCase<RequestData, Promise<ResponseD
     const upvotePostResult = this.postService.upvotePost(post, user, existingVotesOnPostByMember);
 
     if (upvotePostResult.isLeft()) {
-      // return left(upvotePostResult.value);
       return left(new AppError.UnexpectedError());
     }
 

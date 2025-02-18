@@ -45,31 +45,10 @@ export class PostVote extends Entity<PostVoteProps> {
   }
 
   public static create(props: PostVoteProps, id?: UniqueEntityID): Result<PostVote> {
-    // const guardResult = Guard.againstNullOrUndefinedBulk([
-    //   { argument: props.memberId, argumentName: 'memberId' },
-    //   { argument: props.postId, argumentName: 'postId' },
-    //   { argument: props.type, argumentName: 'type' },
-    // ]);
-
-    // if (guardResult.isFailure) {
-    //   return Result.fail<PostVote>(guardResult.getErrorValue());
-    // } else {
-    // }
     return Result.ok<PostVote>(new PostVote(props, id));
   }
 
   public static createUpvote(userId: UserId, postId: PostId): Result<PostVote> {
-    // const memberGuard = Guard.againstNullOrUndefined(userId, 'memberId');
-    // const postGuard = Guard.againstNullOrUndefined(postId, 'postId');
-
-    // if (memberGuard.isFailure) {
-    //   return Result.fail<PostVote>(memberGuard.getErrorValue());
-    // }
-
-    // if (postGuard.isFailure) {
-    //   return Result.fail<PostVote>(postGuard.getErrorValue());
-    // }
-
     return Result.ok<PostVote>(
       new PostVote({
         userId,
@@ -80,17 +59,6 @@ export class PostVote extends Entity<PostVoteProps> {
   }
 
   public static createDownvote(userId: UserId, postId: PostId): Result<PostVote> {
-    // const memberGuard = Guard.againstNullOrUndefined(memberId, 'memberId');
-    // const postGuard = Guard.againstNullOrUndefined(postId, 'postId');
-
-    // if (memberGuard.isFailure) {
-    //   return Result.fail<PostVote>(memberGuard.getErrorValue());
-    // }
-
-    // if (postGuard.isFailure) {
-    //   return Result.fail<PostVote>(postGuard.getErrorValue());
-    // }
-
     return Result.ok<PostVote>(
       new PostVote({
         userId,

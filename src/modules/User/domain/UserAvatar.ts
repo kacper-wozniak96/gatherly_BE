@@ -15,7 +15,7 @@ const avatarSchema = z.object({
     mimetype: z.string().refine((val) => ['image/jpeg', 'image/png'].includes(val), {
       message: 'Invalid file type. Only JPEG and PNG are allowed.',
     }),
-    size: z.number().max(5 * 1024 * 1024, 'File size should not exceed 5MB'), // 5MB limit
+    size: z.number().max(5 * 1024 * 1024, 'File size should not exceed 5MB'),
     buffer: z.instanceof(Buffer),
   }),
 });

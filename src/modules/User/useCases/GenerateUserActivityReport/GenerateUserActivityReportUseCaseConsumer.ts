@@ -1,4 +1,3 @@
-// import { Process, Processor } from '@nestjs/bull';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Inject } from '@nestjs/common';
 import { Job } from 'bullmq';

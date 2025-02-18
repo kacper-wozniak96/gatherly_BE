@@ -16,12 +16,6 @@ export class UserRepo implements IUserRepo {
     const exists = Number.isInteger(userId);
 
     if (exists) {
-      // let userPassword = '';
-
-      // if (user.password) {
-      //   userPassword = await user.password.hashPassword();
-      // }
-
       await this.prisma.user.update({
         where: { Id: user.userId.getValue().toValue() as number },
         data: {
@@ -34,7 +28,6 @@ export class UserRepo implements IUserRepo {
       return;
     }
 
-    // const hashedPassword = await user.props.password.hashPassword();
     await this.prisma.user.create({
       data: {
         Username: user.props.username.value,
@@ -75,8 +68,6 @@ export class UserRepo implements IUserRepo {
       skip: 0,
       take: 5,
     });
-
-    // return await Promise.all(users.map((user) => UserMapper.toDomain(user)));
 
     return users.map((user) => UserMapper.toDomain(user));
   }

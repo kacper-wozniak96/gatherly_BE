@@ -22,7 +22,6 @@ export class Result<T> {
 
   public getValue(): T {
     if (!this.isSuccess) {
-      // console.log(this.error);
       throw new Error("Can't get the value of an error result. Use 'errorValue' instead.");
     }
 
@@ -42,10 +41,6 @@ export class Result<T> {
   }
 
   public static combine(results: Result<any>[]): Result<any> {
-    // for (const result of results) {
-    //   if (result.isFailure) return result;
-    // }
-
     const failedResults = results.filter((result) => result.isFailure);
 
     if (failedResults.length) {

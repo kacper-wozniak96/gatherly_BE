@@ -8,23 +8,3 @@ export class LoggerMiddleware implements NestMiddleware {
     next();
   }
 }
-
-// @Injectable()
-// export class LoggingInterceptor implements NestInterceptor {
-//   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-//     const httpContext = context.switchToHttp();
-//     const request = httpContext.getRequest<Request>();
-//     const response = httpContext.getResponse<Response>();
-//     const { method, url, body } = request;
-
-//     return next.handle().pipe(
-//       tap(() =>
-//         console.log(`Received a ${method} request on ${url} with body ${JSON.stringify(body)}. Response status: ${response.statusCode}`),
-//       ),
-//       catchError((error) => {
-//         console.log(`Error: ${error.message}`);
-//         throw error;
-//       }),
-//     );
-//   }
-// }

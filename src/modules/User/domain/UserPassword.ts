@@ -10,16 +10,6 @@ interface UserPasswordProps {
   hashed?: boolean;
 }
 
-// const userPasswordSchema = z.object({
-//   password: z
-//     .string({
-//       required_error: 'Password is required',
-//       invalid_type_error: 'Password must be a string',
-//     })
-//     .min(1, { message: 'Password must be at least 1 character long' })
-//     .max(30, { message: 'Password must be at most 30 characters long' }),
-// });
-
 export class UserPassword extends ValueObject<UserPasswordProps> {
   get value(): string {
     return this.props.value;
@@ -47,10 +37,6 @@ export class UserPassword extends ValueObject<UserPasswordProps> {
 
     return Result.ok<UserPassword>(new UserPassword({ value: hashedPassword, hashed: true }));
   }
-
-  // public async hashPassword(): Promise<string> {
-  //   return await bcrypt.hash(this.props.value, 10);
-  // }
 
   public comparePassword(plainTextPassword: string): boolean {
     return bcrypt.compareSync(plainTextPassword, this.value);
