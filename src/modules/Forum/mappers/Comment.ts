@@ -16,20 +16,23 @@ export class CommentMapper {
     const userIdOrError = UserId.create(new UniqueEntityID(raw.UserId));
     const commentTextOrError = CommentText.create({ value: raw.Text });
 
-    const userOrError = User.create(
-      {
-        username: UserName.create({ value: raw.User.Username }).getValue() as UserName,
-        avatarS3Key: raw.User.AvatarS3Key,
-      },
-      new UniqueEntityID(raw.UserId),
-    );
+    // const userOrError = User.create(
+    //   {
+    //     username: UserName.create({ value: raw.User.Username }).getValue() as UserName,
+    //     avatarS3Key: raw.User.AvatarS3Key,
+    //   },
+    //   new UniqueEntityID(raw.UserId),
+    // );
+
+    const user = UserMapper.toDomain(raw.User);
 
     const commentOrError = Comment.create(
       {
         postId: postIdOrError.getValue(),
         userId: userIdOrError.getValue(),
         text: commentTextOrError.getValue() as CommentText,
-        user: userOrError.getValue(),
+        // user: userOrError.getValue(),
+        user: user,
       },
       new UniqueEntityID(raw?.Id),
     );
