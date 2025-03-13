@@ -2,10 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { REQUEST } from '@nestjs/core';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
-import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
-import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
-import { IUserRepo } from 'src/modules/User/repos/userRepo';
-import { UserRepoSymbol } from 'src/modules/User/repos/utils/symbols';
+import { IPostRepo } from 'src/forum/repos/postRepo';
+import { PostRepoSymbol } from 'src/forum/repos/utils/symbols';
+import { IUserRepo } from 'src/user/repos/userRepo';
+import { UserRepoSymbol } from 'src/user/repos/utils/symbols';
 import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';

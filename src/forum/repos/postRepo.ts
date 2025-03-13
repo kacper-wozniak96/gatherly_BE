@@ -1,4 +1,4 @@
-import { UserId } from 'src/modules/User/domain/UserId';
+import { UserId } from 'src/user/domain/UserId';
 import { Post } from '../domain/post';
 import { PostId } from '../domain/postId';
 

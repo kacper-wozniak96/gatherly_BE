@@ -1,13 +1,13 @@
-import { Comments } from 'src/modules/Forum/domain/comments';
-import { Post, PostProps } from 'src/modules/Forum/domain/post';
-import { PostBans } from 'src/modules/Forum/domain/postBans';
-import { PostId } from 'src/modules/Forum/domain/postId';
-import { PostText } from 'src/modules/Forum/domain/postText';
-import { PostTitle } from 'src/modules/Forum/domain/postTitle';
-import { PostVotes } from 'src/modules/Forum/domain/postVotes';
-import { User } from 'src/modules/User/domain/User';
-import { UserId } from 'src/modules/User/domain/UserId';
-import { UserName } from 'src/modules/User/domain/UserName';
+import { Comments } from 'src/forum/domain/comments';
+import { Post, PostProps } from 'src/forum/domain/post';
+import { PostBans } from 'src/forum/domain/postBans';
+import { PostId } from 'src/forum/domain/postId';
+import { PostText } from 'src/forum/domain/postText';
+import { PostTitle } from 'src/forum/domain/postTitle';
+import { PostVotes } from 'src/forum/domain/postVotes';
+import { User } from 'src/user/domain/User';
+import { UserId } from 'src/user/domain/UserId';
+import { UserName } from 'src/user/domain/UserName';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 
 export const createStubPost = (userIdAuthor?: UniqueEntityID): Post => {

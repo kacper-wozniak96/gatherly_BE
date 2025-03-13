@@ -1,6 +1,6 @@
 import { Post as PrismaPost, PostComment as PrismaPostComment, PostVote as PrismaPostVote, User as PrismaUser } from '@prisma/client';
-import { UserId } from 'src/modules/User/domain/UserId';
-import { UserMapper } from 'src/modules/User/mappers/User';
+import { UserId } from 'src/user/domain/UserId';
+import { UserMapper } from 'src/user/mappers/User';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { Comments } from '../domain/comments';
 import { Post } from '../domain/post';

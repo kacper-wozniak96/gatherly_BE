@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { REQUEST } from '@nestjs/core';
-import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
-import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
-import { IUserRepo } from 'src/modules/User/repos/userRepo';
-import { UserRepoSymbol } from 'src/modules/User/repos/utils/symbols';
+import { IPostRepo } from 'src/forum/repos/postRepo';
+import { PostRepoSymbol } from 'src/forum/repos/utils/symbols';
+import { IUserRepo } from 'src/user/repos/userRepo';
+import { UserRepoSymbol } from 'src/user/repos/utils/symbols';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { createStubPost } from '../../../tests/stubs/post.stub';
 import { createStubUser } from '../../../tests/stubs/user.stub';

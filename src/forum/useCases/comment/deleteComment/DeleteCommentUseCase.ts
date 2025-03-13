@@ -2,11 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { REQUEST } from '@nestjs/core';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
-import { ICommentRepo } from 'src/modules/Forum/repos/commentRepo';
-import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
-import { CommentRepoSymbol, PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
-import { IUserRepo } from 'src/modules/User/repos/userRepo';
-import { UserRepoSymbol } from 'src/modules/User/repos/utils/symbols';
+import { ICommentRepo } from 'src/forum/repos/commentRepo';
+import { IPostRepo } from 'src/forum/repos/postRepo';
+import { CommentRepoSymbol, PostRepoSymbol } from 'src/forum/repos/utils/symbols';
+import { IUserRepo } from 'src/user/repos/userRepo';
+import { UserRepoSymbol } from 'src/user/repos/utils/symbols';
 import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { UseCase } from 'src/shared/core/UseCase';

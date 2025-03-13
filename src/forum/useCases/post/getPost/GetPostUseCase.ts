@@ -1,14 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
-import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
+import { IPostRepo } from 'src/forum/repos/postRepo';
+import { PostRepoSymbol } from 'src/forum/repos/utils/symbols';
 
 import { REQUEST } from '@nestjs/core';
 import { EBanType, PostDTO } from 'gatherly-types';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
-import { PostBan } from 'src/modules/Forum/domain/postBan';
-import { PostMapper } from 'src/modules/Forum/mappers/Post';
-import { IPostBanRepo, PostBanRepoSymbol } from 'src/modules/Forum/repos/postBanRepo';
+import { PostBan } from 'src/forum/domain/postBan';
+import { PostMapper } from 'src/forum/mappers/Post';
+import { IPostBanRepo, PostBanRepoSymbol } from 'src/forum/repos/postBanRepo';
 import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';

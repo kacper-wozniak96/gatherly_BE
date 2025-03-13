@@ -1,4 +1,4 @@
-import { UserId } from 'src/modules/User/domain/UserId';
+import { UserId } from 'src/user/domain/UserId';
 import { Entity } from 'src/shared/core/Entity';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { PostId } from './postId';

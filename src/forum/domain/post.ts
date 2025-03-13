@@ -1,5 +1,5 @@
-import { User } from 'src/modules/User/domain/User';
-import { UserId } from 'src/modules/User/domain/UserId';
+import { User } from 'src/user/domain/User';
+import { UserId } from 'src/user/domain/UserId';
 import { AggregateRoot } from 'src/shared/core/AggregateRoot';
 import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';

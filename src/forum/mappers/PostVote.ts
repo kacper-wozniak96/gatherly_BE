@@ -1,5 +1,5 @@
 import { PostVote as PrismaPostVote } from '@prisma/client';
-import { UserId } from 'src/modules/User/domain/UserId';
+import { UserId } from 'src/user/domain/UserId';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { PostId } from '../domain/postId';
 import { PostVote } from '../domain/postVote';

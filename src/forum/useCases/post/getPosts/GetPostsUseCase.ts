@@ -1,14 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
-import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
+import { IPostRepo } from 'src/forum/repos/postRepo';
+import { PostRepoSymbol } from 'src/forum/repos/utils/symbols';
 import { right } from 'src/shared/core/Either';
 import { UseCase } from 'src/shared/core/UseCase';
 
 import { REQUEST } from '@nestjs/core';
 import { GetPostsResponseDTO } from 'gatherly-types';
 import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
-import { PostMapper } from 'src/modules/Forum/mappers/Post';
+import { PostMapper } from 'src/forum/mappers/Post';
 import { Result } from 'src/shared/core/Result';
 import { RequestData, ResponseData } from './types';
 

@@ -50,6 +50,7 @@ import { ApplyPostBanUseCase } from './useCases/postBan/applyPostBan/ApplyPostBa
 import { GetPostBansForUserUseCaseSymbol } from './useCases/postBan/utils/symbols';
 import { GetPostBansForUserUseCase } from './useCases/postBan/getPostBansForUser/GetPostBansForUserUseCase';
 import { PostService } from './domain/services/PostService';
+import { UserModule } from 'src/user/user.module';
 
 const postRepoProvider = new Provider(PostRepoSymbol, PostRepo);
 const createPostUseCaseProvider = new Provider(CreatePostUseCaseSymbol, CreatePostUseCase);
@@ -76,6 +77,7 @@ const getPostBansForUserUseCaseProvider = new Provider(GetPostBansForUserUseCase
       signOptions: { expiresIn: '30 days' },
     }),
     ConfigModule.forRoot(),
+    UserModule,
   ],
   controllers: [
     CreatePostController,
@@ -118,6 +120,6 @@ const getPostBansForUserUseCaseProvider = new Provider(GetPostBansForUserUseCase
     getPostBansForUserUseCaseProvider,
     PostService,
   ],
-  exports: [getPostUseCaseProvider],
+  exports: [getPostUseCaseProvider, postRepoProvider],
 })
 export class ForumModule {}

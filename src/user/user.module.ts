@@ -34,6 +34,7 @@ import { UpdateUserUseCase } from './useCases/UpdateUser/UpdateUserUseCase';
 import { GenerateUserActivityReportUseCaseProvider } from './useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCase';
 import { GenerateUserActivityReportUseCaseConsumer } from './useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCaseConsumer';
 import { GetUsersUseCase } from './useCases/getUsers/GetUserUseCase';
+import { ForumModule } from 'src/forum/forum.module';
 
 const userRepoProvider = new Provider(UserRepoSymbol, UserRepo);
 const createUserUseCaseProvider = new Provider(CreateUserUseCaseSymbol, CreateUserUseCase);
@@ -67,6 +68,7 @@ const getUsersUseCaseProvider = new Provider(GetUsersUseCaseSymbol, GetUsersUseC
     BullModule.registerQueue({
       name: EQueues.reports,
     }),
+    // ForumModule,
   ],
   controllers: [
     LogoutUserController,
@@ -95,5 +97,6 @@ const getUsersUseCaseProvider = new Provider(GetUsersUseCaseSymbol, GetUsersUseC
     generateUserActivityReportUseCaseConsumer,
     getUsersUseCaseProvider,
   ],
+  exports: [getUserUseCaseProvider, userRepoProvider],
 })
 export class UserModule {}

@@ -1,4 +1,4 @@
-import { CommentDTO } from 'src/modules/Forum/dtos/post';
+import { CommentDTO } from 'src/forum/dtos/post';
 import { Either } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { GetCommentsErrors } from './GetCommentsErrors';

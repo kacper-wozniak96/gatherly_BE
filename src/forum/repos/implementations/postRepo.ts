@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserId } from 'src/modules/User/domain/UserId';
+import { UserId } from 'src/user/domain/UserId';
 import { PrismaService } from 'src/prisma.service';
 import { Comments } from '../../domain/comments';
 import { Post } from '../../domain/post';

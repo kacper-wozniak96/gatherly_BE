@@ -1,5 +1,5 @@
-import { User } from 'src/modules/User/domain/User';
-import { UserId } from 'src/modules/User/domain/UserId';
+import { User } from 'src/user/domain/User';
+import { UserId } from 'src/user/domain/UserId';
 import { Entity } from 'src/shared/core/Entity';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { CommentId } from './commentId';

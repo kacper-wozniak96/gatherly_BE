@@ -1,10 +1,10 @@
 import { User as PrimaUser, PostComment as PrismaPostComment } from '@prisma/client';
-import { User } from 'src/modules/User/domain/User';
-import { UserId } from 'src/modules/User/domain/UserId';
+import { User } from 'src/user/domain/User';
+import { UserId } from 'src/user/domain/UserId';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 
-import { UserName } from 'src/modules/User/domain/UserName';
-import { UserMapper } from 'src/modules/User/mappers/User';
+import { UserName } from 'src/user/domain/UserName';
+import { UserMapper } from 'src/user/mappers/User';
 import { Comment } from '../domain/comment';
 import { CommentText } from '../domain/commentText';
 import { PostId } from '../domain/postId';

@@ -1,8 +1,8 @@
 import { REQUEST } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PostMapper } from 'src/modules/Forum/mappers/Post';
-import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
-import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
+import { PostMapper } from 'src/forum/mappers/Post';
+import { IPostRepo } from 'src/forum/repos/postRepo';
+import { PostRepoSymbol } from 'src/forum/repos/utils/symbols';
 import { AppError } from 'src/shared/core/AppError';
 import { createStubPost } from '../../../tests/stubs/post.stub';
 import { GetPostsUseCase } from '../GetPostsUseCase';

@@ -1,5 +1,5 @@
 import { PostBan as PrismaPostBan } from '@prisma/client';
-import { UserId } from 'src/modules/User/domain/UserId';
+import { UserId } from 'src/user/domain/UserId';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 
 import { BanType } from '../domain/banType';

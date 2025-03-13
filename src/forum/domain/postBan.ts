@@ -1,5 +1,5 @@
 import { EBanType } from 'gatherly-types';
-import { UserId } from 'src/modules/User/domain/UserId';
+import { UserId } from 'src/user/domain/UserId';
 import { Entity } from 'src/shared/core/Entity';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { Result } from 'src/shared/core/Result';

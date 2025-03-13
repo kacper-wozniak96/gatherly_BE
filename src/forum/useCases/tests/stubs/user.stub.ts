@@ -1,6 +1,6 @@
-import { User } from 'src/modules/User/domain/User';
-import { UserId } from 'src/modules/User/domain/UserId';
-import { UserName } from 'src/modules/User/domain/UserName';
+import { User } from 'src/user/domain/User';
+import { UserId } from 'src/user/domain/UserId';
+import { UserName } from 'src/user/domain/UserName';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 
 export const createStubUser = (): User => {

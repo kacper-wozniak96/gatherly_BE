@@ -1,7 +1,7 @@
 import { ForbiddenException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostDTO } from 'gatherly-types';
-import { PostMapper } from 'src/modules/Forum/mappers/Post';
+import { PostMapper } from 'src/forum/mappers/Post';
 import { AppError } from 'src/shared/core/AppError';
 import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';

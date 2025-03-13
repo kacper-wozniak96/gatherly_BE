@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EBanType } from 'gatherly-types';
-import { User } from 'src/modules/User/domain/User';
-import { UserId } from 'src/modules/User/domain/UserId';
+import { User } from 'src/user/domain/User';
+import { UserId } from 'src/user/domain/UserId';
 import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { ResponseData as UpVotePostResponse } from '../../useCases/post/upVotePost/types';

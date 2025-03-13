@@ -1,8 +1,8 @@
 import { EBanType } from 'gatherly-types';
-import { BanType } from 'src/modules/Forum/domain/banType';
-import { PostBan, PostBanProps } from 'src/modules/Forum/domain/postBan';
-import { PostId } from 'src/modules/Forum/domain/postId';
-import { UserId } from 'src/modules/User/domain/UserId';
+import { BanType } from 'src/forum/domain/banType';
+import { PostBan, PostBanProps } from 'src/forum/domain/postBan';
+import { PostId } from 'src/forum/domain/postId';
+import { UserId } from 'src/user/domain/UserId';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 
 export const createStubPostBan = (type: EBanType): PostBan => {

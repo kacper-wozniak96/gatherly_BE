@@ -1,10 +1,10 @@
 import { REQUEST } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { EBanType } from 'gatherly-types';
-import { PostMapper } from 'src/modules/Forum/mappers/Post';
-import { IPostBanRepo, PostBanRepoSymbol } from 'src/modules/Forum/repos/postBanRepo';
-import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
-import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
+import { PostMapper } from 'src/forum/mappers/Post';
+import { IPostBanRepo, PostBanRepoSymbol } from 'src/forum/repos/postBanRepo';
+import { IPostRepo } from 'src/forum/repos/postRepo';
+import { PostRepoSymbol } from 'src/forum/repos/utils/symbols';
 import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
 import { createStubPost } from '../../../tests/stubs/post.stub';
 import { createStubPostBan } from '../../../tests/stubs/postBan.stub';
