@@ -8,6 +8,7 @@ export interface IAwsS3Service {
   deleteFile(key: string): Promise<void>;
   getFileUrl(key: string): Promise<string>;
   sendReport(key: string, buffer: Buffer): Promise<void>;
+  updateUserSignedUrl(user: User): Promise<User>;
 }
 
 export const AwsS3ServiceSymbol = Symbol('AWS_S3_Service');

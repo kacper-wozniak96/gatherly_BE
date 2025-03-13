@@ -11,15 +11,16 @@ import { PostMapper } from 'src/forum/mappers/Post';
 import { IPostBanRepo, PostBanRepoSymbol } from 'src/forum/repos/postBanRepo';
 import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
-import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
+// import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
 import { GetPostErrors } from './GetPostErrors';
 import { IGetPostUseCase, RequestData, ResponseData } from './types';
+import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/modules/common/AWS';
 
 @Injectable()
 export class GetPostUseCase implements IGetPostUseCase {
   constructor(
     @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,
-    // @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
+    @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
     @Inject(PostBanRepoSymbol) private readonly postBanRepo: IPostBanRepo,
     @Inject(REQUEST) private readonly request: CustomRequest,
   ) {}
@@ -38,20 +39,21 @@ export class GetPostUseCase implements IGetPostUseCase {
     if (isUserBanned) return left(new GetPostErrors.UserBannedFromViewingPostError());
 
     if (post.user.hasSetAvatar()) {
-      // const userAvatarUrl = await this.awsS3Service.getFileUrl(post.user.avatarS3Key);
+      await this.awsS3Service.updateUserSignedUrl(post.user);
       // post.user.updateUserAvatarSignedUrl(userAvatarUrl);
     }
 
     const comments = post.comments.getItems();
 
-    // await Promise.all(
-    //   comments.map(async (comment) => {
-    //     if (comment.user.hasSetAvatar()) {
-    //       const signedURL = await this.awsS3Service.getFileUrl(comment.user.avatarS3Key);
-    //       comment.user.updateUserAvatarSignedUrl(signedURL);
-    //     }
-    //   }),
-    // );
+    await Promise.all(
+      comments.map((comment) => {
+        if (comment.user.hasSetAvatar()) {
+          return this.awsS3Service.updateUserSignedUrl(comment.user);
+          // const signedURL = await this.awsS3Service.getFileUrl(comment.user.avatarS3Key);
+          // comment.user.updateUserAvatarSignedUrl(signedURL);
+        }
+      }),
+    );
 
     const postDTO = PostMapper.toDTO(post, this.request.user.userId);
 

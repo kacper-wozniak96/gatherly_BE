@@ -6,6 +6,7 @@ import { ForumModule } from './forum/forum.module';
 import { LoggerMiddleware } from './modules/Logger/logger';
 import { EQueues } from './shared/enums/Queues';
 import { UserModule } from './user/user.module';
+import { CommonModule } from './modules/common/common.module';
 
 // class Provider {
 //   provide: symbol;
@@ -36,6 +37,7 @@ import { UserModule } from './user/user.module';
     }),
     ForumModule,
     UserModule,
+    CommonModule,
   ],
   controllers: [
     // TestController,

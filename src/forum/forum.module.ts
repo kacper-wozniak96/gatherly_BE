@@ -51,6 +51,7 @@ import { GetPostBansForUserUseCaseSymbol } from './useCases/postBan/utils/symbol
 import { GetPostBansForUserUseCase } from './useCases/postBan/getPostBansForUser/GetPostBansForUserUseCase';
 import { PostService } from './domain/services/PostService';
 import { UserModule } from 'src/user/user.module';
+import { CommonModule } from 'src/modules/common/common.module';
 
 const postRepoProvider = new Provider(PostRepoSymbol, PostRepo);
 const createPostUseCaseProvider = new Provider(CreatePostUseCaseSymbol, CreatePostUseCase);
@@ -78,6 +79,7 @@ const getPostBansForUserUseCaseProvider = new Provider(GetPostBansForUserUseCase
     }),
     ConfigModule.forRoot(),
     UserModule,
+    CommonModule,
   ],
   controllers: [
     CreatePostController,

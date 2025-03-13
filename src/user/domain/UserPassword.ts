@@ -35,6 +35,8 @@ export class UserPassword extends ValueObject<UserPasswordProps> {
 
     const hashedPassword = bcrypt.hashSync(props.value, 10);
 
+    console.log({ hashedPassword });
+
     return Result.ok<UserPassword>(new UserPassword({ value: hashedPassword, hashed: true }));
   }
 
