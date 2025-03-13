@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { IPostRepo } from 'src/modules/Forum/repos/postRepo';
 import { PostRepoSymbol } from 'src/modules/Forum/repos/utils/symbols';
-import { UseCase } from 'src/shared/core/UseCase';
 
 import { REQUEST } from '@nestjs/core';
 import { EBanType, PostDTO } from 'gatherly-types';
@@ -14,10 +13,10 @@ import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
 import { GetPostErrors } from './GetPostErrors';
-import { RequestData, ResponseData } from './types';
+import { IGetPostUseCase, RequestData, ResponseData } from './types';
 
 @Injectable()
-export class GetPostUseCase implements UseCase<RequestData, Promise<ResponseData>> {
+export class GetPostUseCase implements IGetPostUseCase {
   constructor(
     @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,
     @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,

@@ -2,7 +2,7 @@ import { EBanType } from 'gatherly-types';
 import { UserId } from 'src/modules/User/domain/UserId';
 import { Entity } from 'src/shared/core/Entity';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
-import { Result } from '../../../shared/core/Result';
+import { Result } from 'src/shared/core/Result';
 import { BanType } from './banType';
 import { PostId } from './postId';
 

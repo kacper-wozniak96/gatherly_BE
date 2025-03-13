@@ -3,7 +3,7 @@ import { EBanType } from 'gatherly-types';
 import { User } from 'src/modules/User/domain/User';
 import { UserId } from 'src/modules/User/domain/UserId';
 import { left, right } from 'src/shared/core/Either';
-import { Result } from '../../../../shared/core/Result';
+import { Result } from 'src/shared/core/Result';
 import { ResponseData as UpVotePostResponse } from '../../useCases/post/upVotePost/types';
 import { ApplyPostBanErrors } from '../../useCases/postBan/applyPostBan/ApplyPostBanErrors';
 import { ResponseData as ApplyPostBanResponse } from '../../useCases/postBan/applyPostBan/types';

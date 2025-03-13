@@ -1,8 +1,8 @@
 import { UserId } from 'src/modules/User/domain/UserId';
 import { Entity } from 'src/shared/core/Entity';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
-import { Result } from '../../../shared/core/Result';
 import { PostId } from './postId';
+import { Result } from 'src/shared/core/Result';
 
 export enum EVoteType {
   UPVOTE = 1,

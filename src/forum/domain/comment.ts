@@ -1,5 +1,3 @@
-import { Result } from '../../../shared/core/Result';
-
 import { User } from 'src/modules/User/domain/User';
 import { UserId } from 'src/modules/User/domain/UserId';
 import { Entity } from 'src/shared/core/Entity';
@@ -7,6 +5,7 @@ import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { CommentId } from './commentId';
 import { CommentText } from './commentText';
 import { PostId } from './postId';
+import { Result } from 'src/shared/core/Result';
 
 export interface CommentProps {
   userId: UserId;

@@ -1,4 +1,4 @@
-import { WatchedList } from '../../../shared/domain/WatchedList';
+import { WatchedList } from 'src/shared/domain/WatchedList';
 import { Comment } from './comment';
 
 export class Comments extends WatchedList<Comment> {

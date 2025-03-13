@@ -2,7 +2,7 @@ import { commentSchema } from 'gatherly-types';
 import { ValueObject } from 'src/shared/core/ValueObject';
 import { IFailedField } from 'src/utils/FailedField';
 import { z } from 'zod';
-import { Result } from '../../../shared/core/Result';
+import { Result } from 'src/shared/core/Result';
 
 interface CommentTextProps {
   value: string;

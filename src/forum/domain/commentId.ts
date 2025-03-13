@@ -1,6 +1,6 @@
+import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { ValueObject } from 'src/shared/core/ValueObject';
-import { Result } from '../../../shared/core/Result';
 
 interface CommentIdProps {
   value: UniqueEntityID;
