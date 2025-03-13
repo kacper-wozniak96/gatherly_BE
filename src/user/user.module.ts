@@ -7,7 +7,7 @@ import { LogoutUserController } from './useCases/Logout/LogoutUserController';
 import { UserCreateController } from './useCases/CreateUser/CreateUserController';
 import { LoginUserController } from './useCases/Login/LoginUserController';
 import { GetUserController } from './useCases/getUser/GetUserController';
-import { GenerateUserActivityReportController } from './useCases/GenerateUserActivityReport/GenerateUserActivityReportController';
+// import { GenerateUserActivityReportController } from './useCases/GenerateUserActivityReport/GenerateUserActivityReportController';
 import { UpdateUserController } from './useCases/UpdateUser/UpdateUserController';
 import { GetUsersController } from './useCases/getUsers/GetUserController';
 import { PrismaService } from 'src/prisma.service';
@@ -20,8 +20,8 @@ import { UserRepoSymbol } from './repos/utils/symbols';
 import { UserRepo } from './repos/implementations/userRepo';
 import {
   CreateUserUseCaseSymbol,
-  GenerateUserActivityReportUseCaseSymbolConsumer,
-  GenerateUserActivityReportUseCaseSymbolProvider,
+  // GenerateUserActivityReportUseCaseSymbolConsumer,
+  // GenerateUserActivityReportUseCaseSymbolProvider,
   GetUsersUseCaseSymbol,
   GetUserUseCaseSymbol,
   LoginUserUseCaseSymbol,
@@ -31,8 +31,8 @@ import { CreateUserUseCase } from './useCases/CreateUser/CreateUserUseCase';
 import { LoginUserUseCase } from './useCases/Login/LoginUserUseCase';
 import { GetUserUseCase } from './useCases/getUser/GetUserUseCase';
 import { UpdateUserUseCase } from './useCases/UpdateUser/UpdateUserUseCase';
-import { GenerateUserActivityReportUseCaseProvider } from './useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCase';
-import { GenerateUserActivityReportUseCaseConsumer } from './useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCaseConsumer';
+// import { GenerateUserActivityReportUseCaseProvider } from './useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCase';
+// import { GenerateUserActivityReportUseCaseConsumer } from './useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCaseConsumer';
 import { GetUsersUseCase } from './useCases/getUsers/GetUserUseCase';
 import { ForumModule } from 'src/forum/forum.module';
 
@@ -41,14 +41,14 @@ const createUserUseCaseProvider = new Provider(CreateUserUseCaseSymbol, CreateUs
 const loginUserUseCaseProvider = new Provider(LoginUserUseCaseSymbol, LoginUserUseCase);
 const getUserUseCaseProvider = new Provider(GetUserUseCaseSymbol, GetUserUseCase);
 const updateUserUseCaseProvider = new Provider(UpdateUserUseCaseSymbol, UpdateUserUseCase);
-const generateUserActivityReportUseCaseProvider = new Provider(
-  GenerateUserActivityReportUseCaseSymbolProvider,
-  GenerateUserActivityReportUseCaseProvider,
-);
-const generateUserActivityReportUseCaseConsumer = new Provider(
-  GenerateUserActivityReportUseCaseSymbolConsumer,
-  GenerateUserActivityReportUseCaseConsumer,
-);
+// const generateUserActivityReportUseCaseProvider = new Provider(
+//   GenerateUserActivityReportUseCaseSymbolProvider,
+//   GenerateUserActivityReportUseCaseProvider,
+// );
+// const generateUserActivityReportUseCaseConsumer = new Provider(
+//   GenerateUserActivityReportUseCaseSymbolConsumer,
+//   GenerateUserActivityReportUseCaseConsumer,
+// );
 const getUsersUseCaseProvider = new Provider(GetUsersUseCaseSymbol, GetUsersUseCase);
 
 @Module({
@@ -75,7 +75,7 @@ const getUsersUseCaseProvider = new Provider(GetUsersUseCaseSymbol, GetUsersUseC
     UserCreateController,
     LoginUserController,
     GetUserController,
-    GenerateUserActivityReportController,
+    // GenerateUserActivityReportController,
     UpdateUserController,
     GetUsersController,
   ],
@@ -93,8 +93,8 @@ const getUsersUseCaseProvider = new Provider(GetUsersUseCaseSymbol, GetUsersUseC
     loginUserUseCaseProvider,
     getUserUseCaseProvider,
     updateUserUseCaseProvider,
-    generateUserActivityReportUseCaseProvider,
-    generateUserActivityReportUseCaseConsumer,
+    // generateUserActivityReportUseCaseProvider,
+    // generateUserActivityReportUseCaseConsumer,
     getUsersUseCaseProvider,
   ],
   exports: [getUserUseCaseProvider, userRepoProvider],

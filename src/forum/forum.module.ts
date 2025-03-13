@@ -120,6 +120,6 @@ const getPostBansForUserUseCaseProvider = new Provider(GetPostBansForUserUseCase
     getPostBansForUserUseCaseProvider,
     PostService,
   ],
-  exports: [getPostUseCaseProvider, postRepoProvider],
+  exports: [],
 })
 export class ForumModule {}

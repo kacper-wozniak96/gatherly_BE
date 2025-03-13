@@ -16,7 +16,7 @@ import { GetCommentsResponseDTO, RequestData, ResponseData } from './types';
 export class GetCommentsUseCase implements UseCase<RequestData, Promise<ResponseData>> {
   constructor(
     @Inject(CommentRepoSymbol) private readonly commentRepo: ICommentRepo,
-    @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
+    // @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
     @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,
   ) {}
 
@@ -35,9 +35,8 @@ export class GetCommentsUseCase implements UseCase<RequestData, Promise<Response
     await Promise.all(
       comments.map(async (comment) => {
         if (comment.user.hasSetAvatar()) {
-          const signedURL = await this.awsS3Service.getFileUrl(comment.user.avatarS3Key);
-
-          comment.user.updateUserAvatarSignedUrl(signedURL);
+          // const signedURL = await this.awsS3Service.getFileUrl(comment.user.avatarS3Key);
+          // comment.user.updateUserAvatarSignedUrl(signedURL);
         }
       }),
     );

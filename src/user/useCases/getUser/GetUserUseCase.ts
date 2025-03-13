@@ -14,8 +14,7 @@ import { RequestData, ResponseData } from './types';
 @Injectable()
 export class GetUserUseCase implements UseCase<RequestData, Promise<ResponseData>> {
   constructor(
-    @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
-    @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
+    @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo, // @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
   ) {}
 
   async execute(requestData: RequestData): Promise<ResponseData> {
@@ -23,10 +22,10 @@ export class GetUserUseCase implements UseCase<RequestData, Promise<ResponseData
 
     if (!user) return left(new GetUserErrors.UserDoesntExistError());
 
-    if (user.hasSetAvatar()) {
-      const url = await this.awsS3Service.getFileUrl(user.avatarS3Key);
-      user.updateUserAvatarSignedUrl(url);
-    }
+    // if (user.hasSetAvatar()) {
+    //   const url = await this.awsS3Service.getFileUrl(user.avatarS3Key);
+    //   user.updateUserAvatarSignedUrl(url);
+    // }
 
     const userDTO = UserMapper.toDTO(user);
 

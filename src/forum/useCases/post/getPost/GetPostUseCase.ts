@@ -19,13 +19,15 @@ import { IGetPostUseCase, RequestData, ResponseData } from './types';
 export class GetPostUseCase implements IGetPostUseCase {
   constructor(
     @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,
-    @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
+    // @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
     @Inject(PostBanRepoSymbol) private readonly postBanRepo: IPostBanRepo,
     @Inject(REQUEST) private readonly request: CustomRequest,
   ) {}
 
   async execute(requestData: RequestData): Promise<ResponseData> {
     const post = await this.postRepo.getPostByPostId(requestData.postId);
+
+    console.log('new modulesss');
 
     if (!post) return left(new GetPostErrors.PostDoesntExistError());
 
@@ -36,20 +38,20 @@ export class GetPostUseCase implements IGetPostUseCase {
     if (isUserBanned) return left(new GetPostErrors.UserBannedFromViewingPostError());
 
     if (post.user.hasSetAvatar()) {
-      const userAvatarUrl = await this.awsS3Service.getFileUrl(post.user.avatarS3Key);
-      post.user.updateUserAvatarSignedUrl(userAvatarUrl);
+      // const userAvatarUrl = await this.awsS3Service.getFileUrl(post.user.avatarS3Key);
+      // post.user.updateUserAvatarSignedUrl(userAvatarUrl);
     }
 
     const comments = post.comments.getItems();
 
-    await Promise.all(
-      comments.map(async (comment) => {
-        if (comment.user.hasSetAvatar()) {
-          const signedURL = await this.awsS3Service.getFileUrl(comment.user.avatarS3Key);
-          comment.user.updateUserAvatarSignedUrl(signedURL);
-        }
-      }),
-    );
+    // await Promise.all(
+    //   comments.map(async (comment) => {
+    //     if (comment.user.hasSetAvatar()) {
+    //       const signedURL = await this.awsS3Service.getFileUrl(comment.user.avatarS3Key);
+    //       comment.user.updateUserAvatarSignedUrl(signedURL);
+    //     }
+    //   }),
+    // );
 
     const postDTO = PostMapper.toDTO(post, this.request.user.userId);
 

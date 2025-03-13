@@ -23,8 +23,7 @@ import { UpdateUserErrors } from './UpdateUserErrors';
 @Injectable()
 export class UpdateUserUseCase implements UseCase<RequestData, Promise<ResponseData>> {
   constructor(
-    @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
-    @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
+    @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo, // @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
   ) {}
 
   async execute(requestData: RequestData): Promise<ResponseData> {
@@ -54,14 +53,14 @@ export class UpdateUserUseCase implements UseCase<RequestData, Promise<ResponseD
         return left(new UpdateUserErrors.InvalidDataError(failedFields));
       }
 
-      if (user.hasSetAvatar()) {
-        await this.awsS3Service.deleteFile(user.avatarS3Key);
-      }
+      // if (user.hasSetAvatar()) {
+      //   await this.awsS3Service.deleteFile(user.avatarS3Key);
+      // }
 
-      const avatarS3Key = uuid();
-      await this.awsS3Service.sendAvatarImage(avatarS3Key, requestData.file.buffer);
+      // const avatarS3Key = uuid();
+      // await this.awsS3Service.sendAvatarImage(avatarS3Key, requestData.file.buffer);
 
-      changes.addChange(user.updateAvatarS3Key(avatarS3Key));
+      // changes.addChange(user.updateAvatarS3Key(avatarS3Key));
     }
 
     if (has(requestData.dto, 'username')) {

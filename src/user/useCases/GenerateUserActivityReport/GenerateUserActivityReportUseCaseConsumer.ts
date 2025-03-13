@@ -12,8 +12,8 @@ import { IGenerateUserActivityReportJob } from 'src/shared/interfaces/Jobs/sendR
 @Processor(EQueues.reports)
 export class GenerateUserActivityReportUseCaseConsumer extends WorkerHost {
   constructor(
-    @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
-    @Inject(MailServiceSymbol) private readonly mailService: MailService,
+    // @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
+    // @Inject(MailServiceSymbol) private readonly mailService: MailService,
     private readonly pdfService: PDFService,
     private readonly fileService: FileService,
   ) {
@@ -45,9 +45,9 @@ export class GenerateUserActivityReportUseCaseConsumer extends WorkerHost {
 
     const fileContent = await this.fileService.readFile(abosoluteFilePath);
 
-    await this.awsS3Service.sendReport(reportId, fileContent);
+    // await this.awsS3Service.sendReport(reportId, fileContent);
 
-    await this.mailService.sendUserActivityReport(email, reportId, fileContent);
+    // await this.mailService.sendUserActivityReport(email, reportId, fileContent);
 
     await this.fileService.deleteFile(abosoluteFilePath);
   }

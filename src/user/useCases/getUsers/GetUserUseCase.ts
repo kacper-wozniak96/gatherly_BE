@@ -14,8 +14,7 @@ import { RequestData, ResponseData } from './types';
 @Injectable()
 export class GetUsersUseCase implements UseCase<RequestData, Promise<ResponseData>> {
   constructor(
-    @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
-    @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
+    @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo, // @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
   ) {}
 
   async execute(requestData: RequestData): Promise<ResponseData> {
@@ -26,14 +25,14 @@ export class GetUsersUseCase implements UseCase<RequestData, Promise<ResponseDat
 
       console.log({ users });
 
-      await Promise.all(
-        users.map(async (user) => {
-          if (user.hasSetAvatar()) {
-            const url = await this.awsS3Service.getFileUrl(user.avatarS3Key);
-            user.updateUserAvatarSignedUrl(url);
-          }
-        }),
-      );
+      // await Promise.all(
+      //   users.map(async (user) => {
+      //     if (user.hasSetAvatar()) {
+      //       const url = await this.awsS3Service.getFileUrl(user.avatarS3Key);
+      //       user.updateUserAvatarSignedUrl(url);
+      //     }
+      //   }),
+      // );
 
       const usersDTOs = users.map((user) => UserMapper.toDTO(user));
 
