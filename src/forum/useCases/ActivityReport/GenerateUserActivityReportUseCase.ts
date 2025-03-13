@@ -4,26 +4,25 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { REQUEST } from '@nestjs/core';
 import { Queue } from 'bullmq';
 import { IFailedField } from 'gatherly-types';
-import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { ICommentRepo } from 'src/forum/repos/commentRepo';
 import { IPostRepo } from 'src/forum/repos/postRepo';
 import { IPostVoteRepo } from 'src/forum/repos/postVoteRepo';
 import { CommentRepoSymbol, PostRepoSymbol, PostVoteRepoSymbol } from 'src/forum/repos/utils/symbols';
+import { CustomRequest } from 'src/modules/AuthModule/strategies/jwt.strategy';
 import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
-import { UseCase } from 'src/shared/core/UseCase';
 import { EJobs } from 'src/shared/enums/Jobs';
 import { EQueues } from 'src/shared/enums/Queues';
 import { IGenerateUserActivityReportJob } from 'src/shared/interfaces/Jobs/sendReport';
-import { ReportId } from '../../domain/ReportId';
-import { UserEmail } from '../../domain/UserEmail';
-import { IUserRepo } from '../../repos/userRepo';
-import { UserRepoSymbol } from '../../repos/utils/symbols';
+import { ReportId } from '../../../user/domain/ReportId';
+import { UserEmail } from '../../../user/domain/UserEmail';
+import { IUserRepo } from '../../../user/repos/userRepo';
+import { UserRepoSymbol } from '../../../user/repos/utils/symbols';
 import { GenerateUserActivityReportErrors } from './GenerateUserActivityReportErrors';
-import { RequestData, ResponseData } from './types';
+import { IGenerateUserActivityReportUseCase, RequestData, ResponseData } from './types';
 
 @Injectable()
-export class GenerateUserActivityReportUseCaseProvider implements UseCase<RequestData, Promise<ResponseData>> {
+export class GenerateUserActivityReportUseCase implements IGenerateUserActivityReportUseCase {
   constructor(
     @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
     @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,

@@ -3,6 +3,15 @@ import * as fs from 'node:fs/promises';
 
 import * as path from 'path';
 
+export interface IFileService {
+  createPathToUploadsFolder(fileName: string): string;
+  readFile(filePath: string): Promise<Buffer>;
+  writeFile(filePath: string, content: string): Promise<void>;
+  deleteFile(filePath: string): Promise<void>;
+}
+
+export const FileServiceSymbol = Symbol('File_Service');
+
 @Injectable()
 export class FileService {
   public createPathToUploadsFolder(fileName: string): string {

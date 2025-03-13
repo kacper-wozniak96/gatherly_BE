@@ -52,6 +52,16 @@ import { GetPostBansForUserUseCase } from './useCases/postBan/getPostBansForUser
 import { PostService } from './domain/services/PostService';
 import { UserModule } from 'src/user/user.module';
 import { CommonModule } from 'src/modules/common/common.module';
+import { GenerateUserActivityReportController } from './useCases/ActivityReport/GenerateUserActivityReportController';
+import {
+  GenerateUserActivityReportUseCaseSymbol,
+  GenerateUserActivityReportUseCaseSymbolConsumer,
+} from './useCases/ActivityReport/utils/symbols';
+import { GenerateUserActivityReportUseCase } from './useCases/ActivityReport/GenerateUserActivityReportUseCase';
+import { BullModule } from '@nestjs/bullmq';
+import { EQueues } from 'src/shared/enums/Queues';
+import { GenerateUserActivityReportUseCaseConsumer } from './useCases/ActivityReport/GenerateUserActivityReportUseCaseConsumer';
+import { PDFService } from './useCases/ActivityReport/pdfService';
 
 const postRepoProvider = new Provider(PostRepoSymbol, PostRepo);
 const createPostUseCaseProvider = new Provider(CreatePostUseCaseSymbol, CreatePostUseCase);
@@ -69,6 +79,11 @@ const updatePostUseCaseProvider = new Provider(UpdatePostUseCaseSymbol, UpdatePo
 const postBanRepoProvider = new Provider(PostBanRepoSymbol, PostBanRepo);
 const applyBanUseCaseProvider = new Provider(ApplyBanUseCaseSymbol, ApplyPostBanUseCase);
 const getPostBansForUserUseCaseProvider = new Provider(GetPostBansForUserUseCaseSymbol, GetPostBansForUserUseCase);
+const generateUserActivityReportUseCaseProvider = new Provider(GenerateUserActivityReportUseCaseSymbol, GenerateUserActivityReportUseCase);
+const generateUserActivityReportConsumerProvider = new Provider(
+  GenerateUserActivityReportUseCaseSymbolConsumer,
+  GenerateUserActivityReportUseCaseConsumer,
+);
 
 @Module({
   imports: [
@@ -76,6 +91,15 @@ const getPostBansForUserUseCaseProvider = new Provider(GetPostBansForUserUseCase
       global: true,
       secret: 'secret',
       signOptions: { expiresIn: '30 days' },
+    }),
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_IP,
+        port: Number(process.env.REDIS_PORT),
+      },
+    }),
+    BullModule.registerQueue({
+      name: EQueues.reports,
     }),
     ConfigModule.forRoot(),
     UserModule,
@@ -94,6 +118,7 @@ const getPostBansForUserUseCaseProvider = new Provider(GetPostBansForUserUseCase
     UpdatePostController,
     ApplyPostBanController,
     GetPostBansForUserController,
+    GenerateUserActivityReportController,
   ],
   providers: [
     PrismaService,
@@ -120,7 +145,10 @@ const getPostBansForUserUseCaseProvider = new Provider(GetPostBansForUserUseCase
     postBanRepoProvider,
     applyBanUseCaseProvider,
     getPostBansForUserUseCaseProvider,
+    generateUserActivityReportUseCaseProvider,
+    generateUserActivityReportConsumerProvider,
     PostService,
+    PDFService,
   ],
   exports: [],
 })

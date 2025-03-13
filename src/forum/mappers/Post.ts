@@ -7,9 +7,10 @@ import { Post } from '../domain/post';
 import { PostText } from '../domain/postText';
 import { PostTitle } from '../domain/postTitle';
 import { PostVotes } from '../domain/postVotes';
-import { PostDTO } from '../dtos/post';
+// import { PostDTO } from '../dtos/post';
 import { CommentMapper } from './Comment';
 import { PostVoteMapper } from './PostVote';
+import { PostDTO } from 'gatherly-types';
 
 export class PostMapper {
   public static toDomain(
