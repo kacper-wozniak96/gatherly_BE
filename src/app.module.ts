@@ -86,6 +86,7 @@ import { AwsS3Service, AwsS3ServiceSymbol } from './shared/infra/AWS/s3client';
 import { PDFService } from './shared/infra/FileGenerator/pdfService';
 import { FileService } from './shared/infra/FileService/fileService';
 import { MailService, MailServiceSymbol } from './shared/infra/MailService/mailService';
+import { ForumModule } from './forum/forum.module';
 
 class Provider {
   provide: symbol;
@@ -114,6 +115,7 @@ class Provider {
     BullModule.registerQueue({
       name: EQueues.reports,
     }),
+    ForumModule,
   ],
   controllers: [
     TestController,
