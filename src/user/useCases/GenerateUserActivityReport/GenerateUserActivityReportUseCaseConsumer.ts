@@ -1,12 +1,9 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { Inject } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { EJobs } from 'src/shared/enums/Jobs';
 import { EQueues } from 'src/shared/enums/Queues';
-import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
 import { PDFService } from 'src/shared/infra/FileGenerator/pdfService';
 import { FileService } from 'src/shared/infra/FileService/fileService';
-import { MailService, MailServiceSymbol } from 'src/shared/infra/MailService/mailService';
 import { IGenerateUserActivityReportJob } from 'src/shared/interfaces/Jobs/sendReport';
 
 @Processor(EQueues.reports)

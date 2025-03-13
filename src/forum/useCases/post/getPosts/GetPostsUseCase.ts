@@ -24,8 +24,6 @@ export class GetPostsUseCase implements UseCase<RequestData, Promise<ResponseDat
 
     const [posts, postsTotalCount] = await Promise.all([this.postRepo.getPosts(offset, search), this.postRepo.getPostsTotalCount(search)]);
 
-    console.log({ userId: this.request.user.userId });
-
     const postsDTO = posts.map((post) => PostMapper.toDTO(post, this.request.user.userId));
 
     return right(Result.ok<GetPostsResponseDTO>({ posts: postsDTO, postsTotalCount }));

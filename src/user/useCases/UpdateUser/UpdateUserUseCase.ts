@@ -5,7 +5,6 @@ import { left, right } from 'src/shared/core/Either';
 import { Result } from 'src/shared/core/Result';
 import { UniqueEntityID } from 'src/shared/core/UniqueEntityID';
 import { UseCase } from 'src/shared/core/UseCase';
-import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
 import { Changes } from 'src/utils/changes';
 import { IFailedField } from 'src/utils/FailedField';
 import { has } from 'src/utils/has';
@@ -19,11 +18,13 @@ import { IUserRepo } from '../../repos/userRepo';
 import { UserRepoSymbol } from '../../repos/utils/symbols';
 import { RequestData, ResponseData } from './types';
 import { UpdateUserErrors } from './UpdateUserErrors';
+import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/modules/common/AWS';
 
 @Injectable()
 export class UpdateUserUseCase implements UseCase<RequestData, Promise<ResponseData>> {
   constructor(
-    @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo, // @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
+    @Inject(UserRepoSymbol) private readonly userRepo: IUserRepo,
+    @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
   ) {}
 
   async execute(requestData: RequestData): Promise<ResponseData> {
@@ -53,14 +54,14 @@ export class UpdateUserUseCase implements UseCase<RequestData, Promise<ResponseD
         return left(new UpdateUserErrors.InvalidDataError(failedFields));
       }
 
-      // if (user.hasSetAvatar()) {
-      //   await this.awsS3Service.deleteFile(user.avatarS3Key);
-      // }
+      if (user.hasSetAvatar()) {
+        await this.awsS3Service.deleteFile(user.avatarS3Key);
+      }
 
-      // const avatarS3Key = uuid();
-      // await this.awsS3Service.sendAvatarImage(avatarS3Key, requestData.file.buffer);
+      const avatarS3Key = uuid();
+      await this.awsS3Service.sendAvatarImage(avatarS3Key, requestData.file.buffer);
 
-      // changes.addChange(user.updateAvatarS3Key(avatarS3Key));
+      changes.addChange(user.updateAvatarS3Key(avatarS3Key));
     }
 
     if (has(requestData.dto, 'username')) {

@@ -35,6 +35,7 @@ import { UpdateUserUseCase } from './useCases/UpdateUser/UpdateUserUseCase';
 // import { GenerateUserActivityReportUseCaseConsumer } from './useCases/GenerateUserActivityReport/GenerateUserActivityReportUseCaseConsumer';
 import { GetUsersUseCase } from './useCases/getUsers/GetUserUseCase';
 import { ForumModule } from 'src/forum/forum.module';
+import { CommonModule } from 'src/modules/common/common.module';
 
 const userRepoProvider = new Provider(UserRepoSymbol, UserRepo);
 const createUserUseCaseProvider = new Provider(CreateUserUseCaseSymbol, CreateUserUseCase);
@@ -69,6 +70,7 @@ const getUsersUseCaseProvider = new Provider(GetUsersUseCaseSymbol, GetUsersUseC
       name: EQueues.reports,
     }),
     // ForumModule,
+    CommonModule,
   ],
   controllers: [
     LogoutUserController,

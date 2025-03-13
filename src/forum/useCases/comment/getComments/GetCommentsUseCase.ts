@@ -8,15 +8,15 @@ import { CommentMapper } from 'src/forum/mappers/Comment';
 import { ICommentRepo } from 'src/forum/repos/commentRepo';
 import { IPostRepo } from 'src/forum/repos/postRepo';
 import { Result } from 'src/shared/core/Result';
-import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/shared/infra/AWS/s3client';
 import { GetCommentsErrors } from './GetCommentsErrors';
 import { GetCommentsResponseDTO, RequestData, ResponseData } from './types';
+import { AwsS3ServiceSymbol, IAwsS3Service } from 'src/modules/common/AWS';
 
 @Injectable()
 export class GetCommentsUseCase implements UseCase<RequestData, Promise<ResponseData>> {
   constructor(
     @Inject(CommentRepoSymbol) private readonly commentRepo: ICommentRepo,
-    // @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
+    @Inject(AwsS3ServiceSymbol) private readonly awsS3Service: IAwsS3Service,
     @Inject(PostRepoSymbol) private readonly postRepo: IPostRepo,
   ) {}
 
@@ -33,10 +33,9 @@ export class GetCommentsUseCase implements UseCase<RequestData, Promise<Response
     ]);
 
     await Promise.all(
-      comments.map(async (comment) => {
+      comments.map((comment) => {
         if (comment.user.hasSetAvatar()) {
-          // const signedURL = await this.awsS3Service.getFileUrl(comment.user.avatarS3Key);
-          // comment.user.updateUserAvatarSignedUrl(signedURL);
+          return this.awsS3Service.updateUserSignedUrl(comment.user);
         }
       }),
     );
