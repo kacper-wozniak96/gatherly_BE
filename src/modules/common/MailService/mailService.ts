@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 
 export interface IMailService {
-  // sendUserActivityReport(to: string, reportId: string, buffer: Buffer): Promise<void>;
   send(payload: nodemailer.SendMailOptions): Promise<void>;
 }
 
@@ -26,23 +25,8 @@ export class MailService implements IMailService {
     return transporter;
   }
 
-  // public async sendUserActivityReport(to: string, reportId: string, buffer: Buffer): Promise<void> {
   public async send(payload: nodemailer.SendMailOptions): Promise<void> {
     const transporter = await this.createTransporter();
-
-    // const mailOptions = {
-    //   from: process.env.GMAIL_USER,
-    //   to,
-    //   subject: 'User Activity Report',
-    //   text: 'Hello, here is your recent activity report.',
-    //   html: '<p>Hello,</p><p>Here is your <strong>recent activity report</strong>.</p>',
-    //   attachments: [
-    //     {
-    //       filename: `${reportId}.pdf`,
-    //       content: buffer,
-    //     },
-    //   ],
-    // };
 
     await transporter.sendMail(payload);
   }

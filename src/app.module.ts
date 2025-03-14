@@ -1,43 +1,30 @@
-import { BullModule } from '@nestjs/bullmq';
-import { MiddlewareConsumer, Module, RequestMethod, Type } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
-import { ForumModule } from './forum/forum.module';
-import { LoggerMiddleware } from './modules/Logger/logger';
-import { EQueues } from './shared/enums/Queues';
-import { UserModule } from './user/user.module';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { ForumModule } from './modules/forum/forum.module';
+import { JwtAuthGuard } from './modules/Auth/Auth.guard';
+import { JwtStrategy } from './modules/Auth/strategies/jwt.strategy';
 import { CommonModule } from './modules/common/common.module';
-
-// class Provider {
-//   provide: symbol;
-//   useClass: Type;
-
-//   constructor(provide: symbol, useClass: Type) {
-//     this.provide = provide;
-//     this.useClass = useClass;
-//   }
-// }
+import { LoggerMiddleware } from './modules/Logger/logger';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
-    // JwtModule.register({
-    //   global: true,
-    //   secret: 'secret',
-    //   signOptions: { expiresIn: '30 days' },
-    // }),
-    // ConfigModule.forRoot(),
-    // BullModule.forRoot({
-    //   connection: {
-    //     host: process.env.REDIS_IP,
-    //     port: Number(process.env.REDIS_PORT),
-    //   },
-    // }),
-    // BullModule.registerQueue({
-    //   name: EQueues.reports,
-    // }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+    }),
     ForumModule,
     UserModule,
     CommonModule,
+  ],
+  providers: [
+    JwtService,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
 })
 export class AppModule {

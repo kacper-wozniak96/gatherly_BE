@@ -1,7 +1,7 @@
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/user/domain/User';
+import { User } from 'src/modules/user/domain/User';
 
 export interface IAwsS3Service {
   sendAvatarImage(key: string, buffer: Buffer): Promise<void>;
