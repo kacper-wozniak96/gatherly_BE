@@ -1,0 +1,3 @@
+export const GenerateUserActivityReportUseCaseSymbolProvider = Symbol('GenerateUserActivityReportUseCaseSymbolProvider');
+export const GenerateUserActivityReportUseCaseSymbolConsumer = Symbol('GenerateUserActivityReportUseCaseSymbolConsumer');
+export const GenerateUserActivityReportUseCaseSymbol = Symbol('GenerateUserActivityReportUseCaseSymbol');
