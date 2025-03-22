@@ -1,14 +1,5 @@
 # FROM node:16.14.0-alpine
-FROM node
-# FROM node:20.9.0
-# LABEL repository="tasker2-backend"
-
-# RUN node -v
-
-
-# USER node 
-
-# RUN mkdir -p /home/node/app 
+FROM node:alpine
 
 ARG DATABASE_URL
 

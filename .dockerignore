@@ -6,3 +6,6 @@ test
 Dockerfile
 README.md
 prisma/.env
+dist
+docker/db_scripts/mysql
+docker/db_scripts

@@ -13,7 +13,7 @@ export interface IFileService {
 export const FileServiceSymbol = Symbol('File_Service');
 
 @Injectable()
-export class FileService {
+export class FileService implements IFileService {
   public createPathToUploadsFolder(fileName: string): string {
     return path.resolve('src/utils/uploads/' + fileName);
   }
