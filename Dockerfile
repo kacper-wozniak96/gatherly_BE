@@ -34,8 +34,8 @@ RUN npm cache clean --force && \
 # RUN npm run migrate-exists
 # RUN npm run seed
 
-RUN npm run client-generate
-RUN npm run migrate-reset
+# RUN npm run client-generate
+# RUN npm run migrate-reset
 
 RUN npm run build
 

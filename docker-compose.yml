@@ -1,21 +1,4 @@
 services:
-  # backend:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.prod
-  #   container_name: gatherly-backend
-  #   env_file:
-  #     - .env
-  #   ports:
-  #     - '3000:3000'
-  #   volumes:
-  #     - .:/usr/src/app
-  #     - /usr/src/app/node_modules
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_healthy
   db:
     image: mysql/mysql-server:8.0.21
     restart: always
@@ -25,18 +8,17 @@ services:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=pass
       - MYSQL_ROOT_PASSWORD=pass
-      - MYSQL_ROOT_HOST=localhost
+      # - MYSQL_ROOT_HOST=localhost
     ports:
-      - '3306:3306'
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppass"]
-      interval: 10s
-      retries: 5
-      start_period: 30s
-      timeout: 10s
+      - '3307:3306'
     volumes:
       - ./docker/db_scripts/mysql:/var/lib/mysql
       - ./docker/db_scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
   redis:
     image: redis:alpine
     container_name: redis
@@ -46,7 +28,25 @@ services:
       - REDIS_PASSWORD=pass
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      retries: 5
-      start_period: 30s
-      timeout: 10s
+      interval: 5s
+      retries: 3
+      start_period: 5s
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: gatherly-backend
+    # command: ["npm", "run", "start:dev"]  # Runs your app with file watching
+    command: npm run start:dev
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy

@@ -11,6 +11,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { CreateCommentRequestDTO } from 'gatherly-types';
+import { Logger } from 'nestjs-pino';
 import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_POST_CONTROLLER_PATH } from '../../post/utils/baseContollerPath';
 import { CreateCommentUseCaseSymbol } from '../utils/symbols';
@@ -19,7 +20,9 @@ import { RequestData, ResponseData } from './types';
 
 @Controller(BASE_POST_CONTROLLER_PATH)
 export class CreateCommentController {
-  constructor(@Inject(CreateCommentUseCaseSymbol) private readonly useCase: UseCase<RequestData, Promise<ResponseData>>) {}
+  constructor(
+    @Inject(CreateCommentUseCaseSymbol) private readonly useCase: UseCase<RequestData, Promise<ResponseData>>, // private readonly logger: Logger,
+  ) {}
 
   @Post('/:postId/comment')
   async execute(@Param('postId', ParseIntPipe) postId: number, @Body() dto: CreateCommentRequestDTO): Promise<void> {
