@@ -34,10 +34,11 @@ services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
+      target: dev
     container_name: gatherly-backend
     # command: ["npm", "run", "start:dev"]  # Runs your app with file watching
-    command: npm run start:dev
+    # command: npm run start:dev
     env_file:
       - .env
     ports:

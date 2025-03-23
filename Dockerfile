@@ -1,46 +1,44 @@
-# FROM node:16.14.0-alpine
-FROM node:alpine
+# DEV STAGE
+FROM node:20-alpine AS dev
 
-ARG DATABASE_URL
+WORKDIR /usr/src/app
 
-WORKDIR /home/node/app 
+RUN apk add --no-cache openssl
 
-# COPY --chown=node .npmrc ./
-# COPY .npmrc ./
-# COPY --chown=node package*.json ./
-# COPY package*.json ./
+RUN npm config set fetch-timeout 600000 && \
+    npm config set registry https://registry.npmjs.org/
 
-# RUN npm ci
 
-# COPY --chown=node . .
+COPY package.json package-lock.json ./
+
+RUN npm ci --no-audit --maxsockets 1
+
 COPY . .
 
-ENV DATABASE_URL=${DATABASE_URL}
+RUN npm run client-generate
 
-RUN npm config set fetch-timeout 60000000
-# RUN npm config set timeout 600000
-# RUN npm cache clean --force
+CMD ["npm", "run", "start:dev"]
 
-RUN npm cache clean --force && \
-    npm install -g npm@latest && \
-    npm install
 
-# RUN npm install
 
-# Kasowanie bazy i tworzenie wszystkiego od nowa
-# RUN npm run migrate-reset-force
+# PROD STAGE
+FROM node:20-alpine AS prod
 
-# Aktualizacja bazy
-# RUN npm run migrate-exists
-# RUN npm run seed
+WORKDIR /usr/src/app
 
-# RUN npm run client-generate
-# RUN npm run migrate-reset
+RUN apk add --no-cache openssl
+
+RUN npm config set fetch-timeout 600000 && \
+    npm config set registry https://registry.npmjs.org/
+
+COPY package.json package-lock.json ./
+
+RUN npm ci --no-audit --production --maxsockets 1
+
+COPY . .
+
+RUN npm run client-generate
 
 RUN npm run build
 
-# ENV HOST=0.0.0.0 BACKEND_PORT=3000
-
-EXPOSE 3000
-# EXPOSE ${BACKEND_PORT}
-CMD [ "npm", "run", "start" ]
+CMD ["npm", "run", "start:prod"]

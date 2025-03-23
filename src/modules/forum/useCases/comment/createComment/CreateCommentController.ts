@@ -11,7 +11,6 @@ import {
   Post,
 } from '@nestjs/common';
 import { CreateCommentRequestDTO } from 'gatherly-types';
-import { Logger } from 'nestjs-pino';
 import { UseCase } from 'src/shared/core/UseCase';
 import { BASE_POST_CONTROLLER_PATH } from '../../post/utils/baseContollerPath';
 import { CreateCommentUseCaseSymbol } from '../utils/symbols';
